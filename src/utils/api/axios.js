@@ -1,4 +1,5 @@
 import axios from "axios";
+import { getCookie } from "../infos/cookie";
 
 export default class Axios {
   constructor(url) {
@@ -8,6 +9,7 @@ export default class Axios {
   }
 
   async get(url) {
+    const cookie = getCookie("token");
     const option = {
       headers: {
         Authorization: `Bearer ${cookie ? cookie : ""}`,
@@ -17,6 +19,7 @@ export default class Axios {
   }
 
   async delete(url) {
+    const cookie = getCookie("token");
     const option = {
       headers: {
         Authorization: `Bearer ${cookie ? cookie : ""}`,
@@ -26,15 +29,17 @@ export default class Axios {
   }
 
   async post(url, data) {
+    const cookie = getCookie("token");
     const option = {
       headers: {
         Authorization: `Bearer ${cookie ? cookie : ""}`,
       },
     };
-    return this.instance.post(url, data);
+    return this.instance.post(url, data, option);
   }
 
   async patch(url, data) {
+    const cookie = getCookie("token");
     const option = {
       headers: {
         Authorization: `Bearer ${cookie ? cookie : ""}`,
@@ -45,6 +50,7 @@ export default class Axios {
   }
 
   async put(url, data) {
+    const cookie = getCookie("token");
     const option = {
       headers: {
         Authorization: `Bearer ${cookie ? cookie : ""}`,
