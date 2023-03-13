@@ -1,12 +1,25 @@
 import React from "react";
 import { useForm } from "react-hook-form";
+import { useMutation } from "react-query";
 import styled from "styled-components";
+import { postSignIn } from "../../utils/api/api";
 import { Input } from "../../utils/style/mixins";
 
 const Signin = ({ setIsSignIn }) => {
-  const { register, formState: errors, watch, handleSubmit } = useForm();
-  const onLogin = (data) => {
-    console.log(data);
+  const { register, formState: errors, handleSubmit } = useForm();
+
+  const signinMutation = useMutation(postSignIn, {
+    onSuccess: ({ data }) => {
+      setIsSignIn(false);
+    },
+  });
+
+  const onLogin = async (data) => {
+    const signinRequest = {
+      username: data.username,
+      password: data.password,
+    };
+    const res = await signinMutation.mutateAsync(signinRequest);
   };
 
   return (

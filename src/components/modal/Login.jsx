@@ -49,8 +49,8 @@ const LoginModalBackGround = styled.div`
 `;
 
 const LoginModalWrapper = styled(motion.section)`
-  width: 60rem;
-  height: 50rem;
+  width: 80rem;
+  height: 70rem;
   display: flex;
   background-color: white;
 `;
