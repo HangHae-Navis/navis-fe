@@ -4,12 +4,13 @@ import { useSetRecoilState } from "recoil";
 import styled from "styled-components";
 import { loginModalState } from "../../store/atom";
 import Signin from "../login/Signin";
+import Signup from "../login/Signup";
 import { flexCenter } from "../../utils/style/mixins";
 import { modalVariants } from "../../utils/variants/variants";
 
 const Login = () => {
   const setLoginModal = useSetRecoilState(loginModalState);
-  const [isSignin, setIsSignIn] = useState(false);
+  const [isSignin, setIsSignIn] = useState(true);
   const modalRef = useRef(null);
   return (
     <LoginModalBackGround
@@ -26,7 +27,8 @@ const Login = () => {
         animate="animate"
         exit="exit"
       >
-        <Signin />
+        <ContentWrapper></ContentWrapper>
+        {isSignin === true ? <Signin setIsSignIn={setIsSignIn} /> : <Signup />}
       </LoginModalWrapper>
     </LoginModalBackGround>
   );
@@ -45,6 +47,14 @@ const LoginModalBackGround = styled.div`
 const LoginModalWrapper = styled(motion.section)`
   width: 60rem;
   height: 50rem;
+  display: flex;
+  background-color: white;
+`;
+
+const ContentWrapper = styled.section`
+  width: 50%;
+  height: 100%;
+  background-color: white;
 `;
 
 export default Login;
