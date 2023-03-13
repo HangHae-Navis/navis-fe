@@ -13,6 +13,7 @@ export const GlobalStyle = createGlobalStyle`
     input {
         &:foucs {
             outline: none;
+        
         }
     }
 `;

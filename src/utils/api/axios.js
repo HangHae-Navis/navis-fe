@@ -8,14 +8,14 @@ export default class Axios {
     });
   }
 
-  async get(url) {
+  async get(url, data) {
     const cookie = getCookie("token");
     const option = {
       headers: {
         Authorization: `Bearer ${cookie ? cookie : ""}`,
       },
     };
-    return this.instance.get(url, option);
+    return this.instance.get(url, data, option);
   }
 
   async delete(url) {

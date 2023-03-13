@@ -28,7 +28,11 @@ const Login = () => {
         exit="exit"
       >
         <ContentWrapper></ContentWrapper>
-        {isSignin === true ? <Signin setIsSignIn={setIsSignIn} /> : <Signup />}
+        {isSignin === true ? (
+          <Signin setIsSignIn={setIsSignIn} />
+        ) : (
+          <Signup setIsSignIn={setIsSignIn} />
+        )}
       </LoginModalWrapper>
     </LoginModalBackGround>
   );

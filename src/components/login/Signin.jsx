@@ -1,6 +1,7 @@
 import React from "react";
 import { useForm } from "react-hook-form";
 import styled from "styled-components";
+import { Input } from "../../utils/style/mixins";
 
 const Signin = ({ setIsSignIn }) => {
   const { register, formState: errors, watch, handleSubmit } = useForm();
@@ -45,6 +46,10 @@ const SigninForm = styled.form`
   display: flex;
   flex-direction: column;
   justify-content: center;
+
+  input {
+    ${Input}
+  }
 `;
 
 export default Signin;
