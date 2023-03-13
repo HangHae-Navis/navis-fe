@@ -1,7 +1,10 @@
-import React from "react";
+import { useRecoilValue } from "recoil";
+import Login from "../components/modal/Login";
+import { loginModalState } from "../store/atom";
 
 const Home = () => {
-  return <div>Home</div>;
+  const loginState = useRecoilValue(loginModalState);
+  return <div>{loginState === true && <Login />}</div>;
 };
 
 export default Home;
