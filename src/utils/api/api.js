@@ -1,10 +1,25 @@
 import Axios from "./axios";
 
-const axios = new Axios("default url"); //default url은 baseURL임.
+const axios = new Axios("http://sparta-kdh.kro.kr/");
 
 //아래서부터 작성
 
-// const getClasses = async (url) => { 예시 코드
-//   const res = axios.get(url);
-//   return res;
-// };
+export const postEmailConfirm = async (data) => {
+  const res = await axios.get(`/api/emails/sendMail?email=${data}`);
+  return res;
+};
+
+export const getEmailVerify = async (data) => {
+  const res = await axios.get(`/api/emails/confirm?key=${data}`);
+  return res;
+};
+
+export const postSignUp = async (data) => {
+  const res = await axios.post("/api/user/signup", data);
+  return res;
+};
+
+export const postSignIn = async (data) => {
+  const res = await axios.post("/api/user/login", data);
+  return res;
+};
