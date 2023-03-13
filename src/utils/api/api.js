@@ -5,7 +5,7 @@ const axios = new Axios("http://sparta-kdh.kro.kr/");
 //아래서부터 작성
 
 export const postEmailConfirm = async (data) => {
-  const res = await axios.post(`/api/emails/confirm?email=${data}`);
+  const res = await axios.get(`/api/emails/sendMail?email=${data}`);
   return res;
 };
 

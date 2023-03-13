@@ -15,7 +15,7 @@ const Signin = ({ setIsSignIn }) => {
         <input
           type="text"
           placeholder="이메일을 입력하세요."
-          {...register("email", {
+          {...register("username", {
             required: "이메일을 입력해주세요.",
           })}
         />
