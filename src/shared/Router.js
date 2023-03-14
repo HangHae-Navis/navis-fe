@@ -9,10 +9,12 @@ import MeetingRoom from "../pages/MeetingRoom";
 import EditPost from "../pages/EditPost";
 import Admin from "../pages/Admin";
 import { path } from "../constants/path";
+import Header from "../components/global/Header";
 
 const Router = () => {
   return (
     <BrowserRouter>
+      <Header />
       <Routes>
         <Route element={<Home />} path="/" />
         <Route element={<Main />} path={`/${path.MAIN}`} />

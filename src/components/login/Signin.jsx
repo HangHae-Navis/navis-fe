@@ -7,13 +7,11 @@ import { Input } from "../../utils/style/mixins";
 
 const Signin = ({ setIsSignIn }) => {
   const { register, formState: errors, handleSubmit } = useForm();
-
   const signinMutation = useMutation(postSignIn, {
     onSuccess: ({ data }) => {
       setIsSignIn(false);
     },
   });
-
   const onLogin = async (data) => {
     const signinRequest = {
       username: data.username,
@@ -21,7 +19,11 @@ const Signin = ({ setIsSignIn }) => {
     };
     const res = await signinMutation.mutateAsync(signinRequest);
   };
-
+  const Rediect_Url = "http://localhost:3000";
+  //const Rediect_Url = "http://hanghae1teamwork.s3-website.ap-northeast-2.amazonaws.com"
+  const responseKakao = () => {
+    window.location.href = `https://kauth.kakao.com/oauth/authorize?client_id=${process.env.REACT_APP_REST_API_KEY}&redirect_uri=${Rediect_Url}&response_type=code`;
+  };
   return (
     <SignInWrapper>
       <SigninForm onSubmit={handleSubmit(onLogin)}>
@@ -41,12 +43,11 @@ const Signin = ({ setIsSignIn }) => {
         />
         <button>로그인</button>
       </SigninForm>
-      <button>카카오톡으로 로그인하기</button>
+      <button onClick={responseKakao}>카카오톡으로 로그인하기</button>
       <p onClick={() => setIsSignIn(false)}>회원가입</p>
     </SignInWrapper>
   );
 };
-
 const SignInWrapper = styled.div`
   width: 100%;
   display: flex;
@@ -59,7 +60,6 @@ const SigninForm = styled.form`
   display: flex;
   flex-direction: column;
   justify-content: center;
-
   input {
     ${Input}
   }
