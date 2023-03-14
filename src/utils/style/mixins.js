@@ -19,10 +19,11 @@ export const Input = css`
 `;
 
 export const Button = css`
+  cursor: pointer;
   padding: 0.8rem;
   ${flexCenter}
   width: 8rem;
-  height: 4rem;
+  height: 3.5rem;
   border: none;
   font-size: 1.3rem;
   border-radius: 0.8rem;

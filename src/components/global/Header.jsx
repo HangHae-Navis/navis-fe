@@ -53,7 +53,7 @@ const HeaderWrapper = styled.header`
   align-items: center;
   justify-content: space-around;
   width: 100vw;
-  height: 4rem;
+  height: 6rem;
   padding: 1rem 0;
 `;
 
