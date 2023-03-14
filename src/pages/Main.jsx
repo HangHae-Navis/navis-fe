@@ -22,6 +22,7 @@ const Main = () => {
         placeholder={"이메일을 입력하세요."}
         error={errors?.username?.message}
         type="text"
+        label="이메일 주소"
       />
       <Button>제출</Button>
     </form>

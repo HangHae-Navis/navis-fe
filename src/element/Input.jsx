@@ -1,31 +1,68 @@
 import React from "react";
 import styled from "styled-components";
 
-const Input = ({ register, placeholder, type, name, error }) => {
+const Input = ({ register, placeholder, type, name, error, label }) => {
   return (
-    <InputWrapper>
-      <InputCustom
-        placeholder={placeholder}
-        type={type}
-        {...register(name, {
-          required: "값을 입력해주세요.",
-        })}
-      />
-      {error && <ErrorMessage>{error}</ErrorMessage>}
-    </InputWrapper>
+    <>
+      {type !== "password" ? (
+        <InputWrapper>
+          <Label>{label}</Label>
+          <InputCustom
+            placeholder={placeholder}
+            type={type}
+            {...register(name, {
+              required: "값을 입력해주세요.",
+            })}
+          />
+          {error && <ErrorMessage>{error}</ErrorMessage>}
+        </InputWrapper>
+      ) : (
+        <InputWrapper>
+          <Label>{label}</Label>
+          <InputCustom
+            placeholder={placeholder}
+            type={type}
+            {...register(name, {
+              required: "값을 입력해주세요.",
+            })}
+          />
+          {error && <ErrorMessage>{error}</ErrorMessage>}
+        </InputWrapper>
+      )}
+    </>
   );
 };
 
 const InputWrapper = styled.section`
+  width: 80%;
   position: relative;
   display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
 `;
 
-const InputCustom = styled.input``;
+const Label = styled.section`
+  align-self: flex-start;
+  font-size: 1.8rem;
+`;
+
+const InputCustom = styled.input`
+  height: 4rem;
+  padding: 0 0.8rem;
+  font-size: 1.4rem;
+  letter-spacing: 0.05rem;
+  border-radius: 0.6rem;
+  border: 0.05rem solid black;
+  font-weight: 500;
+  &:focus {
+    outline: none;
+  }
+`;
 
 const ErrorMessage = styled.p`
-  font-size: 1.2rem;
+  font-size: 1.3rem;
   color: red;
+  align-self: flex-end;
 `;
 
 Input.defaultProps = {
