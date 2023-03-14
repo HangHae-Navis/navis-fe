@@ -1,5 +1,4 @@
 import { createGlobalStyle } from "styled-components";
-import { Button, Input } from "./mixins";
 
 export const GlobalStyle = createGlobalStyle`
     * {
@@ -9,16 +8,9 @@ export const GlobalStyle = createGlobalStyle`
         font-size: 10px;
         list-style: none;
         text-decoration: none;
+        font-family: Pretendard;
     }
 
-    input {
-        ${Input}
-    }
-
-    button {
-        ${Button}
-    }
-    
 `;
 
 export default GlobalStyle;

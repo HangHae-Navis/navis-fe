@@ -10,7 +10,7 @@ import { path } from "../constants/path";
 const Home = () => {
   const navigate = useNavigate();
   useEffect(() => {
-    if (getLocalStorage("userInfo") !== "") {
+    if (getLocalStorage("userInfo") !== null) {
       navigate(`/${path.MAIN}`);
     }
   }, []);
