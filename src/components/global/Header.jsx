@@ -7,6 +7,8 @@ import { loginModalState } from "../../store/atom";
 import { getKaKaoLogin } from "../../utils/api/api";
 import { setCookie } from "../../utils/infos/cookie";
 import { path } from "../../constants/path";
+import Logo from "../../assets/navis.svg";
+import Button from "../../element/Button";
 
 const Header = () => {
   const setLoginModal = useSetRecoilState(loginModalState);
@@ -42,19 +44,29 @@ const Header = () => {
 
   return (
     <HeaderWrapper>
-      Header
-      <button onClick={() => setLoginModal(true)}>로그인</button>
+      <img src={Logo} className="logo" alt="logo" />
+      <Button transparent={true} onClick={() => setLoginModal(true)}>
+        로그인
+      </Button>
     </HeaderWrapper>
   );
 };
 
 const HeaderWrapper = styled.header`
+  position: fixed;
+  left: 0%;
+  top: 0%;
   display: flex;
   align-items: center;
   justify-content: space-around;
   width: 100vw;
   height: 6rem;
-  padding: 1rem 0;
+  padding: 1rem;
+  background: ${(props) => props.theme.color.primary};
+  color: ${(props) => props.theme.color.white};
+  .logo {
+    width: 10.5rem;
+  }
 `;
 
 export default Header;

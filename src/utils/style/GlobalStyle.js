@@ -1,5 +1,5 @@
 import { createGlobalStyle } from "styled-components";
-import { Button, Input } from "./mixins";
+import { Input } from "./mixins";
 
 export const GlobalStyle = createGlobalStyle`
     * {
@@ -14,12 +14,7 @@ export const GlobalStyle = createGlobalStyle`
 
     input {
         ${Input}
-    }
-
-    button {
-        ${Button}
-    }
-    
+    }    
 `;
 
 export default GlobalStyle;

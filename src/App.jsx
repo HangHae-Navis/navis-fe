@@ -17,6 +17,7 @@ const App = () => {
 
 const RootWrapper = styled.section`
   padding: 0 0.8rem;
+  overflow-x: hidden;
 `;
 
 export default App;
