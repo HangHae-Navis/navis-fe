@@ -7,7 +7,25 @@ export const flexCenter = css`
 `;
 
 export const Input = css`
-  width: 80%;
-  height: 4.5rem;
+  width: 100%;
+  height: 4rem;
+  border-radius: 0.6rem;
   padding: 0.2rem 0.8rem;
+  font-size: 1.15rem;
+
+  &:focus {
+    outline: none;
+  }
 `;
+
+export const Button = css`
+  padding: 0.8rem;
+  ${flexCenter}
+  width: 8rem;
+  height: 4rem;
+  border: none;
+  font-size: 1.3rem;
+  border-radius: 0.8rem;
+`;
+
+export const linearText = css``;
