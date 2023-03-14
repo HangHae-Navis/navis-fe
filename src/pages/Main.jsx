@@ -3,10 +3,19 @@ import { useForm } from "react-hook-form";
 import Button from "../element/Button";
 import Input from "../element/Input";
 const Main = () => {
-  const { register, watch, handleSubmit, formState: errors } = useForm();
-  console.log(watch());
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm();
+
+  const onTest = (data) => {
+    console.log(errors);
+    console.log(data, " 안녕");
+  };
+
   return (
-    <div>
+    <form onSubmit={handleSubmit(onTest)}>
       <Input
         register={register}
         name={"username"}
@@ -15,7 +24,7 @@ const Main = () => {
         type="text"
       />
       <Button>제출</Button>
-    </div>
+    </form>
   );
 };
 
