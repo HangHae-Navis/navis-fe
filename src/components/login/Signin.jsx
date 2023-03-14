@@ -3,7 +3,6 @@ import { useForm } from "react-hook-form";
 import { useMutation } from "react-query";
 import styled from "styled-components";
 import { postSignIn } from "../../utils/api/api";
-import { Input } from "../../utils/style/mixins";
 
 const Signin = ({ setIsSignIn }) => {
   const { register, formState: errors, handleSubmit } = useForm();
@@ -60,9 +59,6 @@ const SigninForm = styled.form`
   display: flex;
   flex-direction: column;
   justify-content: center;
-  input {
-    ${Input}
-  }
 `;
 
 export default Signin;

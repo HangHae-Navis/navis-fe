@@ -1,5 +1,4 @@
 import { createGlobalStyle } from "styled-components";
-import { Input } from "./mixins";
 
 export const GlobalStyle = createGlobalStyle`
     * {
@@ -12,9 +11,6 @@ export const GlobalStyle = createGlobalStyle`
         font-family: Pretendard;
     }
 
-    input {
-        ${Input}
-    }    
 `;
 
 export default GlobalStyle;

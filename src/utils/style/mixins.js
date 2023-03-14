@@ -6,16 +6,8 @@ export const flexCenter = css`
   justify-content: center;
 `;
 
-export const Input = css`
-  width: 100%;
-  height: 4rem;
-  border-radius: 0.6rem;
-  padding: 0.2rem 0.8rem;
-  font-size: 1.15rem;
-
-  &:focus {
-    outline: none;
-  }
+export const pageMargin = css`
+  margin-top: 10rem;
 `;
 
 export const linearText = css``;
