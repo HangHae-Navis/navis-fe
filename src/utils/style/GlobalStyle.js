@@ -1,4 +1,5 @@
 import { createGlobalStyle } from "styled-components";
+import { Button, Input } from "./mixins";
 
 export const GlobalStyle = createGlobalStyle`
     * {
@@ -11,11 +12,13 @@ export const GlobalStyle = createGlobalStyle`
     }
 
     input {
-        &:foucs {
-            outline: none;
-        
-        }
+        ${Input}
     }
+
+    button {
+        ${Button}
+    }
+    
 `;
 
 export default GlobalStyle;

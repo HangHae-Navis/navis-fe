@@ -1,6 +1,6 @@
 import Axios from "./axios";
 
-const axios = new Axios("http://sparta-kdh.kro.kr/");
+const axios = new Axios(process.env.REACT_APP_BASEURL);
 
 //아래서부터 작성
 
@@ -22,4 +22,11 @@ export const postSignUp = async (data) => {
 export const postSignIn = async (data) => {
   const res = await axios.post("/api/user/login", data);
   return res;
+};
+
+export const getKaKaoLogin = async (payload) => {
+  if (payload !== null) {
+    const res = await axios.get(`/api/user/kakao/callback${payload}`);
+    return res;
+  }
 };
