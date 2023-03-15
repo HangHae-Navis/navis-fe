@@ -1,18 +1,17 @@
 import React, { useEffect, useState } from "react";
 import { useQuery } from "react-query";
 import styled from "styled-components";
+import PartyRegist from "../components/modal/PartyRegist";
 import Button from "../element/Button";
 import { getPartyPage } from "../utils/api/api";
 
-const GroupBoxComp = () =>{
-
-  
-
+const GroupBoxComp = (props) =>{
 
   return(<><GroupBox>
-    <h3>sdsd</h3>
-    <h3>cc</h3>
-    <h3>bb</h3>
+    <h3>그룹 리더 : {props.adminName}</h3>
+    <h3>그룹 명 : {props.groupName}</h3>
+    <h3>그룹 부재 : {props.groupInfo}</h3>
+    <h3>참여자 수 : {props.memberNumber}</h3>
   </GroupBox>
   
   </>)
@@ -32,21 +31,22 @@ const GroupBox = styled.div`
 const Party = () => {
   const [groupList, setGroupList] = useState([])
   const [totalNum, setTotalNum] = useState(100)
-  const PartyList = useQuery(['getList'], getPartyPage)
+  const [pageNum, setPageNum] = useState(1)
+  const PartyList = useQuery(['getList', {page : pageNum, size : 8, category : 'all'}], () => getPartyPage({page : pageNum, size : 8, category : 'all'}))
+  const [isOpen, setIsOpen] = useState(false)
 
   useEffect(() => {
       if(PartyList.data){
-        setGroupList(PartyList.data.data)
+        setGroupList(PartyList.data.data.data.content)
         console.log('받아오기 성공')
-        console.log(groupList)
       }
 
   }, [PartyList.data])
 
   const MakeGroupHandler = () => {
-
-
+    setIsOpen(true)
   }
+
 
   const MakeButton = () => {
     const divs = []
@@ -56,13 +56,16 @@ const Party = () => {
       }
       return divs
   }
-
   if(PartyList.isLoading){
     return <div>로딩중.........로딩중.........딩중.........로딩중.........</div>;
   }
   else if(PartyList.isError){
     return <div>에러!!!!!!!!에러!!!!!!!!에러!!!!!!!!</div>;
   }
+
+
+  console.log(groupList)
+console.log(PartyList.data.data.data)
   //console.log(PartyList.data.data)
 //<Button transparent={true} onClick={onLogout}>
   return(<>
@@ -71,19 +74,24 @@ const Party = () => {
       새 그룹 만들기
     </Button>
   <GroupContainer>
-    <GroupBoxComp />
-    <GroupBoxComp />
-    <GroupBoxComp />
-    <GroupBoxComp />
-    <GroupBoxComp />
-    <GroupBoxComp />
-    <GroupBoxComp />
-    <GroupBoxComp />
+    {
+      groupList?.map((item) => {
+        return(<GroupBoxComp
+        adminName = {item.adminName}
+        groupInfo = {item.groupInfo}
+        groupName = {item.groupName}
+        memberNumber = {item.memberNumber}/>)
+      })
+    }
     </GroupContainer>
     <BottomButtonBox>
       <MakeButton></MakeButton>
     </BottomButtonBox>
   </PageContainer>
+  {isOpen == true ? (
+    <PartyRegist isOpen = {setIsOpen}/>
+    ) : null
+  }
   </>)
 };
 
@@ -99,9 +107,11 @@ const GroupContainer = styled.div`
   width: 130rem;
   height: 100rem;
   background-color: gray;
+  display: flex;
+  flex-direction: row;
   display: grid;
   grid-template-columns: repeat(4, 32rem);
-  align-items: center;
+  align-items: flex-start;
   padding: 2rem;
 `
 
