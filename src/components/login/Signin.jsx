@@ -60,7 +60,10 @@ const Signin = ({ setIsSignIn }) => {
           카카오톡으로 로그인하기
         </div>
       </SigninForm>
-      <p onClick={() => setIsSignIn(false)}>회원가입</p>
+      <p>
+        계정이 존재하지 않나요?
+        <span onClick={() => setIsSignIn(false)}>회원가입</span>
+      </p>
     </SignInWrapper>
   );
 };
@@ -71,6 +74,19 @@ const SignInWrapper = styled.div`
   justify-content: center;
   align-items: center;
   gap: 0.6rem;
+
+  p {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 1.1rem;
+
+    span {
+      cursor: pointer;
+      text-decoration: underline;
+      font-size: 1.1rem;
+    }
+  }
 
   .kakao {
     cursor: pointer;
