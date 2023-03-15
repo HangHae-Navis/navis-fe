@@ -60,7 +60,7 @@ const InputLayout = styled.section`
 
 const Label = styled.section`
   align-self: flex-start;
-  font-size: 1.8rem;
+  font-size: 1.6rem;
 `;
 
 const InputCustom = styled.input`
@@ -68,7 +68,7 @@ const InputCustom = styled.input`
   width: 28rem;
   height: 4rem;
   padding: 0 0.8rem;
-  font-size: 1.4rem;
+  font-size: 1.3rem;
   letter-spacing: 0.05rem;
   border-radius: 0.6rem;
   border: 0.05rem solid black;
@@ -93,7 +93,7 @@ const InputWrapper = styled.section`
 
 const IconsWrapper = styled.div`
   position: absolute;
-  right: 1rem;
+  right: 1.5rem;
 `;
 
 Input.defaultProps = {
