@@ -21,7 +21,6 @@ const Signup = ({ setIsSignIn }) => {
       password: data.password,
     };
     const signUp = await signupMutation.mutateAsync(signupRequest);
-    console.log(signUp);
   };
 
   const onVerifyChange = (e) => {

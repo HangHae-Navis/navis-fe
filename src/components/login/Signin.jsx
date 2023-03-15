@@ -1,14 +1,21 @@
 import React from "react";
 import { useForm } from "react-hook-form";
 import { useMutation } from "react-query";
+import { useNavigate } from "react-router-dom";
+import { useSetRecoilState } from "recoil";
 import styled from "styled-components";
+import { loginModalState } from "../../store/atom";
 import { postSignIn } from "../../utils/api/api";
+import { path } from "../../constants/path";
 
 const Signin = ({ setIsSignIn }) => {
+  const navigate = useNavigate();
+  const setLoginModalState = useSetRecoilState(loginModalState);
   const { register, formState: errors, handleSubmit } = useForm();
   const signinMutation = useMutation(postSignIn, {
     onSuccess: ({ data }) => {
-      setIsSignIn(false);
+      setLoginModalState(false);
+      navigate(`/${path.MAIN}`);
     },
   });
   const onLogin = async (data) => {

@@ -5,8 +5,9 @@ import { useSetRecoilState } from "recoil";
 import styled from "styled-components";
 import { loginModalState } from "../../store/atom";
 import { getKaKaoLogin } from "../../utils/api/api";
-import { setCookie } from "../../utils/infos/cookie";
+import { removeCookie, setCookie } from "../../utils/infos/cookie";
 import { path } from "../../constants/path";
+import { removeLocalStorage } from "../../utils/infos/localStorage";
 import Logo from "../../assets/navis.svg";
 import Button from "../../element/Button";
 
@@ -16,13 +17,15 @@ const Header = () => {
   const code = window.location.search;
   const [currentPam, setCurrentPam] = useState(code);
   const [isCallBool, setIsCallBool] = useState(false);
-  const nickname = localStorage.getItem("nickname");
+  const nickname = localStorage.getItem("userInfo");
   const getCode = useQuery(
     ["getCode", currentPam],
     () => getKaKaoLogin(currentPam),
     {
-      onSuccess: () => {
+      onSuccess: ({ data }) => {
         navi(`/${path.MAIN}`);
+        setCookie("token", data.data.token);
+        localStorage.setItem("userInfo", data.data.nickname);
       },
       enabled: isCallBool,
     }
@@ -35,19 +38,24 @@ const Header = () => {
     }
   }, []);
 
-  useEffect(() => {
-    if (getCode.data) {
-      setCookie("token", getCode.data.data.data.token);
-      localStorage.setItem("userInfo", getCode.data.data.data.nickname);
-    }
-  }, [getCode.data]);
+  const onLogout = () => {
+    removeCookie("token");
+    removeLocalStorage("userInfo");
+    navi("/");
+  };
 
   return (
     <HeaderWrapper>
       <img src={Logo} className="logo" alt="logo" />
-      <Button transparent={true} onClick={() => setLoginModal(true)}>
-        로그인
-      </Button>
+      {nickname === null ? (
+        <Button transparent={true} onClick={() => setLoginModal(true)}>
+          로그인
+        </Button>
+      ) : (
+        <Button transparent={true} onClick={onLogout}>
+          로그아웃
+        </Button>
+      )}
     </HeaderWrapper>
   );
 };

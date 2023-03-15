@@ -12,8 +12,7 @@ export const loginModalState = atom({
   default: false,
 });
 
-// export const userInfoState = atom({
-//   key: "userInfo",
-//   default: "",
-//   effects_UNSTABLE: [persistAtom],
-// });
+export const userInfoState = atom({
+  key: `state${v4()}`,
+  default: "",
+});

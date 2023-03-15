@@ -1,3 +1,5 @@
+import { setCookie } from "../infos/cookie";
+import { setLocalStorage } from "../infos/localStorage";
 import Axios from "./axios";
 
 const axios = new Axios(process.env.REACT_APP_BASEURL);
@@ -5,7 +7,7 @@ const axios = new Axios(process.env.REACT_APP_BASEURL);
 //아래서부터 작성
 
 export const postEmailConfirm = async (data) => {
-  const res = await axios.get(`/api/emails/sendMail?email=${data}`);
+  const res = await axios.get(`/api/emails/sendmail?email=${data}`);
   return res;
 };
 
@@ -21,6 +23,8 @@ export const postSignUp = async (data) => {
 
 export const postSignIn = async (data) => {
   const res = await axios.post("/api/user/login", data);
+  setLocalStorage("userInfo", res?.data?.data.nickname);
+  setCookie("token", res?.data?.data.token);
   return res;
 };
 
