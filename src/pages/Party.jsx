@@ -32,13 +32,15 @@ const Party = () => {
   const [groupList, setGroupList] = useState([])
   const [totalNum, setTotalNum] = useState(100)
   const [pageNum, setPageNum] = useState(1)
+  //받아오는 데이터는 content(목록), totalElements(총 갯수), totalPages(총 페이지)를 받아옴
+  //현재 받아오는 response 중 사용 중인 것은 content와 totalelements 둘 뿐, totalPages를 사용하려면 MakeButton의 로직 변경 필요
   const PartyList = useQuery(['getList', {page : pageNum, size : 8, category : 'all'}], () => getPartyPage({page : pageNum, size : 8, category : 'all'}))
   const [isOpen, setIsOpen] = useState(false)
 
   useEffect(() => {
       if(PartyList.data){
         setGroupList(PartyList.data.data.data.content)
-        console.log('받아오기 성공')
+        setTotalNum(PartyList.data.data.data.totalElements)
       }
 
   }, [PartyList.data])
@@ -47,27 +49,17 @@ const Party = () => {
     setIsOpen(true)
   }
 
-
+  //하단부 버튼 구현, pageNum State를 변경시켜 버튼에 맞는 페이지 요청
+  //컴포넌트 분리하기엔 기능이 너무 적어 Party 안에 구현함 
   const MakeButton = () => {
     const divs = []
       for(let i =0; i < (totalNum / 8); i++){
-        console.log(i+1)
-        divs.push(<PagenationButton>{i +1}</PagenationButton>)
+        divs.push(<PagenationButton onClick={() => setPageNum(i+1)} key = {i}>{i +1}</PagenationButton>)
       }
       return divs
   }
-  if(PartyList.isLoading){
-    return <div>로딩중.........로딩중.........딩중.........로딩중.........</div>;
-  }
-  else if(PartyList.isError){
-    return <div>에러!!!!!!!!에러!!!!!!!!에러!!!!!!!!</div>;
-  }
 
 
-  console.log(groupList)
-console.log(PartyList.data.data.data)
-  //console.log(PartyList.data.data)
-//<Button transparent={true} onClick={onLogout}>
   return(<>
   <PageContainer>
     <Button transparent={false} onClick={() => MakeGroupHandler()}>
@@ -76,7 +68,7 @@ console.log(PartyList.data.data.data)
   <GroupContainer>
     {
       groupList?.map((item) => {
-        return(<GroupBoxComp
+        return(<GroupBoxComp key = {item.groupId}
         adminName = {item.adminName}
         groupInfo = {item.groupInfo}
         groupName = {item.groupName}
@@ -115,7 +107,7 @@ const GroupContainer = styled.div`
   padding: 2rem;
 `
 
-const PagenationButton = styled.div`
+const PagenationButton = styled.button`
   width: 2rem;
   height: 2rem;
   background-color: black;
