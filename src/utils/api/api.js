@@ -1,4 +1,4 @@
-import { setCookie } from "../infos/cookie";
+import { getCookie, setCookie } from "../infos/cookie";
 import { setLocalStorage } from "../infos/localStorage";
 import Axios from "./axios";
 
@@ -36,6 +36,6 @@ export const getKaKaoLogin = async (payload) => {
 };
 
 export const getPartyPage = async (payload) =>{
-  const res = axios.get("/api/boards/")
+  const res = axios.get(`/api/groups?page=${payload.page}&size=${payload.size}&category=${payload.category}`)
   return res
 }
