@@ -8,20 +8,33 @@ import Signup from "../login/Signup";
 import { flexCenter } from "../../utils/style/mixins";
 import { modalVariants } from "../../utils/variants/variants";
 import { useForm } from "react-hook-form";
-import { useQuery } from "react-query";
-import { getPartyPage } from "../../utils/api/api";
+import { useMutation, useQuery } from "react-query";
+import { getPartyPage, postGroup} from "../../utils/api/api";
+import Input from "../../element/Input";
+import Button from "../../element/Button";
 
 const PartyRegist = (props) => {
   const { register, formState: errors, handleSubmit } = useForm();
   const [isOpen, setisOpen] = useState(true);
-  const partyGet = useQuery(['party'], getPartyPage,{onSuccess: (data) =>{console.log(data)}})
+  const postgroup = useMutation(postGroup, {onSuccess: ({data}) => {
+    window.alert("등록 성공! 디테일 페이지가 구현되면 그쪽으로 네비찍을 예정!")
+    window.location.reload()
+  }})
 
-  
   const ModalClose = (event) => {
     if (event.target == event.currentTarget) {
       props.isOpen(false);
     }
-  }; 
+  };  
+
+  //리액트 훅 폼으로 POST 보낼 Json 생성, 후에 이미지 추가되면 FormData로변경되어야함
+  const onPost = async (data) =>{
+    const postRequest ={
+      groupName : data.groupname,
+      groupInfo : data.groupinfo
+    }
+      const res = await postgroup.mutateAsync(postRequest)
+  }
 
   return (
     <RegistModalBackGround
@@ -35,17 +48,28 @@ const PartyRegist = (props) => {
       >
 
       <h1>그룹 생성하기</h1>
+      <form onSubmit={handleSubmit(onPost)}>
       <RegistInputContainer>
 
-      <RegistInputLeftBox>
+      <Input
+          placeholder="그룹명을 입력하세요."
+          register={register}
+          name="groupname"
+          type="text"
+          label="그룹명"
+        />
+        <Input
+          placeholder="그룹설명을 입력하세요."
+          register={register}
+          name="groupinfo"
+          type="text"
+          label="그룹설명"
+        />
+        <Button>그룹 생성하기</Button>
 
-
-      </RegistInputLeftBox>
-      <RegistInputLeftBox>
-        
-      </RegistInputLeftBox>
 
       </RegistInputContainer>
+      </form>
       </RegistModalWrapper>
     </RegistModalBackGround>
   );
@@ -66,8 +90,8 @@ const RegistInputContainer = styled.div`
   height: 60rem;
   display: flex;
   align-items: center;
-  flex-direction: row;
-  justify-content: space-between;
+  flex-direction: column;
+  justify-content: center;
   background-color: wheat;
 `
 

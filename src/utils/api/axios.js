@@ -10,7 +10,6 @@ export default class Axios {
 
   async get(url, data) {
     const cookie = getCookie("token");
-    console.log(cookie)
     const option = {
       headers: {
         Authorization: `${cookie !== null ? cookie : ""}`,

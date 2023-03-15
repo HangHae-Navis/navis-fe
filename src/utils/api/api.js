@@ -39,3 +39,7 @@ export const getPartyPage = async (payload) =>{
   const res = axios.get(`/api/groups?page=${payload.page}&size=${payload.size}&category=${payload.category}`)
   return res
 }
+export const postGroup = async (payload) =>{
+  const res = axios.post("/api/groups", payload)
+  return res;
+}
