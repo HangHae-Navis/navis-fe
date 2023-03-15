@@ -8,11 +8,12 @@ export default class Axios {
     });
   }
 
-  async get(url) {
+  async get(url, data) {
     const cookie = getCookie("token");
+    console.log(cookie)
     const option = {
       headers: {
-        Authorization: `Bearer ${cookie ? cookie : ""}`,
+        Authorization: `${cookie !== null ? cookie : ""}`,
       },
     };
     return this.instance.get(url, option);
@@ -22,7 +23,7 @@ export default class Axios {
     const cookie = getCookie("token");
     const option = {
       headers: {
-        Authorization: `Bearer ${cookie ? cookie : ""}`,
+        Authorization: `${cookie ? cookie : ""}`,
       },
     };
     return this.instance.delete(url, option);
@@ -32,7 +33,7 @@ export default class Axios {
     const cookie = getCookie("token");
     const option = {
       headers: {
-        Authorization: `Bearer ${cookie ? cookie : ""}`,
+        Authorization: `${cookie ? cookie : ""}`,
       },
     };
     return this.instance.post(url, data, option);
@@ -42,7 +43,7 @@ export default class Axios {
     const cookie = getCookie("token");
     const option = {
       headers: {
-        Authorization: `Bearer ${cookie ? cookie : ""}`,
+        Authorization: `${cookie ? cookie : ""}`,
       },
     };
     const res = axios.patch(url, data, option);
@@ -53,7 +54,7 @@ export default class Axios {
     const cookie = getCookie("token");
     const option = {
       headers: {
-        Authorization: `Bearer ${cookie ? cookie : ""}`,
+        Authorization: `${cookie ? cookie : ""}`,
       },
     };
     return this.instance.put(url, data, option);
