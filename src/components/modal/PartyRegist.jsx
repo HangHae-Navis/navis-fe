@@ -98,4 +98,5 @@ const ContentWrapper = styled.section`
 `;
 
 
+
 export default PartyRegist;
