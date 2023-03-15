@@ -30,3 +30,8 @@ export const getKaKaoLogin = async (payload) => {
     return res;
   }
 };
+
+export const getPartyPage = async (payload) =>{
+  const res = axios.get("/api/boards/")
+  return res
+}
