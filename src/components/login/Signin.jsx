@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useMutation } from "react-query";
 import { useNavigate } from "react-router-dom";
@@ -7,11 +7,16 @@ import styled from "styled-components";
 import { loginModalState } from "../../store/atom";
 import { postSignIn } from "../../utils/api/api";
 import { path } from "../../constants/path";
+import Input from "../../element/Input";
+import Button from "../../element/Button";
+import { flexCenter } from "../../utils/style/mixins";
+import Kakao from "../../assets/kakao.webp";
 
 const Signin = ({ setIsSignIn }) => {
   const navigate = useNavigate();
   const setLoginModalState = useSetRecoilState(loginModalState);
   const { register, formState: errors, handleSubmit } = useForm();
+  const [disable, setDisable] = useState(false);
   const signinMutation = useMutation(postSignIn, {
     onSuccess: ({ data }) => {
       setLoginModalState(false);
@@ -33,39 +38,64 @@ const Signin = ({ setIsSignIn }) => {
   return (
     <SignInWrapper>
       <SigninForm onSubmit={handleSubmit(onLogin)}>
-        <input
-          type="text"
+        <Input
           placeholder="이메일을 입력하세요."
-          {...register("username", {
-            required: "이메일을 입력해주세요.",
-          })}
+          register={register}
+          name="username"
+          type="text"
+          label="이메일 주소"
         />
-        <input
-          type="password"
+        <Input
           placeholder="비밀번호를 입력하세요."
-          {...register("password", {
-            required: "비밀번호를 입력해주세요.",
-          })}
+          register={register}
+          name="username"
+          type="password"
+          label="비밀번호"
         />
-        <button>로그인</button>
+        <Button disabled={true} full={true}>
+          로그인
+        </Button>
+        <div className="kakao" onClick={responseKakao}>
+          <img src={Kakao} alt="kakao-logo" />
+          카카오톡으로 로그인하기
+        </div>
       </SigninForm>
-      <button onClick={responseKakao}>카카오톡으로 로그인하기</button>
       <p onClick={() => setIsSignIn(false)}>회원가입</p>
     </SignInWrapper>
   );
 };
 const SignInWrapper = styled.div`
-  width: 100%;
+  width: 50%;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  gap: 0.6rem;
+
+  .kakao {
+    cursor: pointer;
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    img {
+      width: 1.5rem;
+      height: 1.5rem;
+    }
+    width: 100%;
+    height: 4rem;
+    background-color: #f4d501;
+    font-size: 1.35rem;
+    font-weight: 500;
+    border-radius: 0.8rem;
+    ${flexCenter}
+  }
 `;
 
 const SigninForm = styled.form`
   display: flex;
   flex-direction: column;
   justify-content: center;
+  gap: 1.2rem;
 `;
 
 export default Signin;
