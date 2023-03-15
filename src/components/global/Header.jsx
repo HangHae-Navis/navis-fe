@@ -22,8 +22,10 @@ const Header = () => {
     ["getCode", currentPam],
     () => getKaKaoLogin(currentPam),
     {
-      onSuccess: () => {
+      onSuccess: ({ data }) => {
         navi(`/${path.MAIN}`);
+        setCookie("token", data.data.token);
+        localStorage.setItem("userInfo", data.data.nickname);
       },
       enabled: isCallBool,
     }
@@ -35,13 +37,6 @@ const Header = () => {
       setIsCallBool(true);
     }
   }, []);
-
-  useEffect(() => {
-    if (getCode.data) {
-      setCookie("token", getCode.data.data.data.token);
-      localStorage.setItem("userInfo", getCode.data.data.data.nickname);
-    }
-  }, [getCode.data]);
 
   const onLogout = () => {
     removeCookie("token");
