@@ -23,6 +23,14 @@ const Main = () => {
         type="text"
         label="이메일 주소"
       />
+      <Input
+        register={register}
+        name={"password"}
+        placeholder={"비밀번호를 입력하세요."}
+        error={errors?.username?.message}
+        type="password"
+        label="비밀번호"
+      />
       <Button>제출</Button>
     </form>
   );

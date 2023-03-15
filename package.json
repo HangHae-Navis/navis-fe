@@ -12,6 +12,7 @@
     "react-cookie": "^4.1.1",
     "react-dom": "^18.2.0",
     "react-hook-form": "^7.43.5",
+    "react-icons": "^4.8.0",
     "react-kakao-login": "^2.1.1",
     "react-query": "^3.39.3",
     "react-router-dom": "^6.8.2",
