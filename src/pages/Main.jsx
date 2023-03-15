@@ -11,7 +11,6 @@ const Main = () => {
 
   const onTest = (data) => {
     console.log(errors);
-    console.log(data, " 안녕");
   };
 
   return (

@@ -1,7 +1,8 @@
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 
 const Input = ({ register, placeholder, type, name, error, label }) => {
+  const [passwordVisible, setPasswordVisible] = useState(false);
   return (
     <>
       {type !== "password" ? (
