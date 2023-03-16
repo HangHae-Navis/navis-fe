@@ -3,64 +3,23 @@ import { markdown, markdownLanguage } from "@codemirror/lang-markdown";
 import { languages } from "@codemirror/language-data";
 import styled from "styled-components";
 import { useRecoilState } from "recoil";
-import { useCallback, useState } from "react";
+import { useCallback } from "react";
+import { markdownState } from "../../store/atom";
 
 const MarkdownEditorWrapper = styled.section`
-  padding: 3.52rem 2rem;
+  padding: 3.1rem 1rem;
   height: fit-content;
   width: 50%;
   outline: none !important;
-  font-family: Cascadia-code !important;
+  font-family: Pretendard !important;
   display: flex;
   flex-direction: column;
-  &::-webkit-scrollbar {
-    display: none;
-  }
-
-  .cm-line {
-    font-size: 1.5rem;
-    .ͼ11,
-    .ͼ13 {
-      color: #686869;
-    }
-  }
-
-  .ͼo .cm-gutters {
-    background-color: #121212;
-  }
-
-  .cm-gutterElement .cm-activeLineGutter {
-    background-color: yellow !important;
-  }
-
-  .cm-activeLine {
-    font-size: 1.5rem;
-  }
-  span {
-    font-size: 1.5rem;
-  }
-  .cm-content {
-    font-size: 1.5rem;
-  }
-  .ͼo {
-    .cm-activeLine {
-      background-color: transparent;
-    }
-  }
-  .ͼ1 {
-    .cm-scroller {
-      background-color: #121212;
-    }
-    .cm-selectionMatch {
-      background-color: #303031;
-    }
-  }
 `;
 
 const MarkdownEditor = () => {
-  const [markdownState, setMarkdownState] = useState(``);
+  const [markdownValue, setMarkdownValue] = useRecoilState(markdownState);
   const onChange = useCallback((value) => {
-    setMarkdownState(value);
+    setMarkdownValue(value);
   }, []);
   return (
     <MarkdownEditorWrapper>
@@ -73,7 +32,7 @@ const MarkdownEditor = () => {
         extensions={[
           markdown({ base: markdownLanguage, codeLanguages: languages }),
         ]}
-        value={markdownState}
+        value={markdownValue}
         theme={"dark"}
         onChange={onChange}
       />
