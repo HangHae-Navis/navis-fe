@@ -35,11 +35,29 @@ export const getKaKaoLogin = async (payload) => {
   }
 };
 
-export const getPartyPage = async (payload) =>{
-  const res = axios.get(`/api/groups?page=${payload.page}&size=${payload.size}&category=${payload.category}`)
-  return res
-}
-export const postGroup = async (payload) =>{
-  const res = axios.post("/api/groups", payload)
+export const getPartyPage = async (payload) => {
+  const res = axios.get(
+    `/api/groups?page=${payload.page}&size=${payload.size}&category=${payload.category}`
+  );
   return res;
-}
+};
+
+export const postGroup = async (payload) => {
+  const res = axios.post("/api/groups", payload);
+  return res;
+};
+
+export const postGroupApply = async (groupCode) => {
+  const res = axios.post(`/api/groups/apply`, groupCode);
+  return res;
+};
+
+export const getGroupPosts = async (groupId) => {
+  const res = axios.post(`/api/${groupId}/boards/posts`);
+  return res;
+};
+
+export const postGroupPost = async (groupId, data) => {
+  const res = axios.post(`/api/${groupId}/boards/posts`, data);
+  return res;
+};
