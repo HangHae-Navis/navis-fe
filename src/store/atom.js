@@ -1,11 +1,5 @@
 import { atom } from "recoil";
-// import { recoilPersist } from "recoil-persist";
 import { v4 } from "uuid";
-
-// const { persistAtom } = recoilPersist({
-//   key: `userInfo`,
-//   default: localStorage,
-// });
 
 export const loginModalState = atom({
   key: `state${v4()}`,
@@ -14,5 +8,10 @@ export const loginModalState = atom({
 
 export const userInfoState = atom({
   key: `state${v4()}`,
+  default: "",
+});
+
+export const markdownState = atom({
+  key: `${v4()}`,
   default: "",
 });
