@@ -163,7 +163,6 @@ const Main = () => {
           pageRangeDisplayed={5}
           onChange={(page) => {
             setPageNum(page);
-            window.scrollY(0);
           }}
         />
       </PaginationBox>
