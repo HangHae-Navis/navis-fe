@@ -8,11 +8,14 @@ import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 import Test from "../assets/d65d5952-d801-4225-ab16-8720733b499a.png";
 import Pagination from "react-js-pagination";
+import { useNavigate } from "react-router-dom";
 
 const GroupBoxComp = (props) => {
+  const navigate = useNavigate();
+
   return (
     <>
-      <GroupBox>
+      <GroupBox onClick={() => navigate(`/party/${props.groupId}`)}>
         <img src={Test} alt="thumbnail" />
         <span className="tag">태그</span>
         <TextWrapper>
@@ -183,6 +186,7 @@ const Main = () => {
               return (
                 <GroupBoxComp
                   key={item.groupId}
+                  groupId={item.groupId}
                   adminName={item.adminName}
                   groupInfo={item.groupInfo}
                   groupName={item.groupName}
