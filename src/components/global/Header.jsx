@@ -66,6 +66,7 @@ const HeaderWrapper = styled.header`
   top: 0%;
   display: flex;
   align-items: center;
+  z-index: 999;
   justify-content: space-around;
   width: 100vw;
   height: 6rem;
