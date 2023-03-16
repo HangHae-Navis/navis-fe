@@ -20,7 +20,7 @@ const CustomButton = styled.button`
   cursor: pointer;
   padding: 0.8rem;
   ${flexCenter}
-  width: 8rem;
+  width: fit-content;
   height: 3.5rem;
   border: none;
   font-size: 1.45rem;

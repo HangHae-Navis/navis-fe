@@ -5,6 +5,7 @@ export default class Axios {
   constructor(url) {
     this.instance = axios.create({
       baseURL: url,
+      withCredentials: true,
     });
   }
 
