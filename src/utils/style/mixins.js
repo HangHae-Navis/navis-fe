@@ -7,7 +7,7 @@ export const flexCenter = css`
 `;
 
 export const pageMargin = css`
-  margin-top: 15rem;
+  margin-top: 13rem;
 `;
 
 export const linearText = css``;

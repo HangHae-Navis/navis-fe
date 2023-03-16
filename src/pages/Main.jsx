@@ -172,7 +172,7 @@ const PageContainer = styled.div`
   align-items: center;
   width: 100vw;
   margin: 0 auto;
-  gap: 2rem;
+  gap: 1rem;
 `;
 
 const GroupContainer = styled.div`
