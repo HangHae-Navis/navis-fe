@@ -12,8 +12,8 @@ import Test from "../../assets/d65d5952-d801-4225-ab16-8720733b499a.png";
 
 const PartyRegist = (props) => {
   const { register, formState: errors, handleSubmit } = useForm();
-  const [images, setImages] = useState(Test)
-  const [postImages, setPostImages] = useState(null)
+  const [images, setImages] = useState(Test);
+  const [postImages, setPostImages] = useState(null);
   const postgroup = useMutation(postGroup, {
     onSuccess: ({ data }) => {
       window.alert(
@@ -28,38 +28,35 @@ const PartyRegist = (props) => {
       props.isOpen(false);
     }
   };
-  
 
-  const ImageHandler = (event) =>{
-    console.log("핸들러 발동")
-    const file = event.target.files[0]
-    console.log(file)
-    const reader = new FileReader()
-    reader.onloadend = () =>{
-      setImages(reader.result)
+  const ImageHandler = (event) => {
+    console.log("핸들러 발동");
+    const file = event.target.files[0];
+    console.log(file);
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      setImages(reader.result);
+    };
+    setPostImages(file);
+    if (file != null) {
+      console.log("에베베베베");
+      reader.readAsDataURL(file);
+    } else {
+      setImages(Test);
+      setPostImages(null);
+      console.log(postImages);
     }
-    setPostImages(file)
-    if(file != null){
-      console.log("에베베베베")
-      reader.readAsDataURL(file)
-    }
-    else
-    {
-      setImages(Test)
-      setPostImages(null)
-      console.log(postImages)
-    }
-  }
+  };
 
   //리액트 훅 폼으로 POST 보낼 Json 생성, 후에 이미지 추가되면 FormData로변경되어야함
   const onPost = async (data) => {
-    const postRequest = new FormData()
-    postRequest.append('groupName', data.groupname )
-    postRequest.append('groupInfo', data.groupinfo )
-    if(postImages != null){
-      postRequest.append('groupImage', postImages )
+    const postRequest = new FormData();
+    postRequest.append("groupName", data.groupname);
+    postRequest.append("groupInfo", data.groupinfo);
+    if (postImages != null) {
+      postRequest.append("groupImage", postImages);
     }
-    console.log(postRequest)
+    console.log(postRequest);
     for (const [key, value] of postRequest.entries()) {
       console.log(key, value);
     }
@@ -77,8 +74,17 @@ const PartyRegist = (props) => {
         <h1>그룹 생성하기</h1>
         <form onSubmit={handleSubmit(onPost)}>
           <RegistInputContainer>
-          <img src={images ? images : Test} alt="이미지를 가져와 주십시오" value={images}  style={{ width: "400px", height: "240px" }}/>
-          <input type="file" accept="image/jpeg, image/png" onChange={ImageHandler}></input>
+            <img
+              src={images ? images : Test}
+              alt="이미지를 가져와 주십시오"
+              value={images}
+              style={{ width: "400px", height: "240px" }}
+            />
+            <input
+              type="file"
+              accept="image/jpeg, image/png"
+              onChange={ImageHandler}
+            ></input>
             <Input
               placeholder="그룹명을 입력하세요."
               register={register}
