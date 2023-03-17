@@ -6,15 +6,21 @@ import MarkdownRender from "../components/edit/MarkdownRender";
 const EditPost = () => {
   return (
     <EditPostWrapper>
-      <MarkdownEditor />
-      <MarkdownRender />
+      <MarkdownWrapper>
+        <MarkdownEditor />
+        <MarkdownRender />
+      </MarkdownWrapper>
     </EditPostWrapper>
   );
 };
 
 const EditPostWrapper = styled.section`
   display: flex;
-  margin-top: -3rem;
+  flex-direction: column;
+`;
+
+const MarkdownWrapper = styled.section`
+  display: flex;
 `;
 
 export default EditPost;
