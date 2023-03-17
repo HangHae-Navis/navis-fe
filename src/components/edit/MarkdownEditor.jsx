@@ -8,7 +8,7 @@ import { markdownState } from "../../store/atom";
 
 const MarkdownEditorWrapper = styled.section`
   * {
-    font-size: 1.35rem;
+    font-size: 1.5rem;
   }
   padding: 3.1rem 1rem;
   width: 52%;
