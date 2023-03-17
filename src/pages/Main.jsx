@@ -16,7 +16,7 @@ const GroupBoxComp = (props) => {
   return (
     <>
       <GroupBox onClick={() => navigate(`/party/${props.groupId}`)}>
-        <img src={Test} alt="thumbnail" />
+        <img src={props.groupImage ? props.groupImage : Test} alt="thumbnail" />
         <span className="tag">태그</span>
         <TextWrapper>
           <h1>{props.groupName}</h1>
@@ -154,11 +154,13 @@ const Main = () => {
   //하단부 버튼 구현, pageNum State를 변경시켜 버튼에 맞는 페이지 요청
   //컴포넌트 분리하기엔 기능이 너무 적어 Party 안에 구현함
   const MakeButton = () => {
+    
+    console.log(totalNum)
     return (
       <PaginationBox>
         <Pagination
           activePage={pageNum}
-          itemsCountPerPage={5}
+          itemsCountPerPage={8}
           totalItemsCount={totalNum}
           pageRangeDisplayed={5}
           onChange={(page) => {
@@ -190,6 +192,7 @@ const Main = () => {
                   groupInfo={item.groupInfo}
                   groupName={item.groupName}
                   memberNumber={item.memberNumber}
+                  groupImage={item.groupImage}
                 />
               );
             })
