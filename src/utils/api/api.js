@@ -42,6 +42,18 @@ export const getPartyPage = async (payload) => {
   return res;
 };
 
+export const getDetailPage = async (payload) =>{
+  console.log(`api/groups/${payload}/details`)
+  const res = await axios.get(`api/groups/${payload}/details`)
+  return res
+}
+
+export const getPartyBoard = async (payload) =>{
+  console.log(`api/${payload}/boards`)
+  const res = await axios.get(`api/${payload}/boards/`)
+  return res
+}
+
 export const postGroup = async (payload) => {
   const res = axios.post("/api/groups", payload);
   return res;

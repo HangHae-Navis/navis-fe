@@ -2,34 +2,94 @@ import { useQuery } from "react-query";
 import styled from "styled-components";
 import PartyRegist from "../components/modal/PartyRegist";
 import Button from "../element/Button";
-import { getPartyPage } from "../utils/api/api";
+import { getDetailPage, getPartyBoard, getPartyPage } from "../utils/api/api";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 import Test from "../assets/d65d5952-d801-4225-ab16-8720733b499a.png";
 import Pagination from "react-js-pagination";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 
-const Party = () => {
-  const [radioValue, setRadioValue] = useState("")
+function Board(props){
 
+  console.log(props)
+
+  return (<>
+    <BoardBox>
+      <BoardBoxTitleBox>
+        <h1>{props.content}</h1>
+        <p>{props.subtitle}</p>
+        <p>{props.nickName}</p>
+      </BoardBoxTitleBox>
+      
+    </BoardBox>
+  </>)
+}
+
+const BoardBox = styled.div`
+  width: 41rem;
+  height: 25rem;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  background-color: aliceblue;
+  border-radius: 2rem;
+`
+const BoardBoxTitleBox = styled.div`
+padding: 1rem;
+flex-direction: column;
+justify-content: flex-start;
+width: 30rem;
+height: 10rem;
+padding-top: 1rem;
+padding-left: 1rem;
+  font-size: 2.45rem;
+  h1 {
+    font-size: 2.3rem;
+    font-weight: 600;
+  }
+  p {
+    font-size: 1.6rem;
+  }
+`
+
+
+const Party = () => {
+  const pam = useParams()
+  const [radioValue, setRadioValue] = useState("")
+  const [groupList, setGroupList] = useState([])
+  const partyRes = useQuery(['party'], ()=> getDetailPage(pam.id))
+  const boardRes = useQuery(['board'], () => getPartyBoard(pam.id),{onSuccess: ({ data }) => {setGroupList(data.data);},});
+  
   useEffect(() => {
     console.log(radioValue)
   }, [radioValue])
 
+  if (partyRes.isLoading || boardRes.isLoading) {
+    return <div>로딩중.........로딩중.........딩중.........로딩중.........</div>
+  }
+  if (partyRes.isError || boardRes.isError) {
+    return <div>에러!!!!!!!!에러!!!!!!!!에러!!!!!!!!</div>
+  }
+
+  console.log(partyRes.data.data.data)
+  console.log(boardRes.data.data)
+  console.log(groupList)
 
   const handleRadioChange = (event) => {
     setRadioValue(event.target.value);
   };
   return (<>
     <PageContainer>
-      <ReftContainer>
-        <ReftTitleBox>
-          <h1>제목이 여기 들어가겠지?</h1>
-          <p>부제는 여기다 꽂힐 테고?</p>
+      <LeftContainer>
+        <LeftTitleBox>
+          <h1>{partyRes.data.data.data.groupName}</h1>
+          <p>{partyRes.data.data.data.groupInfo}</p>
+          <p>초대 코드 : {partyRes.data.data.data.groupCode}</p>
           <Button>글쓰기</Button>
-        </ReftTitleBox>
-        <ReftRadioBox>
+          <Button>그룹 탈퇴하기</Button>
+        </LeftTitleBox>
+        <LeftRadioBox>
       <label>
         <input
           type="radio"
@@ -80,9 +140,23 @@ const Party = () => {
         />
         게시글
       </label>
-        </ReftRadioBox>
-      </ReftContainer>
-      <Button>asdas</Button>
+        </LeftRadioBox>
+      </LeftContainer>
+      <RightContainer>
+
+        {groupList?.map((item) =>{
+          return(
+          <Board
+          key = {item.id}
+          createAt = {item.createAt}
+          content = {item.content}
+          nickName = {item.nickName}
+          subtitle = {item.subtitle}
+          title = {item.title}
+          />)
+        } )}
+
+      </RightContainer>
     </PageContainer>
   </>);
 };
@@ -97,14 +171,16 @@ const PageContainer = styled.div`
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-  align-items: center;
+  align-items: flex-start;
   width: 80vw;
   margin: 0 auto;
   gap: 1rem;
   background-color: wheat;
+  padding-left: 3rem;
+  padding-right: 3rem;
 `;
 
-const ReftContainer = styled.div`
+const LeftContainer = styled.div`
 flex-direction: column;
 justify-content: center;
 align-items: center;
@@ -114,7 +190,20 @@ width: 30rem;
   color: black;
   font-size: 1.45rem;
 `
-const ReftTitleBox = styled.div`
+const RightContainer = styled.div`
+padding-top: 2rem;
+padding-bottom: 2rem;
+display: grid;
+grid-template-columns: repeat(2, 1fr);
+align-items: center;
+justify-items: center;
+width: 60vw;
+gap: 1rem;
+background-color: violet;
+color: black;
+font-size: 1.45rem;
+`
+const LeftTitleBox = styled.div`
 padding: 3rem;
 flex-direction: column;
 justify-content: flex-start;
@@ -131,7 +220,7 @@ height: 20rem;
   }
 `
 
-const ReftRadioBox = styled.div`
+const LeftRadioBox = styled.div`
 display: flex;
 flex-direction: column;
 justify-content: center;
