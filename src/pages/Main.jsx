@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useQuery } from "react-query";
 import styled from "styled-components";
 import PartyRegist from "../components/modal/PartyRegist";
@@ -9,6 +9,8 @@ import "react-loading-skeleton/dist/skeleton.css";
 import Test from "../assets/d65d5952-d801-4225-ab16-8720733b499a.png";
 import Pagination from "react-js-pagination";
 import { useNavigate } from "react-router-dom";
+import { getLocalStorage } from "../utils/infos/localStorage";
+import { toast } from "react-toastify";
 
 const GroupBoxComp = (props) => {
   const navigate = useNavigate();
@@ -133,6 +135,7 @@ const Main = () => {
   const [groupList, setGroupList] = useState([]);
   const [totalNum, setTotalNum] = useState(100);
   const [pageNum, setPageNum] = useState(1);
+  const navigate = useNavigate();
   //받아오는 데이터는 content(목록), totalElements(총 갯수), totalPages(총 페이지)를 받아옴
   //현재 받아오는 response 중 사용 중인 것은 content와 totalelements 둘 뿐, totalPages를 사용하려면 MakeButton의 로직 변경 필요
   const { isLoading } = useQuery(
@@ -150,6 +153,14 @@ const Main = () => {
   const MakeGroupHandler = () => {
     setIsOpen(true);
   };
+
+  useEffect(() => {
+    const isUserLocal = getLocalStorage("userInfo");
+    if (isUserLocal === null) {
+      toast.error("로그인이 다시 필요해요!");
+      navigate("/");
+    }
+  }, []);
 
   //하단부 버튼 구현, pageNum State를 변경시켜 버튼에 맞는 페이지 요청
   //컴포넌트 분리하기엔 기능이 너무 적어 Party 안에 구현함
