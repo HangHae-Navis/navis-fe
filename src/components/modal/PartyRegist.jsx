@@ -28,6 +28,28 @@ const PartyRegist = (props) => {
       props.isOpen(false);
     }
   };
+  
+
+  const ImageHandler = (event) =>{
+    console.log("핸들러 발동")
+    const file = event.target.files[0]
+    console.log(file)
+    const reader = new FileReader()
+    reader.onloadend = () =>{
+      setImages(reader.result)
+    }
+    setPostImages(file)
+    if(file != null){
+      console.log("에베베베베")
+      reader.readAsDataURL(file)
+    }
+    else
+    {
+      setImages(Test)
+      setPostImages(null)
+      console.log(postImages)
+    }
+  }
 
   const ImageHandler = (event) => {
     console.log("핸들러 발동");
