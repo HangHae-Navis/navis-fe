@@ -133,7 +133,7 @@ const PaginationBox = styled.div`
 
 const Main = () => {
   const [groupList, setGroupList] = useState([]);
-  const [totalNum, setTotalNum] = useState(100);
+  const [totalNum, setTotalNum] = useState(0);
   const [pageNum, setPageNum] = useState(1);
   const navigate = useNavigate();
   //받아오는 데이터는 content(목록), totalElements(총 갯수), totalPages(총 페이지)를 받아옴
@@ -157,16 +157,17 @@ const Main = () => {
   useEffect(() => {
     const isUserLocal = getLocalStorage("userInfo");
     if (isUserLocal === null) {
-      toast.error("로그인이 다시 필요해요!");
       navigate("/");
+      toast.error("로그인이 다시 필요합니다.", {
+        toastId: "rollback",
+      });
     }
   }, []);
 
   //하단부 버튼 구현, pageNum State를 변경시켜 버튼에 맞는 페이지 요청
   //컴포넌트 분리하기엔 기능이 너무 적어 Party 안에 구현함
   const MakeButton = () => {
-    
-    console.log(totalNum)
+    console.log(totalNum);
     return (
       <PaginationBox>
         <Pagination

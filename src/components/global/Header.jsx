@@ -32,8 +32,8 @@ const Header = () => {
   );
 
   useEffect(() => {
-    setCurrentPam(code);
     if (nickname === null && code !== "") {
+      setCurrentPam(code);
       setIsCallBool(true);
     }
   }, []);

@@ -10,13 +10,11 @@ import EditPost from "../pages/EditPost";
 import Admin from "../pages/Admin";
 import { path } from "../constants/path";
 import Header from "../components/global/Header";
-import { ToastContainer } from "react-toastify";
 
 const Router = () => {
   return (
     <BrowserRouter>
       <Header />
-      <ToastContainer />
       <Routes>
         <Route element={<Home />} path="/" />
         <Route element={<Main />} path={`/${path.MAIN}`} />
