@@ -28,28 +28,6 @@ const PartyRegist = (props) => {
       props.isOpen(false);
     }
   };
-  
-
-  const ImageHandler = (event) =>{
-    console.log("핸들러 발동")
-    const file = event.target.files[0]
-    console.log(file)
-    const reader = new FileReader()
-    reader.onloadend = () =>{
-      setImages(reader.result)
-    }
-    setPostImages(file)
-    if(file != null){
-      console.log("에베베베베")
-      reader.readAsDataURL(file)
-    }
-    else
-    {
-      setImages(Test)
-      setPostImages(null)
-      console.log(postImages)
-    }
-  }
 
   const ImageHandler = (event) => {
     console.log("핸들러 발동");
@@ -78,6 +56,7 @@ const PartyRegist = (props) => {
     if (postImages != null) {
       postRequest.append("groupImage", postImages);
     }
+    console.log(postRequest);
     for (const [key, value] of postRequest.entries()) {
       console.log(key, value);
     }
@@ -101,7 +80,11 @@ const PartyRegist = (props) => {
               value={images}
               style={{ width: "400px", height: "240px" }}
             />
-            <input type="file" accept="image/*" onChange={ImageHandler}></input>
+            <input
+              type="file"
+              accept="image/jpeg, image/png"
+              onChange={ImageHandler}
+            ></input>
             <Input
               placeholder="그룹명을 입력하세요."
               register={register}
