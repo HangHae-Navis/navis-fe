@@ -11,17 +11,16 @@ import { useNavigate, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 
 function Board(props){
-
+  const navi = useNavigate()
   console.log(props)
 
   return (<>
-    <BoardBox>
+    <BoardBox onClick={()=> navi(`/party/detail?groupId=${props.groupId}&detailId=${props.id}`)}>
       <BoardBoxTitleBox>
         <h1>{props.content}</h1>
         <p>{props.subtitle}</p>
         <p>{props.nickName}</p>
       </BoardBoxTitleBox>
-      
     </BoardBox>
   </>)
 }
@@ -148,11 +147,13 @@ const Party = () => {
           return(
           <Board
           key = {item.id}
+          groupId = {pam.id}
           createAt = {item.createAt}
           content = {item.content}
           nickName = {item.nickName}
           subtitle = {item.subtitle}
           title = {item.title}
+          id = {item.id}
           />)
         } )}
 
