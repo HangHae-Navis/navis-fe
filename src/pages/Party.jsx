@@ -53,6 +53,7 @@ padding-left: 1rem;
 
 
 const Party = () => {
+  const navi = useNavigate()
   const pam = useParams()
   const [radioValue, setRadioValue] = useState("")
   const [groupList, setGroupList] = useState([])
@@ -87,6 +88,7 @@ const Party = () => {
   const handleRadioChange = (event) => {
     setRadioValue(event.target.value);
   };
+
   return (<>
     <PageContainer>
       <LeftContainer>
@@ -95,7 +97,9 @@ const Party = () => {
           <p>{partyRes.data.data.data.groupInfo}</p>
           <p>초대 코드 : {partyRes.data.data.data.groupCode}</p>
           <Button>글쓰기</Button>
-          {partyRes.data.data.data.admin === true ? <Button>어드민 페이지</Button> :<Button>그룹 탈퇴하기</Button>}
+          {partyRes.data.data.data.admin === true
+          ? <Button onClick={() => navi(`/party/${pam.id}/admin`)}>어드민 페이지</Button>
+          :<Button>그룹 탈퇴하기</Button>}
           
         </LeftTitleBox>
         <LeftRadioBox>

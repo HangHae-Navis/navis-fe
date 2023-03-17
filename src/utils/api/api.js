@@ -58,10 +58,6 @@ export const getDetailPage = async (payload) =>{
   return res
 }
 
-export const getDetailPageFroAdmin = async (payload) =>{
-  const res = await axios.get(`api/groups/${payload}/admin`)
-  return res
-}
 
 export const getBoardDetailPage = async (payload) =>{
   console.log(payload)
@@ -94,3 +90,14 @@ export const postGroupPost = async (groupId, data) => {
   const res = axios.post(`/api/${groupId}/boards/posts`, data);
   return res;
 };
+
+
+
+/*-----------------------어드민 페이지 기능------------------------------*/
+
+export const getDetailPageForAdmin = async (payload) =>{
+  const res = await axios.get(`api/groups/${payload}/admin`)
+  return res
+}
+/*-----------------------어드민 페이지 기능------------------------------*/
+
