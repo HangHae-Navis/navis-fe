@@ -6,6 +6,7 @@ const axios = new Axios(process.env.REACT_APP_BASEURL);
 
 //아래서부터 작성
 
+/*-----------------------로그인 기능------------------------------*/
 export const postEmailConfirm = async (data) => {
   const res = await axios.get(`/api/emails/sendmail?email=${data}`);
   return res;
@@ -34,7 +35,17 @@ export const getKaKaoLogin = async (payload) => {
     return res;
   }
 };
+/*-----------------------로그인 기능------------------------------*/
 
+
+export const postGroupParticipation = async (data) =>{
+  console.log(data)
+  const res = await axios.post('/api/groups/apply', data);
+  return res;
+}
+
+
+/*-----------------------그룹 페이지 기능------------------------------*/
 export const getPartyPage = async (payload) => {
   const res = axios.get(
     `/api/groups?page=${payload.page}&size=${payload.size}&category=${payload.category}`
@@ -42,8 +53,13 @@ export const getPartyPage = async (payload) => {
   return res;
 };
 
-export const getDetailPage = async (payload) =>{
-  const res = await axios.get(`api/groups/${payload}/details`)
+export const getDetailPage = async (payload) =>{ 
+  const res = await axios.get(`api/groups/${payload.id}?page=${payload.page}&size=${payload.size}&category=${payload.category}`)
+  return res
+}
+
+export const getDetailPageFroAdmin = async (payload) =>{
+  const res = await axios.get(`api/groups/${payload}/admin`)
   return res
 }
 

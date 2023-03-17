@@ -5,7 +5,7 @@ import { flexCenter } from "../../utils/style/mixins";
 import { modalVariants } from "../../utils/variants/variants";
 import { useForm } from "react-hook-form";
 import { useMutation } from "react-query";
-import { postGroup } from "../../utils/api/api";
+import { postGroup, postGroupApply } from "../../utils/api/api";
 import Input from "../../element/Input";
 import Button from "../../element/Button";
 import Test from "../../assets/d65d5952-d801-4225-ab16-8720733b499a.png";
@@ -14,6 +14,7 @@ const PartyRegist = (props) => {
   const { register, formState: errors, handleSubmit } = useForm();
   const [images, setImages] = useState(Test);
   const [postImages, setPostImages] = useState(null);
+  const [modalChange, setModalChange] = useState(true);
   const postgroup = useMutation(postGroup, {
     onSuccess: ({ data }) => {
       window.alert(
@@ -22,6 +23,15 @@ const PartyRegist = (props) => {
       window.location.reload();
     },
   });
+
+  const postParticipation = useMutation(postGroupApply, {
+    onSuccess: ({ data }) => {
+      window.alert(
+        "참가 성공! 디테일 페이지가 구현되면 그쪽으로 네비찍을 예정!"
+      );
+      window.location.reload();
+    },
+  })
 
   const ModalClose = (event) => {
     if (event.target === event.currentTarget) {
@@ -63,14 +73,25 @@ const PartyRegist = (props) => {
     const res = await postgroup.mutateAsync(postRequest);
   };
 
+  const onParticipation = async (data) =>{
+    const payload = { "groupCode" : data.code}
+    const res = await postParticipation.mutateAsync(payload);
+  }
+
   return (
     <RegistModalBackGround onClick={ModalClose}>
+      
       <RegistModalWrapper
         variants={modalVariants}
         initial="start"
         animate="animate"
         exit="exit"
       >
+        <TopButtonBox>
+        <Button onClick={() => setModalChange(true)}> 그룹 생성하기</Button>
+        <Button onClick={() => setModalChange(false)}>그룹 참여하기</Button>
+        </TopButtonBox>
+        {modalChange === true ? <>
         <h1>그룹 생성하기</h1>
         <form onSubmit={handleSubmit(onPost)}>
           <RegistInputContainer>
@@ -101,11 +122,28 @@ const PartyRegist = (props) => {
             />
             <Button>그룹 생성하기</Button>
           </RegistInputContainer>
-        </form>
+        </form></>
+        : <>
+        <form onSubmit={handleSubmit(onParticipation)}>
+            <Input
+              placeholder="초대 코드를 입력하세요."
+              register={register}
+              name="code"
+              type="text"
+              label="code"
+            />
+            <Button>그룹 참여하기</Button>
+        </form></>}
       </RegistModalWrapper>
     </RegistModalBackGround>
   );
 };
+
+const TopButtonBox = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+`
 
 const RegistModalBackGround = styled.div`
   position: fixed;

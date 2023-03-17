@@ -12,12 +12,11 @@ import { useEffect, useState } from "react";
 
 function Board(props){
   const navi = useNavigate()
-  console.log(props)
 
   return (<>
     <BoardBox onClick={()=> navi(`/party/detail?groupId=${props.groupId}&detailId=${props.id}`)}>
       <BoardBoxTitleBox>
-        <h1>{props.content}</h1>
+        <h1>{props.title}</h1>
         <p>{props.subtitle}</p>
         <p>{props.nickName}</p>
       </BoardBoxTitleBox>
@@ -57,22 +56,32 @@ const Party = () => {
   const pam = useParams()
   const [radioValue, setRadioValue] = useState("")
   const [groupList, setGroupList] = useState([])
-  const partyRes = useQuery(['party'], ()=> getDetailPage(pam.id))
-  const boardRes = useQuery(['board'], () => getPartyBoard(pam.id),{onSuccess: ({ data }) => {setGroupList(data.data);},});
+  const [totalNum, setTotalNum] = useState(0);
+  const [pageNum, setPageNum] = useState(1);
+  const partyRes = useQuery(['party', { id: pam.id, page: pageNum, size: 99, category: "all" }],
+   ()=> getDetailPage({ id: pam.id, page: pageNum, size: 99, category: "all" }),{onSuccess: ({ data }) => {
+    console.log(data.data.basicBoards.content)
+    setGroupList(data.data.basicBoards.content);
+  }})
+  //const boardRes = useQuery(['board'], () => getPartyBoard(pam.id),{onSuccess: ({ data }) => {setGroupList(data.data);},});
   
   useEffect(() => {
     console.log(radioValue)
   }, [radioValue])
 
-  if (partyRes.isLoading || boardRes.isLoading) {
+  if (partyRes.isLoading) {
     return <div>로딩중.........로딩중.........딩중.........로딩중.........</div>
   }
-  if (partyRes.isError || boardRes.isError) {
+  if (partyRes.isError ) {
     return <div>에러!!!!!!!!에러!!!!!!!!에러!!!!!!!!</div>
   }
 
+  const MakeBoards = () => {
+    return(<>
+    
+    </>)
+  }
   console.log(partyRes.data.data.data)
-  console.log(boardRes.data.data)
   console.log(groupList)
 
   const handleRadioChange = (event) => {
@@ -86,7 +95,8 @@ const Party = () => {
           <p>{partyRes.data.data.data.groupInfo}</p>
           <p>초대 코드 : {partyRes.data.data.data.groupCode}</p>
           <Button>글쓰기</Button>
-          <Button>그룹 탈퇴하기</Button>
+          {partyRes.data.data.data.admin === true ? <Button>어드민 페이지</Button> :<Button>그룹 탈퇴하기</Button>}
+          
         </LeftTitleBox>
         <LeftRadioBox>
       <label>
@@ -150,7 +160,7 @@ const Party = () => {
           groupId = {pam.id}
           createAt = {item.createAt}
           content = {item.content}
-          nickName = {item.nickName}
+          nickName = {item.nickname}
           subtitle = {item.subtitle}
           title = {item.title}
           id = {item.id}
