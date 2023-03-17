@@ -7,13 +7,15 @@ import { useCallback } from "react";
 import { markdownState } from "../../store/atom";
 
 const MarkdownEditorWrapper = styled.section`
+  * {
+    font-size: 1.35rem;
+  }
   padding: 3.1rem 1rem;
-  height: fit-content;
-  width: 50%;
-  outline: none !important;
+  width: 52%;
   font-family: Pretendard !important;
   display: flex;
   flex-direction: column;
+  font-size: 1.3rem;
 `;
 
 const MarkdownEditor = () => {
@@ -35,6 +37,7 @@ const MarkdownEditor = () => {
         value={markdownValue}
         theme={"dark"}
         onChange={onChange}
+        height={"80vh"}
       />
     </MarkdownEditorWrapper>
   );
