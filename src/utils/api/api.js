@@ -37,13 +37,11 @@ export const getKaKaoLogin = async (payload) => {
 };
 /*-----------------------로그인 기능------------------------------*/
 
-
-export const postGroupParticipation = async (data) =>{
-  console.log(data)
-  const res = await axios.post('/api/groups/apply', data);
+export const postGroupParticipation = async (data) => {
+  console.log(data);
+  const res = await axios.post("/api/groups/apply", data);
   return res;
-}
-
+};
 
 /*-----------------------그룹 페이지 기능------------------------------*/
 export const getPartyPage = async (payload) => {
@@ -53,27 +51,25 @@ export const getPartyPage = async (payload) => {
   return res;
 };
 
-export const getDetailPage = async (payload) =>{ 
-  const res = await axios.get(`api/groups/${payload.id}?page=${payload.page}&size=${payload.size}&category=${payload.category}`)
-  return res
-}
+export const getDetailPage = async (payload) => {
+  const res = await axios.get(
+    `api/groups/${payload.id}?page=${payload.page}&size=${payload.size}&category=${payload.category}`
+  );
+  return res;
+};
 
-export const getDetailPageFroAdmin = async (payload) =>{
-  const res = await axios.get(`api/groups/${payload}/admin`)
-  return res
-}
+export const getBoardDetailPage = async (payload) => {
+  console.log(payload);
+  const res = await axios.get(
+    `api/${payload.groupId}/boards/${payload.DetailId}`
+  );
+  return res;
+};
 
-export const getBoardDetailPage = async (payload) =>{
-  console.log(payload)
-  const res = await axios.get(`api/${payload.groupId}/boards/${payload.DetailId}`)
-  return res
-}
-
-
-export const getPartyBoard = async (payload) =>{
-  const res = await axios.get(`api/${payload}/boards/`)
-  return res
-}
+export const getPartyBoard = async (payload) => {
+  const res = await axios.get(`api/${payload}/boards/`);
+  return res;
+};
 
 export const postGroup = async (payload) => {
   const res = axios.post("/api/groups", payload);
@@ -94,3 +90,11 @@ export const postGroupPost = async (groupId, data) => {
   const res = axios.post(`/api/${groupId}/boards/posts`, data);
   return res;
 };
+
+/*-----------------------어드민 페이지 기능------------------------------*/
+
+export const getDetailPageForAdmin = async (payload) => {
+  const res = await axios.get(`api/groups/${payload}/admin`);
+  return res;
+};
+/*-----------------------어드민 페이지 기능------------------------------*/

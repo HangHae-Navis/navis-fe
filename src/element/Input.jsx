@@ -61,20 +61,26 @@ const InputLayout = styled.section`
 const Label = styled.section`
   align-self: flex-start;
   font-size: 1.6rem;
+  color: ${(props) => props.theme.color.zeroFour};
 `;
 
 const InputCustom = styled.input`
   position: relative;
-  width: 28rem;
-  height: 4rem;
-  padding: 0 0.8rem;
-  font-size: 1.3rem;
-  letter-spacing: 0.05rem;
-  border-radius: 0.6rem;
-  border: 0.05rem solid black;
-  font-weight: 500;
+  background-color: ${(props) => props.theme.color.white};
+  border-radius: 5rem;
+  height: 4.2rem;
+  width: 100%;
+  padding-left: 1.8rem;
+  font-size: 1.25rem;
+  border: 0.05rem solid ${(props) => props.theme.color.zeroThree};
+  color: ${(props) => props.theme.color.zeroFour};
+
   &:focus {
     outline: none;
+  }
+
+  &::placeholder {
+    color: ${(props) => props.theme.color.zeroTwo};
   }
 `;
 
@@ -86,7 +92,7 @@ const ErrorMessage = styled.p`
 
 const InputWrapper = styled.section`
   position: relative;
-  width: fit-content;
+  width: 27rem;
   display: flex;
   align-items: center;
 `;
