@@ -6,21 +6,6 @@ import styled from "styled-components";
 import SyntaxHighlighter from "react-syntax-highlighter";
 import { a11yDark } from "react-syntax-highlighter/dist/esm/styles/prism";
 
-const MarkdownWrapper = styled.section`
-  width: 48%;
-  margin-top: 3.25rem;
-`;
-
-const ReactMarkdownWrapper = styled(ReactMarkdown)`
-  * {
-    font-size: 1.6rem;
-    font-family: "Roboto Mono", monospace;
-  }
-  display: flex;
-  flex-direction: column;
-  gap: 0.8rem;
-`;
-
 const MarkdownRender = () => {
   const markdownValue = useRecoilValue(markdownState);
   return (
@@ -51,5 +36,98 @@ const MarkdownRender = () => {
     </MarkdownWrapper>
   );
 };
+
+const MarkdownWrapper = styled.section`
+  width: 50%;
+  padding: 0 1.2rem 0 0;
+`;
+
+const ReactMarkdownWrapper = styled(ReactMarkdown)`
+  * {
+    font-size: 1.4rem;
+    font-family: "Roboto Mono", monospace;
+  }
+  border-radius: 2rem;
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+  height: 100%;
+  border: 0.1rem solid #9795b5;
+
+  p {
+    word-wrap: break-word;
+  }
+
+  h1 {
+    padding: 2rem 0;
+    font-size: 2.1rem;
+    line-height: 1.45;
+    &::after {
+      content: "";
+      display: block;
+      position: relative;
+      top: 0.33em;
+      border-bottom: 1px solid hsla(0, 0%, 50%, 0.33);
+    }
+  }
+
+  h2 {
+    padding: 2rem 0;
+    font-size: 1.9rem;
+    line-height: 1.45;
+    &::after {
+      content: "";
+      display: block;
+      position: relative;
+      top: 0.33em;
+      border-bottom: 1px solid hsla(0, 0%, 50%, 0.33);
+    }
+  }
+  h3 {
+    padding: 2rem 0;
+    font-size: 1.7rem;
+    line-height: 1.45;
+    &::after {
+      content: "";
+      display: block;
+      position: relative;
+      top: 0.33em;
+      border-bottom: 1px solid hsla(0, 0%, 50%, 0.33);
+    }
+  }
+
+  h4 {
+    font-size: 1.5rem;
+    line-height: 1.45;
+  }
+
+  img {
+    width: 100%;
+    object-fit: cover;
+    object-position: center;
+  }
+
+  blockquote {
+    width: 100%;
+    padding-left: 1.25rem;
+    border-left: 5px solid rgba(0, 0, 0, 0.1);
+    p {
+      line-height: 1.4;
+    }
+  }
+
+  ul {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    li {
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+      line-height: 1.2;
+    }
+  }
+`;
 
 export default MarkdownRender;

@@ -7,7 +7,7 @@ export const flexCenter = css`
 `;
 
 export const pageMargin = css`
-  margin-top: 13rem;
+  margin-top: 10rem;
 `;
 
 export const InputStyle = css`
