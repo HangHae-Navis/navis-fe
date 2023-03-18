@@ -1,8 +1,9 @@
-import { useQuery } from "react-query";
+import { useMutation, useQuery } from "react-query";
 import styled from "styled-components";
 import PartyRegist from "../components/modal/PartyRegist";
 import Button from "../element/Button";
 import {
+  deletePageMembers,
   getBoardDetailPage,
   getDetailPage,
   getDetailPageForAdmin,
@@ -17,6 +18,15 @@ import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 
 function Board(props) {
+  const deletePartyMember = useMutation(deletePageMembers , {onSuccess: (data) => {
+    window.alert('해당 멤버가 퇴출되었습니다')
+    window.location.reload();
+  }})
+
+  const doDelete = (data) =>{
+    const res = deletePartyMember.mutateAsync(data)
+  }
+
   return (
     <>
       <BoardBox>
@@ -26,7 +36,7 @@ function Board(props) {
           <p>{props.joinedAt}</p>
         </BoardBoxTitleBox>
         {props.groupMemberRoleEnum === "ADMIN" ? null : (
-          <Button>탈퇴시키기</Button>
+          <Button onClick={()=> doDelete({"pam" : props.pam, "memberid" : props.id})}>탈퇴시키기</Button>
         )}
       </BoardBox>
     </>
@@ -81,6 +91,8 @@ const Admin = () => {
               groupMemberRoleEnum={item.groupMemberRoleEnum}
               joinedAt={item.joinedAt}
               nickName={item.nickname}
+              id = {item.id}
+              pam = {pam.id}
             />
           );
         })}

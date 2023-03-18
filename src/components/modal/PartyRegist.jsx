@@ -9,27 +9,31 @@ import { postGroup, postGroupApply } from "../../utils/api/api";
 import Input from "../../element/Input";
 import Button from "../../element/Button";
 import Test from "../../assets/d65d5952-d801-4225-ab16-8720733b499a.png";
+import { useNavigate } from "react-router";
 
 const PartyRegist = (props) => {
+  const navi = useNavigate()
   const { register, formState: errors, handleSubmit } = useForm();
   const [images, setImages] = useState(Test);
   const [postImages, setPostImages] = useState(null);
   const [modalChange, setModalChange] = useState(true);
   const postgroup = useMutation(postGroup, {
     onSuccess: ({ data }) => {
+      console.log(data)
       window.alert(
-        "등록 성공! 디테일 페이지가 구현되면 그쪽으로 네비찍을 예정!"
+        "등록 성공!"
       );
-      window.location.reload();
+      navi(`/party/${data.data}`)
     },
   });
 
   const postParticipation = useMutation(postGroupApply, {
     onSuccess: ({ data }) => {
+      console.log(data)
       window.alert(
-        "참가 성공! 디테일 페이지가 구현되면 그쪽으로 네비찍을 예정!"
+        "참가 성공!"
       );
-      window.location.reload();
+      navi(`/party/${data.data}`)
     },
   })
 
