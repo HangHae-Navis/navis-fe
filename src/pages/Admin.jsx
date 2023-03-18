@@ -26,6 +26,9 @@ function Board(props) {
   const doDeleteMember = (data) =>{
     const res = deletePartyMember.mutateAsync(data)
   }
+  const date = new Date(props.joinedAt)
+  const formatter = new Intl.DateTimeFormat('ko-KR', { year: 'numeric', month: 'long', day: 'numeric' });
+  const dateAt = formatter.format(date)
 
   return (
     <>
@@ -33,7 +36,7 @@ function Board(props) {
         <BoardBoxTitleBox>
           <h1>{props.nickName}</h1>
           <p>{props.groupMemberRoleEnum}</p>
-          <p>{props.joinedAt}</p>
+          <p>{dateAt}</p>
         </BoardBoxTitleBox>
         {props.groupMemberRoleEnum === "ADMIN" ? null : (
           <Button onClick={()=> doDeleteMember({"pam" : props.pam, "memberid" : props.id})}>탈퇴시키기</Button>
