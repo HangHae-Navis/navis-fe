@@ -29,12 +29,11 @@ export default class Axios {
     return this.instance.delete(url, option);
   }
 
-  async post(url, data, etc) {
+  async post(url, data) {
     const cookie = getCookie("token");
     const config = {
       headers: {
         Authorization: `${cookie ? cookie : ""}`,
-        ...etc,
       },
     };
     return this.instance.post(url, data, config);
