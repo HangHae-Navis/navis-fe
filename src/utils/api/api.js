@@ -115,5 +115,9 @@ export const deletePageMembers = async (payload) =>{
   //
 }
 
+export const deletePage = async (payload)=>{
+  const res = await axios.delete(`api/groups/${payload}/admin`)
+  return res
+}
 
 /*-----------------------어드민 페이지 기능------------------------------*/
