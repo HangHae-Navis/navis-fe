@@ -18,7 +18,7 @@ const EditPostWrapper = styled.section`
   display: flex;
   flex-direction: column;
   margin: 0 auto;
-  max-width: 110rem;
+  max-width: 108rem;
 `;
 
 const MarkdownWrapper = styled.section`

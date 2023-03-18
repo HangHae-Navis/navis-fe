@@ -8,7 +8,7 @@ import { a11yDark } from "react-syntax-highlighter/dist/esm/styles/prism";
 
 const MarkdownWrapper = styled.section`
   width: 48%;
-  margin-top: 3.25rem;
+  padding: 0 1.2rem 1.2rem 0;
 `;
 
 const ReactMarkdownWrapper = styled(ReactMarkdown)`
@@ -16,9 +16,17 @@ const ReactMarkdownWrapper = styled(ReactMarkdown)`
     font-size: 1.6rem;
     font-family: "Roboto Mono", monospace;
   }
+  border-radius: 2rem;
+  padding: 1.5rem;
   display: flex;
   flex-direction: column;
   gap: 0.8rem;
+  height: 100%;
+  border: 0.1rem solid ${(props) => props.theme.color.grey50};
+
+  p {
+    word-wrap: break-word;
+  }
 `;
 
 const MarkdownRender = () => {

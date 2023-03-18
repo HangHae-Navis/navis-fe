@@ -16,17 +16,18 @@ const MarkdownEditorWrapper = styled.section`
     font-size: 1.5rem;
   }
   background-color: ${(props) => props.theme.color.zeroOne};
-  padding: 3.1rem 1rem;
+  padding: 1.2rem;
   width: 52%;
   font-family: Pretendard !important;
   display: flex;
   gap: 1.5rem;
   flex-direction: column;
   font-size: 1.3rem;
+  border-radius: 2rem;
 `;
 
 const InputWrapper = styled.section`
-  width: 90%;
+  width: 85%;
   display: flex;
   align-items: center;
   gap: 1rem;
@@ -42,7 +43,7 @@ const InputWrapper = styled.section`
     ${InputStyle}
   }
   select {
-    width: 9.4rem;
+    width: 8rem;
     border-radius: 5rem;
     padding-left: 0.6rem;
     height: 4.2rem;
@@ -51,12 +52,17 @@ const InputWrapper = styled.section`
     &:focus {
       outline: none;
     }
+    font-size: 1.3rem;
   }
 `;
 
 const ReactMarkdownEditor = styled(ReactCodeMirror)`
   * {
     outline: none !important;
+  }
+
+  .cm-selectionBackground {
+    background-color: #e7e7fc !important;
   }
 
   .ͼo {
@@ -126,7 +132,7 @@ const MarkdownEditor = () => {
         <input
           tyoe="text"
           {...register("subtitle")}
-          placeholder="해시태그를 입력해주세요."
+          placeholder="#해시태그 #해시태그"
         />
       </InputWrapper>
 
