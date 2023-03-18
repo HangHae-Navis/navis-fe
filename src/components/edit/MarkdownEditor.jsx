@@ -55,6 +55,10 @@ const InputWrapper = styled.section`
 `;
 
 const ReactMarkdownEditor = styled(ReactCodeMirror)`
+  * {
+    outline: none !important;
+  }
+
   .ͼo {
     background-color: #f9f9ff !important;
   }
@@ -127,7 +131,7 @@ const MarkdownEditor = () => {
       </InputWrapper>
 
       <ReactMarkdownEditor
-        placeholder={"게시글을 입력해주세요."}
+        placeholder={"텍스트를 입력해주세요."}
         basicSetup={{
           lineNumbers: false,
           foldGutter: false,
