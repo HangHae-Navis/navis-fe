@@ -129,59 +129,15 @@ const Party = () => {
               <Button onClick={()=> doDelete(pam.id)}>그룹 탈퇴하기</Button>
             )}
           </LeftTitleBox>
-          <LeftRadioBox>
-            <label>
-              <input
-                type="radio"
-                name="radio-group"
-                value="0"
-                checked={radioValue === "0"}
-                onChange={handleRadioChange}
-              />
-              전체
-            </label>
-            <label>
-              <input
-                type="radio"
-                name="radio-group"
-                value="1"
-                checked={radioValue === "1"}
-                onChange={handleRadioChange}
-              />
-              공지
-            </label>
-            <label>
-              <input
-                type="radio"
-                name="radio-group"
-                value="2"
-                checked={radioValue === "2"}
-                onChange={handleRadioChange}
-              />
-              투표
-            </label>
-            <label>
-              <input
-                type="radio"
-                name="radio-group"
-                value="3"
-                checked={radioValue === "3"}
-                onChange={handleRadioChange}
-              />
-              과제
-            </label>
-            <label>
-              <input
-                type="radio"
-                name="radio-group"
-                value="4"
-                checked={radioValue === "4"}
-                onChange={handleRadioChange}
-              />
-              게시글
-            </label>
-          </LeftRadioBox>
         </LeftContainer>
+        <RightTotalContainer>
+          <div>
+          <Button>전체</Button>
+          <Button>공지</Button>
+          <Button>투표</Button>
+          <Button>과제</Button>
+          <Button>게시글</Button>
+          </div>
         <RightContainer>
           {groupList?.map((item) => {
             return (
@@ -199,6 +155,7 @@ const Party = () => {
             );
           })}
         </RightContainer>
+        </RightTotalContainer>
       </PageContainer>
     </>
   );
@@ -233,6 +190,13 @@ const LeftContainer = styled.div`
   color: black;
   font-size: 1.45rem;
 `;
+
+const RightTotalContainer = styled.div`
+flex-direction: column;
+justify-content: center;
+align-items: center;
+`
+
 const RightContainer = styled.div`
   padding-top: 2rem;
   padding-bottom: 2rem;
