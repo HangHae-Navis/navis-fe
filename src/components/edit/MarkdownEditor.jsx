@@ -9,12 +9,13 @@ import { postGroupPost } from "../../utils/api/api";
 import { useMutation } from "react-query";
 import { useParams } from "react-router-dom";
 import { useForm } from "react-hook-form";
+import { InputStyle } from "../../utils/style/mixins";
 
 const MarkdownEditorWrapper = styled.section`
   * {
     font-size: 1.5rem;
   }
-  background-color: #f9f9ff;
+  background-color: ${(props) => props.theme.color.zeroOne};
   padding: 3.1rem 1rem;
   width: 52%;
   font-family: Pretendard !important;
@@ -25,15 +26,43 @@ const MarkdownEditorWrapper = styled.section`
 `;
 
 const InputWrapper = styled.section`
-  width: 70%;
+  width: 90%;
   display: flex;
-  gap: 2.1rem;
-
+  align-items: center;
+  gap: 1rem;
   h1 {
-    width: 6rem;
+    color: ${(props) => props.theme.color.zeroFour};
+    width: 7rem;
+  }
+  h2 {
+    color: ${(props) => props.theme.color.zeroFour};
+    width: 6.5rem;
   }
   input {
-    width: 37.4rem;
+    ${InputStyle}
+  }
+  select {
+    width: 9.4rem;
+    border-radius: 5rem;
+    padding-left: 0.6rem;
+    height: 4.2rem;
+    border: 0.1rem solid ${(props) => props.theme.color.zeroTwo};
+    color: ${(props) => props.theme.color.zeroThree};
+    &:focus {
+      outline: none;
+    }
+  }
+`;
+
+const ReactMarkdownEditor = styled(ReactCodeMirror)`
+  .ͼo {
+    background-color: #f9f9ff !important;
+  }
+  .ͼ11 {
+    color: #9795b5;
+  }
+  .ͼ13 {
+    color: #9795b5;
   }
 `;
 
@@ -56,7 +85,7 @@ const MarkdownEditor = () => {
   return (
     <MarkdownEditorWrapper>
       <InputWrapper>
-        <h1>카테고리</h1>
+        <h2>카테고리</h2>
         <select {...register("writing")}>
           <option value="게시글">게시글</option>
           <option value="과제">과제</option>
@@ -74,23 +103,34 @@ const MarkdownEditor = () => {
       </InputWrapper>
       <InputWrapper>
         <h1>글 제목</h1>
-        <input type="text" {...register("title")} />
+        <input
+          type="text"
+          placeholder="글 제목을 입력해주세요."
+          {...register("title")}
+        />
       </InputWrapper>
       <InputWrapper>
         <h1>안내문구</h1>
-        <input type="text" {...register("subtitle")} />
+        <input
+          type="text"
+          {...register("subtitle")}
+          placeholder="안내문구를 입력해주세요."
+        />
       </InputWrapper>
       <InputWrapper>
         <h1>해시태그</h1>
-        <div className="tags">
-          <input type="subtitle" {...register("subtitle")} />
-        </div>
+        <input
+          tyoe="text"
+          {...register("subtitle")}
+          placeholder="해시태그를 입력해주세요."
+        />
       </InputWrapper>
 
-      <ReactCodeMirror
+      <ReactMarkdownEditor
         placeholder={"게시글을 입력해주세요."}
         basicSetup={{
           lineNumbers: false,
+          foldGutter: false,
         }}
         autoFocus={true}
         extensions={[
