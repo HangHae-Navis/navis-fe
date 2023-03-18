@@ -37,7 +37,7 @@ const InputWrapper = styled.section`
   }
   h2 {
     color: ${(props) => props.theme.color.zeroFour};
-    width: 6.5rem;
+    width: fit-content;
   }
   input {
     ${InputStyle}
@@ -102,7 +102,7 @@ const MarkdownEditor = () => {
           <option value="투표">투표</option>
           <option value="공지사항">공지사항</option>
         </select>
-        <h1>중요도</h1>
+        <h2>중요도</h2>
         <select {...register("star")}>
           <option value="5">5</option>
           <option value="4">4</option>
