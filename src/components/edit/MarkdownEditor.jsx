@@ -5,7 +5,7 @@ import styled from "styled-components";
 import { useRecoilState } from "recoil";
 import { useCallback } from "react";
 import { markdownState } from "../../store/atom";
-import { postGroupPost } from "../../utils/api/api";
+import { postBoard } from "../../utils/api/api";
 import { useMutation } from "react-query";
 import { useParams } from "react-router-dom";
 import { useForm } from "react-hook-form";
@@ -19,18 +19,27 @@ const MarkdownEditor = () => {
   const onChange = useCallback((value) => {
     setMarkdownValue(value);
   }, []);
-  const boardMutation = useMutation((data) => postGroupPost(id, data));
+  const boardMutation = useMutation((data) =>
+    postBoard(id, data, {
+      "Content-Type": "multipart/form-data",
+    })
+  );
   const onSubmit = async (data) => {
-    const requestDto = {
-      title: data.title,
-      subtitle: data.subtitle,
-      content: data.content,
-    };
-    const res = await boardMutation.mutateAsync(requestDto);
+    const requestDto = new FormData();
+    requestDto.append("title", data.title);
+    requestDto.append("subtitle", data.subtitle);
+    requestDto.append("content", markdownValue);
+    requestDto.append("important", 0);
+    requestDto.append("hashtagList", data.tags);
+
+    for (const [key, value] of requestDto.entries()) {
+      console.log(key, value, typeof value);
+    }
+    const res = await boardMutation.mutateAsync(id, requestDto);
   };
   console.log(watch());
   return (
-    <MarkdownEditorWrapper>
+    <MarkdownEditorWrapper onSubmit={handleSubmit(onSubmit)}>
       <InputWrapper>
         <h2>카테고리</h2>
         <select {...register("writing")}>
@@ -40,7 +49,7 @@ const MarkdownEditor = () => {
           <option value="공지사항">공지사항</option>
         </select>
         <h2>중요도</h2>
-        <select {...register("star")}>
+        <select {...register("important")}>
           <option value="5">5</option>
           <option value="4">4</option>
           <option value="3">3</option>
@@ -67,12 +76,15 @@ const MarkdownEditor = () => {
       <InputWrapper>
         <h1>해시태그</h1>
         <input
-          tyoe="text"
-          {...register("subtitle")}
+          type="text"
+          {...register("tags")}
           placeholder="#해시태그 #해시태그"
         />
+      </InputWrapper>{" "}
+      <InputWrapper>
+        <h1>업로드</h1>
+        <input tyoe="text" placeholder="#해시태그 #해시태그" />
       </InputWrapper>
-
       <ReactMarkdownEditor
         placeholder={"텍스트를 입력해주세요."}
         basicSetup={{
@@ -89,13 +101,13 @@ const MarkdownEditor = () => {
         height={"70vh"}
       />
       <div className="buttonWrapper">
-        <Button>게시하기</Button>
+        <Button onClick={onSubmit}>게시하기</Button>
       </div>
     </MarkdownEditorWrapper>
   );
 };
 
-const MarkdownEditorWrapper = styled.section`
+const MarkdownEditorWrapper = styled.form`
   * {
     font-size: 1.5rem;
   }

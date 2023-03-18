@@ -60,7 +60,6 @@ export const getDetailPage = async (payload) => {
 };
 
 export const getBoardDetailPage = async (payload) => {
-  console.log(payload);
   const res = await axios.get(
     `api/${payload.groupId}/${payload.dtype}s/${payload.DetailId}`
   );
@@ -73,22 +72,43 @@ export const getPartyBoard = async (payload) => {
 };
 
 export const postGroup = async (payload) => {
-  const res = axios.post("/api/groups", payload);
+  const res = axios.post("api/groups", payload);
   return res;
 };
 
 export const postGroupApply = async (groupCode) => {
-  const res = axios.post(`/api/groups/apply`, groupCode);
+  const res = axios.post(`api/groups/apply`, groupCode);
   return res;
 };
 
-export const getGroupPosts = async (groupId) => {
-  const res = axios.post(`/api/${groupId}/boards/posts`);
+export const getBoards = async (groupId) => {
+  const res = axios.post(`api/${groupId}/boards/posts`);
   return res;
 };
 
-export const postGroupPost = async (groupId, data) => {
-  const res = axios.post(`/api/${groupId}/boards/posts`, data);
+export const postBoard = async (data, id, etc) => {
+  const res = axios.post(`api/${id}/boards`, data, etc);
+  return res;
+};
+
+export const postHomework = async (data, id) => {
+  const res = axios.post(`api/${id}/boards/homeworks`, data, {
+    "Content-Type": "multipart/form-data",
+  });
+  return res;
+};
+
+export const postNotice = async (data, id) => {
+  const res = axios.post(`/api/${id}/boards/notices`, data, {
+    "Content-Type": "multipart/form-data",
+  });
+  return res;
+};
+
+export const postVote = async (data, id) => {
+  const res = axios.post(`/api/${id}/boards/votes`, data, {
+    "Content-Type": "multipart/form-data",
+  });
   return res;
 };
 
@@ -99,25 +119,26 @@ export const getDetailPageForAdmin = async (payload) => {
   return res;
 };
 
-export const deletePageMembers = async (payload) =>{
-  if(payload.memberid){
-    console.log(payload)
-    console.log("멤버 퇴출시키기")
-    const res = await axios.delete(`api/groups/${payload.pam}?memberId=${payload.memberid}`)
-    return res
-  }
-  else{
-    console.log(payload)
-    console.log("본인 탈퇴시키기")
-    const res = await axios.delete(`api/groups/${payload}`)
-    return res
+export const deletePageMembers = async (payload) => {
+  if (payload.memberid) {
+    console.log(payload);
+    console.log("멤버 퇴출시키기");
+    const res = await axios.delete(
+      `api/groups/${payload.pam}?memberId=${payload.memberid}`
+    );
+    return res;
+  } else {
+    console.log(payload);
+    console.log("본인 탈퇴시키기");
+    const res = await axios.delete(`api/groups/${payload}`);
+    return res;
   }
   //
-}
+};
 
-export const deletePage = async (payload)=>{
-  const res = await axios.delete(`api/groups/${payload}/admin`)
-  return res
-}
+export const deletePage = async (payload) => {
+  const res = await axios.delete(`api/groups/${payload}/admin`);
+  return res;
+};
 
 /*-----------------------어드민 페이지 기능------------------------------*/
