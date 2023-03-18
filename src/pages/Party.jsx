@@ -18,16 +18,16 @@ function Board(props) {
   useEffect(() => {
     switch (props.dtype) {
       case "vote":
-        //setDtypeText("투표")
+        setDtypeText("투표")
         break;
       case "board":
-        //setDtypeText("게시글")
+        setDtypeText("게시글")
         break;
       case "homework":
-        //setDtypeText("과제")
+        setDtypeText("과제")
         break;
       case "notice":
-        //setDtypeText("공지")
+        setDtypeText("공지")
         break;
       default:
         break;
@@ -46,7 +46,7 @@ function Board(props) {
           <h1>{props.title}</h1>
           <p>{props.subtitle}</p>
           <p>작성자 : {props.nickName}</p>
-          <p>태그 : {dtypeText}</p>
+          <p>분류 : {dtypeText}</p>
           <p>중요도 : {props.important}</p>
           <div>
             {hashtagText?.map((item) => {
@@ -207,7 +207,7 @@ const Party = () => {
             <h1>{partyRes.data.data.data.groupName}</h1>
             <p>{partyRes.data.data.data.groupInfo}</p>
             <p>초대 코드 : {partyRes.data.data.data.groupCode}</p>
-            <Button>글쓰기</Button>
+            <Button onClick={() => navi(`party/${pam.id}/edit`,)}>글쓰기</Button>
             {partyRes.data.data.data.admin === true ? (
               <Button onClick={() => navi(`/party/${pam.id}/admin`)}>
                 어드민 페이지
