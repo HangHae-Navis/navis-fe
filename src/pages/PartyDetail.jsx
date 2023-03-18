@@ -17,9 +17,11 @@ function PartyDetail(){
 
     const groupId = searchParams.get('groupId')
     const DetailId = searchParams.get('detailId')
+    const dtype = searchParams.get('dtype')
     console.log(groupId)
     console.log(DetailId)
-    const res = useQuery(['partyDetail'], ()=> getBoardDetailPage({groupId, DetailId}))
+    console.log(dtype)
+    const res = useQuery(['partyDetail'], ()=> getBoardDetailPage({groupId, DetailId, dtype}))
     
     console.log(res)
     return(<>

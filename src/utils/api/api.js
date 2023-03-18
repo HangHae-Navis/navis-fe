@@ -1,3 +1,4 @@
+import { async } from "q";
 import { getCookie, setCookie } from "../infos/cookie";
 import { setLocalStorage } from "../infos/localStorage";
 import Axios from "./axios";
@@ -61,7 +62,7 @@ export const getDetailPage = async (payload) => {
 export const getBoardDetailPage = async (payload) => {
   console.log(payload);
   const res = await axios.get(
-    `api/${payload.groupId}/boards/${payload.DetailId}`
+    `api/${payload.groupId}/${payload.dtype}s/${payload.DetailId}`
   );
   return res;
 };
@@ -97,4 +98,26 @@ export const getDetailPageForAdmin = async (payload) => {
   const res = await axios.get(`api/groups/${payload}/admin`);
   return res;
 };
+
+export const deletePageMembers = async (payload) =>{
+  if(payload.memberid){
+    console.log(payload)
+    console.log("멤버 퇴출시키기")
+    const res = await axios.delete(`api/groups/${payload.pam}?memberId=${payload.memberid}`)
+    return res
+  }
+  else{
+    console.log(payload)
+    console.log("본인 탈퇴시키기")
+    const res = await axios.delete(`api/groups/${payload}`)
+    return res
+  }
+  //
+}
+
+export const deletePage = async (payload)=>{
+  const res = await axios.delete(`api/groups/${payload}/admin`)
+  return res
+}
+
 /*-----------------------어드민 페이지 기능------------------------------*/

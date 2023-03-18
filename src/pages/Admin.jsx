@@ -1,8 +1,10 @@
-import { useQuery } from "react-query";
+import { useMutation, useQuery } from "react-query";
 import styled from "styled-components";
 import PartyRegist from "../components/modal/PartyRegist";
 import Button from "../element/Button";
 import {
+  deletePage,
+  deletePageMembers,
   getBoardDetailPage,
   getDetailPage,
   getDetailPageForAdmin,
@@ -17,6 +19,14 @@ import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 
 function Board(props) {
+  const deletePartyMember = useMutation(deletePageMembers , {onSuccess: (data) => {
+    window.alert('해당 멤버가 퇴출되었습니다')
+    window.location.reload();
+  }})
+  const doDeleteMember = (data) =>{
+    const res = deletePartyMember.mutateAsync(data)
+  }
+
   return (
     <>
       <BoardBox>
@@ -26,7 +36,7 @@ function Board(props) {
           <p>{props.joinedAt}</p>
         </BoardBoxTitleBox>
         {props.groupMemberRoleEnum === "ADMIN" ? null : (
-          <Button>탈퇴시키기</Button>
+          <Button onClick={()=> doDeleteMember({"pam" : props.pam, "memberid" : props.id})}>탈퇴시키기</Button>
         )}
       </BoardBox>
     </>
@@ -62,17 +72,28 @@ const BoardBoxTitleBox = styled.div`
 
 const Admin = () => {
   const pam = useParams();
+  const navi = useNavigate()
   const [userList, setUserList] = useState([]);
-  const res = useQuery(["admin"], () => getDetailPageForAdmin(pam.id), {
+  const getDetailPage = useQuery(["admin"], () => getDetailPageForAdmin(pam.id), {
     onSuccess: (data) => {
       console.log(data.data.data.groupMembers);
       setUserList(data.data.data.groupMembers);
     },
   });
 
+  const doDeletePage = () => {
+    const res = deletePageForAdmin.mutateAsync(pam.id)
+  }
+
+  const deletePageForAdmin = useMutation(deletePage , {onSuccess: (data) => {
+    window.alert('그룹이 삭제되었습니다')
+    navi('/')
+  }})
+
+
   return (
     <>
-      <Button>그룹 삭제하기</Button>
+      <Button onClick={()=> doDeletePage()}>그룹 삭제하기</Button>
       <PageContainer>
         {userList.map((item) => {
           return (
@@ -81,6 +102,8 @@ const Admin = () => {
               groupMemberRoleEnum={item.groupMemberRoleEnum}
               joinedAt={item.joinedAt}
               nickName={item.nickname}
+              id = {item.id}
+              pam = {pam.id}
             />
           );
         })}

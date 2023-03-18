@@ -1,8 +1,8 @@
-import { useQuery } from "react-query";
+import { useMutation, useQuery } from "react-query";
 import styled from "styled-components";
 import PartyRegist from "../components/modal/PartyRegist";
 import Button from "../element/Button";
-import { getDetailPage, getPartyBoard, getPartyPage } from "../utils/api/api";
+import { deletePageMembers, getDetailPage, getPartyBoard, getPartyPage } from "../utils/api/api";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 import Test from "../assets/d65d5952-d801-4225-ab16-8720733b499a.png";
@@ -17,7 +17,7 @@ function Board(props) {
     <>
       <BoardBox
         onClick={() =>
-          navi(`/party/detail?groupId=${props.groupId}&detailId=${props.id}`)
+          navi(`/party/detail?groupId=${props.groupId}&detailId=${props.id}&dtype=${props.dtype}`)
         }
       >
         <BoardBoxTitleBox>
@@ -75,6 +75,18 @@ const Party = () => {
       },
     }
   );
+
+  
+  const deletePartyMember = useMutation(deletePageMembers , {onSuccess: (data) => {
+    console.log('해당 멤버가 퇴출되었습니다.')
+    //window.alert('해당 멤버가 퇴출되었습니다')
+    navi('/')
+  }})
+
+  const doDelete = (data) =>{
+    const res = deletePartyMember.mutateAsync(data)
+  }
+
   //const boardRes = useQuery(['board'], () => getPartyBoard(pam.id),{onSuccess: ({ data }) => {setGroupList(data.data);},});
 
   useEffect(() => {
@@ -114,7 +126,7 @@ const Party = () => {
                 어드민 페이지
               </Button>
             ) : (
-              <Button>그룹 탈퇴하기</Button>
+              <Button onClick={()=> doDelete(pam.id)}>그룹 탈퇴하기</Button>
             )}
           </LeftTitleBox>
           <LeftRadioBox>
@@ -182,6 +194,7 @@ const Party = () => {
                 subtitle={item.subtitle}
                 title={item.title}
                 id={item.id}
+                dtype ={item.dtype}
               />
             );
           })}
