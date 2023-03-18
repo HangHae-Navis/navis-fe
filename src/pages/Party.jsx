@@ -17,7 +17,7 @@ function Board(props) {
     <>
       <BoardBox
         onClick={() =>
-          navi(`/party/detail?groupId=${props.groupId}&detailId=${props.id}`)
+          navi(`/party/detail?groupId=${props.groupId}&detailId=${props.id}&dtype=${props.dtype}`)
         }
       >
         <BoardBoxTitleBox>
@@ -194,6 +194,7 @@ const Party = () => {
                 subtitle={item.subtitle}
                 title={item.title}
                 id={item.id}
+                dtype ={item.dtype}
               />
             );
           })}
