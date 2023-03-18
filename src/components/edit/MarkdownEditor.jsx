@@ -10,71 +10,7 @@ import { useMutation } from "react-query";
 import { useParams } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { InputStyle } from "../../utils/style/mixins";
-
-const MarkdownEditorWrapper = styled.section`
-  * {
-    font-size: 1.5rem;
-  }
-  background-color: ${(props) => props.theme.color.zeroOne};
-  padding: 1.2rem;
-  width: 52%;
-  font-family: Pretendard !important;
-  display: flex;
-  gap: 1.5rem;
-  flex-direction: column;
-  font-size: 1.3rem;
-  border-radius: 2rem;
-`;
-
-const InputWrapper = styled.section`
-  width: 85%;
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  h1 {
-    color: ${(props) => props.theme.color.zeroFour};
-    width: 7rem;
-  }
-  h2 {
-    color: ${(props) => props.theme.color.zeroFour};
-    width: fit-content;
-  }
-  input {
-    ${InputStyle}
-  }
-  select {
-    width: 8rem;
-    border-radius: 5rem;
-    padding-left: 0.6rem;
-    height: 4.2rem;
-    border: 0.1rem solid ${(props) => props.theme.color.zeroTwo};
-    color: ${(props) => props.theme.color.zeroThree};
-    &:focus {
-      outline: none;
-    }
-    font-size: 1.3rem;
-  }
-`;
-
-const ReactMarkdownEditor = styled(ReactCodeMirror)`
-  * {
-    outline: none !important;
-  }
-
-  .cm-selectionBackground {
-    background-color: #e7e7fc !important;
-  }
-
-  .ͼo {
-    background-color: #f9f9ff !important;
-  }
-  .ͼ11 {
-    color: #9795b5;
-  }
-  .ͼ13 {
-    color: #9795b5;
-  }
-`;
+import Button from "../../element/Button";
 
 const MarkdownEditor = () => {
   const { id } = useParams();
@@ -92,6 +28,7 @@ const MarkdownEditor = () => {
     };
     const res = await boardMutation.mutateAsync(requestDto);
   };
+  console.log(watch());
   return (
     <MarkdownEditorWrapper>
       <InputWrapper>
@@ -151,8 +88,81 @@ const MarkdownEditor = () => {
         onChange={onChange}
         height={"70vh"}
       />
+      <div className="buttonWrapper">
+        <Button>게시하기</Button>
+      </div>
     </MarkdownEditorWrapper>
   );
 };
+
+const MarkdownEditorWrapper = styled.section`
+  * {
+    font-size: 1.5rem;
+  }
+  background-color: ${(props) => props.theme.color.zeroOne};
+  padding: 1.2rem;
+  width: 52%;
+  font-family: Pretendard !important;
+  display: flex;
+  gap: 1.5rem;
+  flex-direction: column;
+  font-size: 1.3rem;
+  border-radius: 2rem;
+
+  .buttonWrapper {
+    justify-self: flex-end;
+    align-self: flex-end;
+  }
+`;
+
+const InputWrapper = styled.section`
+  width: 85%;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  h1 {
+    color: ${(props) => props.theme.color.zeroFour};
+    width: 7rem;
+  }
+  h2 {
+    color: ${(props) => props.theme.color.zeroFour};
+    width: fit-content;
+  }
+  input {
+    ${InputStyle}
+  }
+  select {
+    width: 8rem;
+    border-radius: 5rem;
+    padding-left: 0.6rem;
+    height: 4.2rem;
+    border: 0.1rem solid ${(props) => props.theme.color.zeroTwo};
+    color: ${(props) => props.theme.color.zeroThree};
+    &:focus {
+      outline: none;
+    }
+    font-size: 1.3rem;
+  }
+`;
+
+const ReactMarkdownEditor = styled(ReactCodeMirror)`
+  * {
+    outline: none !important;
+  }
+
+  .cm-selectionBackground {
+    background-color: #e7e7fc !important;
+  }
+
+  .ͼo {
+    background-color: #f9f9ff !important;
+  }
+  .ͼ11 {
+    color: #9795b5;
+  }
+  .ͼ13 {
+    color: #9795b5;
+  }
+`;
 
 export default MarkdownEditor;

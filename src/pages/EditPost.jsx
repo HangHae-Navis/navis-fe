@@ -15,14 +15,13 @@ const EditPost = () => {
 };
 
 const EditPostWrapper = styled.section`
-  display: flex;
-  flex-direction: column;
   margin: 0 auto;
   max-width: 108rem;
 `;
 
 const MarkdownWrapper = styled.section`
   display: flex;
+  gap: 1.8rem;
 `;
 
 export default EditPost;
