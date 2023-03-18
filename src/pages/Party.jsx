@@ -207,7 +207,7 @@ const Party = () => {
             <h1>{partyRes.data.data.data.groupName}</h1>
             <p>{partyRes.data.data.data.groupInfo}</p>
             <p>초대 코드 : {partyRes.data.data.data.groupCode}</p>
-            <Button onClick={() => navi(`party/${pam.id}/edit`,)}>글쓰기</Button>
+            <Button onClick={() => navi(`/party/${pam.id}/edit`,)}>글쓰기</Button>
             {partyRes.data.data.data.admin === true ? (
               <Button onClick={() => navi(`/party/${pam.id}/admin`)}>
                 어드민 페이지
