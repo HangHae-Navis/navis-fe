@@ -1,137 +1,267 @@
-import React, { useEffect, useState } from "react";
 import { useQuery } from "react-query";
 import styled from "styled-components";
 import PartyRegist from "../components/modal/PartyRegist";
 import Button from "../element/Button";
-import { getPartyPage } from "../utils/api/api";
+import { getDetailPage, getPartyBoard, getPartyPage } from "../utils/api/api";
+import Skeleton from "react-loading-skeleton";
+import "react-loading-skeleton/dist/skeleton.css";
+import Test from "../assets/d65d5952-d801-4225-ab16-8720733b499a.png";
+import Pagination from "react-js-pagination";
+import { useNavigate, useParams } from "react-router-dom";
+import { useEffect, useState } from "react";
 
-const GroupBoxComp = (props) => {
+function Board(props) {
+  const navi = useNavigate();
+
   return (
     <>
-      <GroupBox>
-        <h3>그룹 리더 : {props.adminName}</h3>
-        <h3>그룹 명 : {props.groupName}</h3>
-        <h3>그룹 부재 : {props.groupInfo}</h3>
-        <h3>참여자 수 : {props.memberNumber}</h3>
-      </GroupBox>
+      <BoardBox
+        onClick={() =>
+          navi(`/party/detail?groupId=${props.groupId}&detailId=${props.id}`)
+        }
+      >
+        <BoardBoxTitleBox>
+          <h1>{props.title}</h1>
+          <p>{props.subtitle}</p>
+          <p>{props.nickName}</p>
+        </BoardBoxTitleBox>
+      </BoardBox>
     </>
   );
-};
+}
 
-const GroupBox = styled.div`
-  width: 30rem;
-  height: 38rem;
-  background-color: skyblue;
-  border-radius: 1.5rem;
+const BoardBox = styled.div`
+  width: 41rem;
+  height: 25rem;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  padding: 2rem;
+  background-color: aliceblue;
+  border-radius: 2rem;
+`;
+const BoardBoxTitleBox = styled.div`
+  padding: 1rem;
+  flex-direction: column;
+  justify-content: flex-start;
+  width: 30rem;
+  height: 10rem;
+  padding-top: 1rem;
+  padding-left: 1rem;
+  font-size: 2.45rem;
+  h1 {
+    font-size: 2.3rem;
+    font-weight: 600;
+  }
+  p {
+    font-size: 1.6rem;
+  }
 `;
 
 const Party = () => {
+  const navi = useNavigate();
+  const pam = useParams();
+  const [radioValue, setRadioValue] = useState("");
   const [groupList, setGroupList] = useState([]);
-  const [totalNum, setTotalNum] = useState(100);
+  const [totalNum, setTotalNum] = useState(0);
   const [pageNum, setPageNum] = useState(1);
-  //받아오는 데이터는 content(목록), totalElements(총 갯수), totalPages(총 페이지)를 받아옴
-  //현재 받아오는 response 중 사용 중인 것은 content와 totalelements 둘 뿐, totalPages를 사용하려면 MakeButton의 로직 변경 필요
-  const PartyList = useQuery(
-    ["getList", { page: pageNum, size: 8, category: "all" }],
-    () => getPartyPage({ page: pageNum, size: 8, category: "all" })
+  const partyRes = useQuery(
+    ["party", { id: pam.id, page: pageNum, size: 99, category: "all" }],
+    () =>
+      getDetailPage({ id: pam.id, page: pageNum, size: 99, category: "all" }),
+    {
+      onSuccess: ({ data }) => {
+        console.log(data.data.basicBoards.content);
+        setGroupList(data.data.basicBoards.content);
+      },
+    }
   );
-  const [isOpen, setIsOpen] = useState(false);
+  //const boardRes = useQuery(['board'], () => getPartyBoard(pam.id),{onSuccess: ({ data }) => {setGroupList(data.data);},});
 
   useEffect(() => {
-    if (PartyList.data) {
-      setGroupList(PartyList.data.data.data.content);
-      setTotalNum(PartyList.data.data.data.totalElements);
-    }
-  }, [PartyList.data]);
+    console.log(radioValue);
+  }, [radioValue]);
 
-  const MakeGroupHandler = () => {
-    setIsOpen(true);
+  if (partyRes.isLoading) {
+    return (
+      <div>로딩중.........로딩중.........딩중.........로딩중.........</div>
+    );
+  }
+  if (partyRes.isError) {
+    return <div>에러!!!!!!!!에러!!!!!!!!에러!!!!!!!!</div>;
+  }
+
+  const MakeBoards = () => {
+    return <></>;
   };
+  console.log(partyRes.data.data.data);
+  console.log(groupList);
 
-  //하단부 버튼 구현, pageNum State를 변경시켜 버튼에 맞는 페이지 요청
-  //컴포넌트 분리하기엔 기능이 너무 적어 Party 안에 구현함
-  const MakeButton = () => {
-    const divs = [];
-    for (let i = 0; i < totalNum / 8; i++) {
-      divs.push(
-        <PagenationButton onClick={() => setPageNum(i + 1)} key={i}>
-          {i + 1}
-        </PagenationButton>
-      );
-    }
-    return divs;
+  const handleRadioChange = (event) => {
+    setRadioValue(event.target.value);
   };
 
   return (
     <>
       <PageContainer>
-        <Button transparent={false} onClick={() => MakeGroupHandler()}>
-          새 그룹 만들기
-        </Button>
-        <GroupContainer>
+        <LeftContainer>
+          <LeftTitleBox>
+            <h1>{partyRes.data.data.data.groupName}</h1>
+            <p>{partyRes.data.data.data.groupInfo}</p>
+            <p>초대 코드 : {partyRes.data.data.data.groupCode}</p>
+            <Button>글쓰기</Button>
+            {partyRes.data.data.data.admin === true ? (
+              <Button onClick={() => navi(`/party/${pam.id}/admin`)}>
+                어드민 페이지
+              </Button>
+            ) : (
+              <Button>그룹 탈퇴하기</Button>
+            )}
+          </LeftTitleBox>
+          <LeftRadioBox>
+            <label>
+              <input
+                type="radio"
+                name="radio-group"
+                value="0"
+                checked={radioValue === "0"}
+                onChange={handleRadioChange}
+              />
+              전체
+            </label>
+            <label>
+              <input
+                type="radio"
+                name="radio-group"
+                value="1"
+                checked={radioValue === "1"}
+                onChange={handleRadioChange}
+              />
+              공지
+            </label>
+            <label>
+              <input
+                type="radio"
+                name="radio-group"
+                value="2"
+                checked={radioValue === "2"}
+                onChange={handleRadioChange}
+              />
+              투표
+            </label>
+            <label>
+              <input
+                type="radio"
+                name="radio-group"
+                value="3"
+                checked={radioValue === "3"}
+                onChange={handleRadioChange}
+              />
+              과제
+            </label>
+            <label>
+              <input
+                type="radio"
+                name="radio-group"
+                value="4"
+                checked={radioValue === "4"}
+                onChange={handleRadioChange}
+              />
+              게시글
+            </label>
+          </LeftRadioBox>
+        </LeftContainer>
+        <RightContainer>
           {groupList?.map((item) => {
             return (
-              <GroupBoxComp
-                key={item.groupId}
-                adminName={item.adminName}
-                groupInfo={item.groupInfo}
-                groupName={item.groupName}
-                memberNumber={item.memberNumber}
+              <Board
+                key={item.id}
+                groupId={pam.id}
+                createAt={item.createAt}
+                content={item.content}
+                nickName={item.nickname}
+                subtitle={item.subtitle}
+                title={item.title}
+                id={item.id}
               />
             );
           })}
-        </GroupContainer>
-        <BottomButtonBox>
-          <MakeButton></MakeButton>
-        </BottomButtonBox>
+        </RightContainer>
       </PageContainer>
-      {isOpen == true ? <PartyRegist isOpen={setIsOpen} /> : null}
     </>
   );
 };
 
-const PageContainer = styled.div`
+const TextWrapper = styled.section`
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  height: 100vh;
+  gap: 0.6rem;
 `;
 
-const GroupContainer = styled.div`
-  width: 130rem;
-  height: 100rem;
-  background-color: gray;
+const PageContainer = styled.div`
   display: flex;
   flex-direction: row;
-  display: grid;
-  grid-template-columns: repeat(4, 32rem);
+  justify-content: space-between;
   align-items: flex-start;
-  padding: 2rem;
+  width: 80vw;
+  margin: 0 auto;
+  gap: 1rem;
+  background-color: wheat;
+  padding-left: 3rem;
+  padding-right: 3rem;
 `;
 
-const PagenationButton = styled.button`
+const LeftContainer = styled.div`
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 30rem;
+  gap: 1rem;
+  background-color: blanchedalmond;
+  color: black;
+  font-size: 1.45rem;
+`;
+const RightContainer = styled.div`
+  padding-top: 2rem;
+  padding-bottom: 2rem;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  align-items: center;
+  justify-items: center;
+  width: 60vw;
+  gap: 1rem;
+  background-color: violet;
+  color: black;
+  font-size: 1.45rem;
+`;
+const LeftTitleBox = styled.div`
+  padding: 3rem;
+  flex-direction: column;
+  justify-content: flex-start;
+  width: 30rem;
+  height: 20rem;
+  background-color: gainsboro;
+  font-size: 2.45rem;
+  h1 {
+    font-size: 2.3rem;
+    font-weight: 600;
+  }
+  p {
+    font-size: 1.6rem;
+  }
+`;
+
+const LeftRadioBox = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+`;
+
+const RadioButton = styled.button`
   width: 2rem;
   height: 2rem;
-  background-color: black;
+  border: 0.1rem solid black;
   color: white;
-  font-size: 1.45rem;
-  border-radius: 0.8rem;
-  text-align: center;
-`;
-
-const BottomButtonBox = styled.div`
-  width: 60rem;
-  height: 3rem;
-  background-color: darkcyan;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 2rem;
 `;
 
 export default Party;

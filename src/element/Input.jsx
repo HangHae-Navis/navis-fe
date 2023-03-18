@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai";
+import { InputStyle } from "../utils/style/mixins";
 
 const Input = ({ register, placeholder, type, name, error, label }) => {
   const [passwordVisible, setPasswordVisible] = useState(false);
@@ -55,27 +56,16 @@ const InputLayout = styled.section`
   display: flex;
   flex-direction: column;
   gap: 0.6rem;
-  width: 80%;
 `;
 
 const Label = styled.section`
   align-self: flex-start;
   font-size: 1.6rem;
+  color: ${(props) => props.theme.color.zeroFour};
 `;
 
 const InputCustom = styled.input`
-  position: relative;
-  width: 28rem;
-  height: 4rem;
-  padding: 0 0.8rem;
-  font-size: 1.3rem;
-  letter-spacing: 0.05rem;
-  border-radius: 0.6rem;
-  border: 0.05rem solid black;
-  font-weight: 500;
-  &:focus {
-    outline: none;
-  }
+  ${InputStyle};
 `;
 
 const ErrorMessage = styled.p`
@@ -86,7 +76,7 @@ const ErrorMessage = styled.p`
 
 const InputWrapper = styled.section`
   position: relative;
-  width: fit-content;
+  width: 27rem;
   display: flex;
   align-items: center;
 `;
