@@ -12,6 +12,28 @@ import { useEffect, useState } from "react";
 
 function Board(props) {
   const navi = useNavigate();
+  const [dtypeText, setDtypeText] = useState("")
+  const [hashtagText, setHashtagText] = useState([])
+
+  useEffect(() => {
+    switch (props.dtype) {
+      case "vote":
+        //setDtypeText("투표")
+        break;
+      case "board":
+        //setDtypeText("게시글")
+        break;
+      case "homework":
+        //setDtypeText("과제")
+        break;
+      case "notice":
+        //setDtypeText("공지")
+        break;
+      default:
+        break;
+    }
+    setHashtagText(props.hashtagList)
+  }, [])
 
   return (
     <>
@@ -23,12 +45,32 @@ function Board(props) {
         <BoardBoxTitleBox>
           <h1>{props.title}</h1>
           <p>{props.subtitle}</p>
-          <p>{props.nickName}</p>
+          <p>작성자 : {props.nickName}</p>
+          <p>태그 : {dtypeText}</p>
+          <p>중요도 : {props.important}</p>
+          <div>
+            {hashtagText?.map((item) => {
+              return (
+                <HashTagBox key={item}># {item}</HashTagBox>
+              )
+            })}
+          </div>
         </BoardBoxTitleBox>
       </BoardBox>
     </>
   );
 }
+
+const HashTagBox = styled.div`
+display: inline-block;
+border: 0.1rem solid #ccc;
+border-radius: 0.5rem;
+padding: 0.5rem;
+margin-right: 1rem;
+font-size: 1.5rem;
+opacity: 0.8;
+width: fit-content;
+`;
 
 const BoardBox = styled.div`
   width: 41rem;
@@ -57,61 +99,106 @@ const BoardBoxTitleBox = styled.div`
   }
 `;
 
+
+function RadioButtons({ options, categoryValue, partyRes, selected, setSelected }) {
+
+  useEffect(() => {
+    switch (selected) {
+      case 0:
+        categoryValue("all")
+        partyRes.refetch()
+        break;
+      case 1:
+        //categoryValue("notice")
+        break;
+      case 2:
+        categoryValue("vote")
+        partyRes.refetch()
+        break;
+      case 3:
+        categoryValue("homework")
+        partyRes.refetch()
+        break;
+      case 4:
+        categoryValue("board")
+        partyRes.refetch()
+        break;
+      default:
+        break
+    }
+  }, [selected]);
+
+
+  return (
+    <RadioBox>
+      {options.map((option, index) => (
+        <RadioButtonStyled
+          key={index}
+          style={{ opacity: selected === index ? 1 : 0.5 }}
+          onClick={() => setSelected(index)}
+        >
+          {option}
+        </RadioButtonStyled>
+      ))}
+    </RadioBox>
+  );
+}
+
+const RadioButtonStyled = styled.button`
+margin-right: 1rem;
+  width: 6rem;
+  height: 4rem;
+  border: none;
+  border-radius: 1rem;
+  font-size: 2rem;
+  background-color: ${({ selected }) => (selected ? "#ccc" : "transparent")};
+  opacity: ${({ selected }) => (selected ? 1 : 0.5)};
+`;
+const RadioBox = styled.div`
+`
+
+
 const Party = () => {
   const navi = useNavigate();
   const pam = useParams();
-  const [radioValue, setRadioValue] = useState("");
+  const [selected, setSelected] = useState(0);
+  const [categoryValue, setCategoryValue] = useState("all");
+  const options = ['전체', '공지', '투표', '과제', '게시글'];
   const [groupList, setGroupList] = useState([]);
   const [totalNum, setTotalNum] = useState(0);
   const [pageNum, setPageNum] = useState(1);
   const partyRes = useQuery(
-    ["party", { id: pam.id, page: pageNum, size: 99, category: "all" }],
+    ["party", { id: pam.id, page: pageNum, size: 99, category: categoryValue }],
     () =>
-      getDetailPage({ id: pam.id, page: pageNum, size: 99, category: "all" }),
+      getDetailPage({ id: pam.id, page: pageNum, size: 99, category: categoryValue }),
     {
       onSuccess: ({ data }) => {
-        console.log(data.data.basicBoards.content);
         setGroupList(data.data.basicBoards.content);
       },
     }
   );
-
   
-  const deletePartyMember = useMutation(deletePageMembers , {onSuccess: (data) => {
-    console.log('해당 멤버가 퇴출되었습니다.')
-    //window.alert('해당 멤버가 퇴출되었습니다')
-    navi('/')
-  }})
-
-  const doDelete = (data) =>{
-    const res = deletePartyMember.mutateAsync(data)
-  }
-
-  //const boardRes = useQuery(['board'], () => getPartyBoard(pam.id),{onSuccess: ({ data }) => {setGroupList(data.data);},});
-
-  useEffect(() => {
-    console.log(radioValue);
-  }, [radioValue]);
-
-  if (partyRes.isLoading) {
-    return (
-      <div>로딩중.........로딩중.........딩중.........로딩중.........</div>
-    );
-  }
-  if (partyRes.isError) {
-    return <div>에러!!!!!!!!에러!!!!!!!!에러!!!!!!!!</div>;
-  }
-
   const MakeBoards = () => {
     return <></>;
   };
-  console.log(partyRes.data.data.data);
-  console.log(groupList);
 
-  const handleRadioChange = (event) => {
-    setRadioValue(event.target.value);
-  };
+  const deletePartyMember = useMutation(deletePageMembers, {
+    onSuccess: (data) => {
+      console.log('해당 멤버가 퇴출되었습니다.')
+      window.alert('해당 멤버가 퇴출되었습니다')
+      navi('/')
+    }
+  })
 
+  const doDelete = (data) => {
+    const res = deletePartyMember.mutateAsync(data)
+  }
+
+  if (partyRes.isLoading || partyRes.isError) {return (
+    <>
+    </>
+  );
+  }
   return (
     <>
       <PageContainer>
@@ -126,40 +213,41 @@ const Party = () => {
                 어드민 페이지
               </Button>
             ) : (
-              <Button onClick={()=> doDelete(pam.id)}>그룹 탈퇴하기</Button>
+              <Button onClick={() => doDelete(pam.id)}>그룹 탈퇴하기</Button>
             )}
           </LeftTitleBox>
         </LeftContainer>
         <RightTotalContainer>
-          <div>
-          <Button>전체</Button>
-          <Button>공지</Button>
-          <Button>투표</Button>
-          <Button>과제</Button>
-          <Button>게시글</Button>
-          </div>
-        <RightContainer>
-          {groupList?.map((item) => {
-            return (
-              <Board
-                key={item.id}
-                groupId={pam.id}
-                createAt={item.createAt}
-                content={item.content}
-                nickName={item.nickname}
-                subtitle={item.subtitle}
-                title={item.title}
-                id={item.id}
-                dtype ={item.dtype}
-              />
-            );
-          })}
-        </RightContainer>
+          <RadioBox>
+            <RadioButtons
+            options={options} categoryValue={setCategoryValue}
+            partyRes={partyRes} selected={selected} setSelected={setSelected}/>
+          </RadioBox>
+          <RightContainer>
+            {groupList?.map((item) => {
+              return (
+                <Board
+                  key={item.id}
+                  groupId={pam.id}
+                  createAt={item.createAt}
+                  content={item.content}
+                  nickName={item.nickname}
+                  subtitle={item.subtitle}
+                  title={item.title}
+                  id={item.id}
+                  dtype={item.dtype}
+                  important={item.important}
+                  hashtagList={item.hashtagList}
+                />
+              );
+            })}
+          </RightContainer>
         </RightTotalContainer>
       </PageContainer>
     </>
   );
 };
+
 
 const TextWrapper = styled.section`
   display: flex;
