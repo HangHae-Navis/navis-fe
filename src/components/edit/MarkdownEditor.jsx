@@ -2,24 +2,74 @@ import ReactCodeMirror from "@uiw/react-codemirror";
 import { markdown, markdownLanguage } from "@codemirror/lang-markdown";
 import { languages } from "@codemirror/language-data";
 import styled from "styled-components";
-import { useRecoilState } from "recoil";
+import { useRecoilState, useResetRecoilState } from "recoil";
 import { useCallback } from "react";
 import { markdownState } from "../../store/atom";
-import { postBoard } from "../../utils/api/api";
+import { postBoard, postHomework, postNotice } from "../../utils/api/api";
 import { useMutation } from "react-query";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { InputStyle } from "../../utils/style/mixins";
 import Button from "../../element/Button";
+import { toast } from "react-toastify";
 
 const MarkdownEditor = () => {
   const { id } = useParams();
+  const navigate = useNavigate();
   const [markdownValue, setMarkdownValue] = useRecoilState(markdownState);
-  const { register, handleSubmit } = useForm();
+  const resetMarkdownValue = useResetRecoilState(markdownState);
+  const { register, handleSubmit, watch, reset } = useForm({
+    defaultValues: {
+      important: "0",
+    },
+  });
   const onChange = useCallback((value) => {
     setMarkdownValue(value);
   }, []);
-  const boardMutation = useMutation((data) => postBoard(id, data));
+  const boardMutation = useMutation((data) => postBoard(id, data), {
+    onSuccess: () => {
+      toast.success("게시글이 등록되었습니다", {
+        toastId: "boardSuccess",
+      });
+      resetMarkdownValue();
+      reset();
+      navigate(`/party/${id}`);
+    },
+  });
+  const noticeMutation = useMutation((data) => postNotice(id, data), {
+    onSuccess: () => {
+      toast.success("공지가 등록되었습니다", {
+        toastId: "noticeSuccess",
+      });
+      resetMarkdownValue();
+      reset();
+      navigate(`/party/${id}`);
+    },
+  });
+  const voteMutation = useMutation((data) => postBoard(id, data), {
+    onSuccess: () => {
+      toast.success("투표가 등록되었습니다", {
+        toastId: "voteSuccess",
+      });
+      resetMarkdownValue();
+      reset();
+      navigate(`/party/${id}`);
+    },
+  });
+
+  const homeWorkMutation = useMutation((data) => postHomework(id, data), {
+    onSuccess: () => {
+      toast.success("과제가 등록되었습니다", {
+        toastId: "homeWorkSuccess",
+      });
+      resetMarkdownValue();
+      reset();
+      navigate(`/party/${id}`);
+    },
+  });
+
+  console.log(watch());
+
   const onSubmit = async (data) => {
     const requestDto = new FormData();
     requestDto.append("title", data.title);
@@ -27,9 +77,19 @@ const MarkdownEditor = () => {
     requestDto.append("content", markdownValue);
     requestDto.append("important", data.important);
     requestDto.append("hashtagList", data.tags);
-    const res = await boardMutation.mutateAsync(requestDto);
-    console.log(res);
+    if (data.writing === "게시글") {
+      const res = await boardMutation.mutateAsync(requestDto);
+    } else if (data.writing === "공지사항") {
+      const res = await noticeMutation.mutateAsync(requestDto);
+    } else if (data.writing === "과제") {
+      requestDto.append(
+        "expirationDate",
+        new Date(data.datetime).getTime() / 1000
+      );
+      const res = await homeWorkMutation.mutateAsync(requestDto);
+    }
   };
+
   return (
     <MarkdownEditorWrapper onSubmit={handleSubmit(onSubmit)}>
       <InputWrapper>
@@ -41,12 +101,16 @@ const MarkdownEditor = () => {
           <option value="공지사항">공지사항</option>
         </select>
         <h2>중요도</h2>
-        <select {...register("important")}>
-          <option value="5">5</option>
-          <option value="4">4</option>
-          <option value="3">3</option>
-          <option value="2">2</option>
+        <select
+          {...register("important")}
+          disabled={watch().writing !== "과제" ? true : false}
+        >
+          <option value="0">0</option>
           <option value="1">1</option>
+          <option value="2">2</option>
+          <option value="3">3</option>
+          <option value="4">4</option>
+          <option value="5">5</option>
         </select>
       </InputWrapper>
       <InputWrapper>
@@ -72,11 +136,18 @@ const MarkdownEditor = () => {
           {...register("tags")}
           placeholder="#해시태그 #해시태그"
         />
-      </InputWrapper>{" "}
-      <InputWrapper>
-        <h1>업로드</h1>
-        <input tyoe="text" placeholder="#해시태그 #해시태그" />
       </InputWrapper>
+      {watch().writing === "과제" || watch().writing === "투표" ? (
+        <InputWrapper>
+          <h1>마감 기한</h1>
+          <input
+            min={new Date().toISOString().slice(0, -8)}
+            type="datetime-local"
+            {...register("datetime")}
+          />
+        </InputWrapper>
+      ) : null}
+
       <ReactMarkdownEditor
         placeholder={"텍스트를 입력해주세요."}
         basicSetup={{

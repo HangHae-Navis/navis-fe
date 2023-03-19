@@ -1,5 +1,4 @@
-import { async } from "q";
-import { getCookie, setCookie } from "../infos/cookie";
+import { setCookie } from "../infos/cookie";
 import { setLocalStorage } from "../infos/localStorage";
 import Axios from "./axios";
 
@@ -93,20 +92,20 @@ export const postBoard = async (id, data) => {
   return res;
 };
 
-export const postHomework = async (data, id) => {
-  const res = axios.post(`api/${id}/boards/homeworks`, data);
+export const postHomework = async (id, data) => {
+  const res = axios.post(`api/${id}/homeworks`, data);
   return res;
 };
 
-export const postNotice = async (data, id) => {
-  const res = axios.post(`/api/${id}/boards/notices`, data, {
+export const postNotice = async (id, data) => {
+  const res = axios.post(`/api/${id}/notices`, data, {
     "Content-Type": "multipart/form-data",
   });
   return res;
 };
 
-export const postVote = async (data, id) => {
-  const res = axios.post(`/api/${id}/boards/votes`, data, {
+export const postVote = async (id, data) => {
+  const res = axios.post(`/api/${id}/votes`, data, {
     "Content-Type": "multipart/form-data",
   });
   return res;
@@ -121,15 +120,11 @@ export const getDetailPageForAdmin = async (payload) => {
 
 export const deletePageMembers = async (payload) => {
   if (payload.memberid) {
-    console.log(payload);
-    console.log("멤버 퇴출시키기");
     const res = await axios.delete(
       `api/groups/${payload.pam}?memberId=${payload.memberid}`
     );
     return res;
   } else {
-    console.log(payload);
-    console.log("본인 탈퇴시키기");
     const res = await axios.delete(`api/groups/${payload}`);
     return res;
   }
