@@ -62,6 +62,8 @@ const MarkdownEditor = () => {
     },
   });
 
+  console.log(watch());
+
   const onSubmit = async (data) => {
     const requestDto = new FormData();
     requestDto.append("title", data.title);
@@ -73,6 +75,9 @@ const MarkdownEditor = () => {
       const res = await boardMutation.mutateAsync(requestDto);
     } else if (data.writing === "공지사항") {
       const res = await noticeMutation.mutateAsync(requestDto);
+    } else if (data.writing === "과제") {
+      requestDto.append("expirationDate", new Date(data.datetime).getTime());
+      const res = await homeWorkMutation.mutateAsync(requestDto);
     }
   };
 
