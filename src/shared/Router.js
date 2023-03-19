@@ -1,5 +1,5 @@
 import React from "react";
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { BrowserRouter, Route, Routes, useLocation } from "react-router-dom";
 import Home from "../pages/Home";
 import Main from "../pages/Main";
 import Party from "../pages/Party";
@@ -10,6 +10,7 @@ import EditPost from "../pages/EditPost";
 import Admin from "../pages/Admin";
 import { path } from "../constants/path";
 import Header from "../components/global/Header";
+import PartyDetail from "../pages/PartyDetail";
 
 const Router = () => {
   return (
@@ -19,6 +20,7 @@ const Router = () => {
         <Route element={<Home />} path="/" />
         <Route element={<Main />} path={`/${path.MAIN}`} />
         <Route element={<Party />} path={`/${path.PARTY}`} />
+        <Route element={<PartyDetail />} path={`/${path.PARTYDEATAIL}`} />
         <Route element={<Profile />} path={`/${path.PROFILE}`} />
         <Route element={<MeetHome />} path={`/${path.MEETHOME}`} />
         <Route element={<MeetingRoom />} path={`/${path.MEETINGROOM}`} />

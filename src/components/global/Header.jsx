@@ -8,7 +8,6 @@ import { getKaKaoLogin } from "../../utils/api/api";
 import { removeCookie, setCookie } from "../../utils/infos/cookie";
 import { path } from "../../constants/path";
 import { removeLocalStorage } from "../../utils/infos/localStorage";
-import Logo from "../../assets/navis.svg";
 import Button from "../../element/Button";
 
 const Header = () => {
@@ -32,8 +31,8 @@ const Header = () => {
   );
 
   useEffect(() => {
-    setCurrentPam(code);
     if (nickname === null && code !== "") {
+      setCurrentPam(code);
       setIsCallBool(true);
     }
   }, []);
@@ -46,14 +45,15 @@ const Header = () => {
 
   return (
     <HeaderWrapper>
-      <img src={Logo} className="logo" alt="logo" />
+      {/* <img src={Logo} className="logo" alt="logo" /> */}
+      <h1>로고</h1>
       {nickname === null ? (
         <Button transparent={true} onClick={() => setLoginModal(true)}>
-          로그인
+          Login
         </Button>
       ) : (
         <Button transparent={true} onClick={onLogout}>
-          로그아웃
+          Logout
         </Button>
       )}
     </HeaderWrapper>
@@ -61,17 +61,18 @@ const Header = () => {
 };
 
 const HeaderWrapper = styled.header`
+  cursor: pointer;
   position: fixed;
   left: 0%;
   top: 0%;
   display: flex;
   align-items: center;
+  z-index: 999;
   justify-content: space-around;
   width: 100vw;
   height: 6rem;
   padding: 1rem;
-  background: ${(props) => props.theme.color.primary};
-  color: ${(props) => props.theme.color.white};
+  background: ${(props) => props.theme.color.zeroOne};
   .logo {
     width: 10.5rem;
   }

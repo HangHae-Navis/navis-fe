@@ -17,27 +17,23 @@ const Button = ({ onClick, size, children, transparent, disabled, full }) => {
 };
 
 const CustomButton = styled.button`
-  cursor: pointer;
-  padding: 0.8rem;
-  ${flexCenter}
-  width: 8rem;
-  height: 3.5rem;
-  border: none;
-  font-size: 1.45rem;
-  border-radius: 0.8rem;
-  background: ${(props) => props.theme.color.primary};
+  padding: 0 2rem;
+  width: fit-content;
+  height: 4rem;
+  border-radius: 3.4rem;
   color: white;
-  font-weight: 500;
+  background-color: ${(props) => props.theme.color.zeroFour};
+  font-size: 1.25rem;
+  border: none;
+
   ${(props) =>
     props.transparent === true &&
     css`
-      background-color: transparent;
-      border: 0.01rem solid ${(props) => props.theme.color.white};
+      border: 0.1rem solid ${(props) => props.theme.color.zeroTwo};
+      color: ${(props) => props.theme.color.zeroFour};
+      background: ${(props) => props.theme.color.white};
     `}
-  &:disabled {
-    background: ${(props) => props.theme.color.grey20};
-    color: ${(props) => props.theme.color.grey50};
-  }
+
   ${(props) =>
     props.full === true &&
     css`

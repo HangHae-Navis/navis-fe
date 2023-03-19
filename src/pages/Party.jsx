@@ -1,130 +1,332 @@
-import React, { useEffect, useState } from "react";
-import { useQuery } from "react-query";
+import { useMutation, useQuery } from "react-query";
 import styled from "styled-components";
 import PartyRegist from "../components/modal/PartyRegist";
 import Button from "../element/Button";
-import { getPartyPage } from "../utils/api/api";
+import { deletePageMembers, getDetailPage, getPartyBoard, getPartyPage } from "../utils/api/api";
+import Skeleton from "react-loading-skeleton";
+import "react-loading-skeleton/dist/skeleton.css";
+import Test from "../assets/d65d5952-d801-4225-ab16-8720733b499a.png";
+import Pagination from "react-js-pagination";
+import { useNavigate, useParams } from "react-router-dom";
+import { useEffect, useState } from "react";
 
-const GroupBoxComp = (props) =>{
+function Board(props) {
+  const navi = useNavigate();
+  const [dtypeText, setDtypeText] = useState("")
+  const [hashtagText, setHashtagText] = useState([])
 
-  return(<><GroupBox>
-    <h3>그룹 리더 : {props.adminName}</h3>
-    <h3>그룹 명 : {props.groupName}</h3>
-    <h3>그룹 부재 : {props.groupInfo}</h3>
-    <h3>참여자 수 : {props.memberNumber}</h3>
-  </GroupBox>
-  
-  </>)
+  useEffect(() => {
+    switch (props.dtype) {
+      case "vote":
+        setDtypeText("투표")
+        break;
+      case "board":
+        setDtypeText("게시글")
+        break;
+      case "homework":
+        setDtypeText("과제")
+        break;
+      case "notice":
+        setDtypeText("공지")
+        break;
+      default:
+        break;
+    }
+    setHashtagText(props.hashtagList)
+  }, [])
+
+  return (
+    <>
+      <BoardBox
+        onClick={() =>
+          navi(`/party/detail?groupId=${props.groupId}&detailId=${props.id}&dtype=${props.dtype}`)
+        }
+      >
+        <BoardBoxTitleBox>
+          <h1>{props.title}</h1>
+          <p>{props.subtitle}</p>
+          <p>작성자 : {props.nickName}</p>
+          <p>분류 : {dtypeText}</p>
+          <p>중요도 : {props.important}</p>
+          <div>
+            {hashtagText?.map((item) => {
+              return (
+                <HashTagBox key={item}># {item}</HashTagBox>
+              )
+            })}
+          </div>
+        </BoardBoxTitleBox>
+      </BoardBox>
+    </>
+  );
 }
 
-const GroupBox = styled.div`
-  width: 30rem;
-  height: 38rem;
-  background-color: skyblue;
-  border-radius: 1.5rem;
+const HashTagBox = styled.div`
+display: inline-block;
+border: 0.1rem solid #ccc;
+border-radius: 0.5rem;
+padding: 0.5rem;
+margin-right: 1rem;
+font-size: 1.5rem;
+opacity: 0.8;
+width: fit-content;
+`;
+
+const BoardBox = styled.div`
+  width: 41rem;
+  height: 25rem;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  padding: 2rem;
-`
+  background-color: aliceblue;
+  border-radius: 2rem;
+`;
+const BoardBoxTitleBox = styled.div`
+  padding: 1rem;
+  flex-direction: column;
+  justify-content: flex-start;
+  width: 30rem;
+  height: 10rem;
+  padding-top: 1rem;
+  padding-left: 1rem;
+  font-size: 2.45rem;
+  h1 {
+    font-size: 2.3rem;
+    font-weight: 600;
+  }
+  p {
+    font-size: 1.6rem;
+  }
+`;
 
-const Party = () => {
-  const [groupList, setGroupList] = useState([])
-  const [totalNum, setTotalNum] = useState(100)
-  const [pageNum, setPageNum] = useState(1)
-  //받아오는 데이터는 content(목록), totalElements(총 갯수), totalPages(총 페이지)를 받아옴
-  //현재 받아오는 response 중 사용 중인 것은 content와 totalelements 둘 뿐, totalPages를 사용하려면 MakeButton의 로직 변경 필요
-  const PartyList = useQuery(['getList', {page : pageNum, size : 8, category : 'all'}], () => getPartyPage({page : pageNum, size : 8, category : 'all'}))
-  const [isOpen, setIsOpen] = useState(false)
+
+function RadioButtons({ options, categoryValue, partyRes, selected, setSelected }) {
 
   useEffect(() => {
-      if(PartyList.data){
-        setGroupList(PartyList.data.data.data.content)
-        setTotalNum(PartyList.data.data.data.totalElements)
-      }
-
-  }, [PartyList.data])
-
-  const MakeGroupHandler = () => {
-    setIsOpen(true)
-  }
-
-  //하단부 버튼 구현, pageNum State를 변경시켜 버튼에 맞는 페이지 요청
-  //컴포넌트 분리하기엔 기능이 너무 적어 Party 안에 구현함 
-  const MakeButton = () => {
-    const divs = []
-      for(let i =0; i < (totalNum / 8); i++){
-        divs.push(<PagenationButton onClick={() => setPageNum(i+1)} key = {i}>{i +1}</PagenationButton>)
-      }
-      return divs
-  }
-
-
-  return(<>
-  <PageContainer>
-    <Button transparent={false} onClick={() => MakeGroupHandler()}>
-      새 그룹 만들기
-    </Button>
-  <GroupContainer>
-    {
-      groupList?.map((item) => {
-        return(<GroupBoxComp key = {item.groupId}
-        adminName = {item.adminName}
-        groupInfo = {item.groupInfo}
-        groupName = {item.groupName}
-        memberNumber = {item.memberNumber}/>)
-      })
+    switch (selected) {
+      case 0:
+        categoryValue("all")
+        partyRes.refetch()
+        break;
+      case 1:
+        //categoryValue("notice")
+        break;
+      case 2:
+        categoryValue("vote")
+        partyRes.refetch()
+        break;
+      case 3:
+        categoryValue("homework")
+        partyRes.refetch()
+        break;
+      case 4:
+        categoryValue("board")
+        partyRes.refetch()
+        break;
+      default:
+        break
     }
-    </GroupContainer>
-    <BottomButtonBox>
-      <MakeButton></MakeButton>
-    </BottomButtonBox>
-  </PageContainer>
-  {isOpen == true ? (
-    <PartyRegist isOpen = {setIsOpen}/>
-    ) : null
+  }, [selected]);
+
+
+  return (
+    <RadioBox>
+      {options.map((option, index) => (
+        <RadioButtonStyled
+          key={index}
+          style={{ opacity: selected === index ? 1 : 0.5 }}
+          onClick={() => setSelected(index)}
+        >
+          {option}
+        </RadioButtonStyled>
+      ))}
+    </RadioBox>
+  );
+}
+
+const RadioButtonStyled = styled.button`
+margin-right: 1rem;
+  width: 6rem;
+  height: 4rem;
+  border: none;
+  border-radius: 1rem;
+  font-size: 2rem;
+  background-color: ${({ selected }) => (selected ? "#ccc" : "transparent")};
+  opacity: ${({ selected }) => (selected ? 1 : 0.5)};
+`;
+const RadioBox = styled.div`
+`
+
+
+const Party = () => {
+  const navi = useNavigate();
+  const pam = useParams();
+  const [selected, setSelected] = useState(0);
+  const [categoryValue, setCategoryValue] = useState("all");
+  const options = ['전체', '공지', '투표', '과제', '게시글'];
+  const [groupList, setGroupList] = useState([]);
+  const [totalNum, setTotalNum] = useState(0);
+  const [pageNum, setPageNum] = useState(1);
+  const partyRes = useQuery(
+    ["party", { id: pam.id, page: pageNum, size: 99, category: categoryValue }],
+    () =>
+      getDetailPage({ id: pam.id, page: pageNum, size: 99, category: categoryValue }),
+    {
+      onSuccess: ({ data }) => {
+        setGroupList(data.data.basicBoards.content);
+      },
+    }
+  );
+  
+  const MakeBoards = () => {
+    return <></>;
+  };
+
+  const deletePartyMember = useMutation(deletePageMembers, {
+    onSuccess: (data) => {
+      console.log('해당 멤버가 퇴출되었습니다.')
+      window.alert('해당 멤버가 퇴출되었습니다')
+      navi('/')
+    }
+  })
+
+  const doDelete = (data) => {
+    const res = deletePartyMember.mutateAsync(data)
   }
-  </>)
+
+  if (partyRes.isLoading || partyRes.isError) {return (
+    <>
+    </>
+  );
+  }
+  return (
+    <>
+      <PageContainer>
+        <LeftContainer>
+          <LeftTitleBox>
+            <h1>{partyRes.data.data.data.groupName}</h1>
+            <p>{partyRes.data.data.data.groupInfo}</p>
+            <p>초대 코드 : {partyRes.data.data.data.groupCode}</p>
+            <Button onClick={() => navi(`/party/${pam.id}/edit`,)}>글쓰기</Button>
+            {partyRes.data.data.data.admin === true ? (
+              <Button onClick={() => navi(`/party/${pam.id}/admin`)}>
+                어드민 페이지
+              </Button>
+            ) : (
+              <Button onClick={() => doDelete(pam.id)}>그룹 탈퇴하기</Button>
+            )}
+          </LeftTitleBox>
+        </LeftContainer>
+        <RightTotalContainer>
+          <RadioBox>
+            <RadioButtons
+            options={options} categoryValue={setCategoryValue}
+            partyRes={partyRes} selected={selected} setSelected={setSelected}/>
+          </RadioBox>
+          <RightContainer>
+            {groupList?.map((item) => {
+              return (
+                <Board
+                  key={item.id}
+                  groupId={pam.id}
+                  createAt={item.createAt}
+                  content={item.content}
+                  nickName={item.nickname}
+                  subtitle={item.subtitle}
+                  title={item.title}
+                  id={item.id}
+                  dtype={item.dtype}
+                  important={item.important}
+                  hashtagList={item.hashtagList}
+                />
+              );
+            })}
+          </RightContainer>
+        </RightTotalContainer>
+      </PageContainer>
+    </>
+  );
 };
 
-const PageContainer = styled.div`
-display: flex;
-flex-direction: column;
-align-items: center;
-justify-content: center;
-height: 100vh;
-`
 
-const GroupContainer = styled.div`
-  width: 130rem;
-  height: 100rem;
-  background-color: gray;
+const TextWrapper = styled.section`
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+`;
+
+const PageContainer = styled.div`
   display: flex;
   flex-direction: row;
-  display: grid;
-  grid-template-columns: repeat(4, 32rem);
+  justify-content: space-between;
   align-items: flex-start;
-  padding: 2rem;
+  width: 80vw;
+  margin: 0 auto;
+  gap: 1rem;
+  background-color: wheat;
+  padding-left: 3rem;
+  padding-right: 3rem;
+`;
+
+const LeftContainer = styled.div`
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 30rem;
+  gap: 1rem;
+  background-color: blanchedalmond;
+  color: black;
+  font-size: 1.45rem;
+`;
+
+const RightTotalContainer = styled.div`
+flex-direction: column;
+justify-content: center;
+align-items: center;
 `
 
-const PagenationButton = styled.button`
+const RightContainer = styled.div`
+  padding-top: 2rem;
+  padding-bottom: 2rem;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  align-items: center;
+  justify-items: center;
+  width: 60vw;
+  gap: 1rem;
+  background-color: violet;
+  color: black;
+  font-size: 1.45rem;
+`;
+const LeftTitleBox = styled.div`
+  padding: 3rem;
+  flex-direction: column;
+  justify-content: flex-start;
+  width: 30rem;
+  height: 20rem;
+  background-color: gainsboro;
+  font-size: 2.45rem;
+  h1 {
+    font-size: 2.3rem;
+    font-weight: 600;
+  }
+  p {
+    font-size: 1.6rem;
+  }
+`;
+
+const LeftRadioBox = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+`;
+
+const RadioButton = styled.button`
   width: 2rem;
   height: 2rem;
-  background-color: black;
+  border: 0.1rem solid black;
   color: white;
-  font-size: 1.45rem;
-  border-radius: 0.8rem;
-  text-align: center;
-`
-
-const BottomButtonBox = styled.div`
-width: 60rem;
-height: 3rem;
-background-color: darkcyan;
-display: flex ;
-align-items: center;
-justify-content: center;
-padding: 2rem;
-`
+`;
 
 export default Party;

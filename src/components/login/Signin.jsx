@@ -48,11 +48,11 @@ const Signin = ({ setIsSignIn }) => {
         <Input
           placeholder="비밀번호를 입력하세요."
           register={register}
-          name="username"
+          name="password"
           type="password"
           label="비밀번호"
         />
-        <Button disabled={true} full={true}>
+        <Button disabled={false} full={true}>
           로그인
         </Button>
         <div className="kakao" onClick={responseKakao}>

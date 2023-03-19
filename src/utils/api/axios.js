@@ -5,6 +5,7 @@ export default class Axios {
   constructor(url) {
     this.instance = axios.create({
       baseURL: url,
+      withCredentials: true,
     });
   }
 
@@ -28,14 +29,14 @@ export default class Axios {
     return this.instance.delete(url, option);
   }
 
-  async post(url, data) {
+  async post(url, data, option) {
     const cookie = getCookie("token");
-    const option = {
+    return this.instance.post(url, data, {
       headers: {
         Authorization: `${cookie ? cookie : ""}`,
+        ...option,
       },
-    };
-    return this.instance.post(url, data, option);
+    });
   }
 
   async patch(url, data) {

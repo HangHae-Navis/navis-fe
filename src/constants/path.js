@@ -1,6 +1,7 @@
 export const path = Object.freeze({
   MAIN: "main",
   PARTY: "party/:id",
+  PARTYDEATAIL: "party/detail/",
   EDITPOST: "party/:id/edit",
   MEETHOME: "party/:id/meet",
   MEETINGROOM: "party/:id/meeting",
