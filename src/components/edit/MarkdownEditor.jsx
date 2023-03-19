@@ -68,8 +68,6 @@ const MarkdownEditor = () => {
     },
   });
 
-  console.log(watch());
-
   const onSubmit = async (data) => {
     const requestDto = new FormData();
     requestDto.append("title", data.title);
@@ -87,6 +85,8 @@ const MarkdownEditor = () => {
         new Date(data.datetime).getTime() / 1000
       );
       const res = await homeWorkMutation.mutateAsync(requestDto);
+    } else if (data.writing === "투표") {
+      const res = await voteMutation.mutateAsync(requestDto);
     }
   };
 
