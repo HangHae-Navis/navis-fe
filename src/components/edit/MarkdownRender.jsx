@@ -6,11 +6,11 @@ import styled from "styled-components";
 import SyntaxHighlighter from "react-syntax-highlighter";
 import { a11yDark } from "react-syntax-highlighter/dist/esm/styles/prism";
 
-const MarkdownRender = () => {
+const MarkdownRender = ({ markdownInfo }) => {
   const markdownValue = useRecoilValue(markdownState);
-
   return (
     <MarkdownWrapper>
+      <h1>{markdownInfo.title}</h1>
       <ReactMarkdownWrapper
         children={markdownValue}
         remarkPlugins={[remarkGfm]}
