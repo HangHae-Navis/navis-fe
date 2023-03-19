@@ -29,14 +29,14 @@ export default class Axios {
     return this.instance.delete(url, option);
   }
 
-  async post(url, data) {
+  async post(url, data, option) {
     const cookie = getCookie("token");
-    const config = {
+    return this.instance.post(url, data, {
       headers: {
         Authorization: `${cookie ? cookie : ""}`,
+        ...option,
       },
-    };
-    return this.instance.post(url, data, config);
+    });
   }
 
   async patch(url, data) {
