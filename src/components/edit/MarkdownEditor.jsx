@@ -166,7 +166,7 @@ const MarkdownEditor = ({ markdownInfo, setmarkdownInfo }) => {
         value={markdownValue}
         theme={"dark"}
         onChange={onMarkdownEditorChange}
-        height={"70vh"}
+        height={"51vh"}
       />
       <div className="buttonWrapper">
         <Button>게시하기</Button>
