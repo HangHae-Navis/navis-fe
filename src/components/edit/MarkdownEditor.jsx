@@ -15,29 +15,21 @@ import Button from "../../element/Button";
 const MarkdownEditor = () => {
   const { id } = useParams();
   const [markdownValue, setMarkdownValue] = useRecoilState(markdownState);
-  const { register, watch, handleSubmit } = useForm();
+  const { register, handleSubmit } = useForm();
   const onChange = useCallback((value) => {
     setMarkdownValue(value);
   }, []);
-  const boardMutation = useMutation((data) =>
-    postBoard(id, data, {
-      "Content-Type": "multipart/form-data",
-    })
-  );
+  const boardMutation = useMutation((data) => postBoard(id, data));
   const onSubmit = async (data) => {
     const requestDto = new FormData();
     requestDto.append("title", data.title);
     requestDto.append("subtitle", data.subtitle);
     requestDto.append("content", markdownValue);
-    requestDto.append("important", 0);
+    requestDto.append("important", data.important);
     requestDto.append("hashtagList", data.tags);
-
-    for (const [key, value] of requestDto.entries()) {
-      console.log(key, value, typeof value);
-    }
-    const res = await boardMutation.mutateAsync(id, requestDto);
+    const res = await boardMutation.mutateAsync(requestDto);
+    console.log(res);
   };
-  console.log(watch());
   return (
     <MarkdownEditorWrapper onSubmit={handleSubmit(onSubmit)}>
       <InputWrapper>
@@ -101,7 +93,7 @@ const MarkdownEditor = () => {
         height={"70vh"}
       />
       <div className="buttonWrapper">
-        <Button onClick={onSubmit}>게시하기</Button>
+        <Button>게시하기</Button>
       </div>
     </MarkdownEditorWrapper>
   );

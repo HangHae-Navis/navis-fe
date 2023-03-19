@@ -86,15 +86,15 @@ export const getBoards = async (groupId) => {
   return res;
 };
 
-export const postBoard = async (data, id, etc) => {
-  const res = axios.post(`api/${id}/boards`, data, etc);
+export const postBoard = async (id, data) => {
+  const res = axios.post(`api/${id}/boards`, data, {
+    "Content-Type": "multipart/form-data",
+  });
   return res;
 };
 
 export const postHomework = async (data, id) => {
-  const res = axios.post(`api/${id}/boards/homeworks`, data, {
-    "Content-Type": "multipart/form-data",
-  });
+  const res = axios.post(`api/${id}/boards/homeworks`, data);
   return res;
 };
 
