@@ -1,5 +1,4 @@
-import { async } from "q";
-import { getCookie, setCookie } from "../infos/cookie";
+import { setCookie } from "../infos/cookie";
 import { setLocalStorage } from "../infos/localStorage";
 import Axios from "./axios";
 
