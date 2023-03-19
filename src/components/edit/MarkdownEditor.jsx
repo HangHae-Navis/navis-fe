@@ -2,7 +2,7 @@ import ReactCodeMirror from "@uiw/react-codemirror";
 import { markdown, markdownLanguage } from "@codemirror/lang-markdown";
 import { languages } from "@codemirror/language-data";
 import styled from "styled-components";
-import { useRecoilState } from "recoil";
+import { useRecoilState, useResetRecoilState } from "recoil";
 import { useCallback } from "react";
 import { markdownState } from "../../store/atom";
 import { postBoard, postNotice } from "../../utils/api/api";
@@ -17,7 +17,8 @@ const MarkdownEditor = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const [markdownValue, setMarkdownValue] = useRecoilState(markdownState);
-  const { register, handleSubmit, watch } = useForm({
+  const resetMarkdownValue = useResetRecoilState(markdownState);
+  const { register, handleSubmit, watch, reset } = useForm({
     defaultValues: {
       important: "0",
     },
@@ -38,6 +39,8 @@ const MarkdownEditor = () => {
       toast.success("공지가 등록되었습니다", {
         toastId: "noticeSuccess",
       });
+      resetMarkdownValue();
+      reset();
       navigate(`/party/${id}`);
     },
   });
@@ -119,11 +122,18 @@ const MarkdownEditor = () => {
           {...register("tags")}
           placeholder="#해시태그 #해시태그"
         />
-      </InputWrapper>{" "}
-      <InputWrapper>
-        <h1>업로드</h1>
-        <input tyoe="text" placeholder="#해시태그 #해시태그" />
       </InputWrapper>
+      {watch().writing === "과제" || watch().writing === "투표" ? (
+        <InputWrapper>
+          <h1>마감 기한</h1>
+          <input
+            min={new Date().toISOString().slice(0, -8)}
+            type="datetime-local"
+            {...register("datetime")}
+          />
+        </InputWrapper>
+      ) : null}
+
       <ReactMarkdownEditor
         placeholder={"텍스트를 입력해주세요."}
         basicSetup={{
