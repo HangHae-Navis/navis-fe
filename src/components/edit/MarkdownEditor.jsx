@@ -5,7 +5,7 @@ import styled from "styled-components";
 import { useRecoilState, useResetRecoilState } from "recoil";
 import { useCallback } from "react";
 import { markdownState } from "../../store/atom";
-import { postBoard, postNotice } from "../../utils/api/api";
+import { postBoard, postHomework, postNotice } from "../../utils/api/api";
 import { useMutation } from "react-query";
 import { useNavigate, useParams } from "react-router-dom";
 import { useForm } from "react-hook-form";
@@ -31,6 +31,8 @@ const MarkdownEditor = () => {
       toast.success("게시글이 등록되었습니다", {
         toastId: "boardSuccess",
       });
+      resetMarkdownValue();
+      reset();
       navigate(`/party/${id}`);
     },
   });
@@ -49,15 +51,19 @@ const MarkdownEditor = () => {
       toast.success("투표가 등록되었습니다", {
         toastId: "voteSuccess",
       });
+      resetMarkdownValue();
+      reset();
       navigate(`/party/${id}`);
     },
   });
 
-  const homeWorkMutation = useMutation((data) => postBoard(id, data), {
+  const homeWorkMutation = useMutation((data) => postHomework(id, data), {
     onSuccess: () => {
       toast.success("과제가 등록되었습니다", {
         toastId: "homeWorkSuccess",
       });
+      resetMarkdownValue();
+      reset();
       navigate(`/party/${id}`);
     },
   });
@@ -76,7 +82,10 @@ const MarkdownEditor = () => {
     } else if (data.writing === "공지사항") {
       const res = await noticeMutation.mutateAsync(requestDto);
     } else if (data.writing === "과제") {
-      requestDto.append("expirationDate", new Date(data.datetime).getTime());
+      requestDto.append(
+        "expirationDate",
+        new Date(data.datetime).getTime() / 1000
+      );
       const res = await homeWorkMutation.mutateAsync(requestDto);
     }
   };
