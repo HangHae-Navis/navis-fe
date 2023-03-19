@@ -5,7 +5,7 @@ import styled from "styled-components";
 import { useRecoilState } from "recoil";
 import { useCallback } from "react";
 import { markdownState } from "../../store/atom";
-import { postBoard } from "../../utils/api/api";
+import { postBoard, postNotice } from "../../utils/api/api";
 import { useMutation } from "react-query";
 import { useNavigate, useParams } from "react-router-dom";
 import { useForm } from "react-hook-form";
@@ -17,7 +17,11 @@ const MarkdownEditor = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const [markdownValue, setMarkdownValue] = useRecoilState(markdownState);
-  const { register, handleSubmit, watch } = useForm();
+  const { register, handleSubmit, watch } = useForm({
+    defaultValues: {
+      important: "0",
+    },
+  });
   const onChange = useCallback((value) => {
     setMarkdownValue(value);
   }, []);
@@ -29,7 +33,7 @@ const MarkdownEditor = () => {
       navigate(`/party/${id}`);
     },
   });
-  const noticeMutation = useMutation((data) => postBoard(id, data), {
+  const noticeMutation = useMutation((data) => postNotice(id, data), {
     onSuccess: () => {
       toast.success("공지가 등록되었습니다", {
         toastId: "noticeSuccess",
@@ -54,6 +58,7 @@ const MarkdownEditor = () => {
       navigate(`/party/${id}`);
     },
   });
+
   const onSubmit = async (data) => {
     const requestDto = new FormData();
     requestDto.append("title", data.title);
@@ -61,8 +66,13 @@ const MarkdownEditor = () => {
     requestDto.append("content", markdownValue);
     requestDto.append("important", data.important);
     requestDto.append("hashtagList", data.tags);
-    const res = await boardMutation.mutateAsync(requestDto);
+    if (data.writing === "게시글") {
+      const res = await boardMutation.mutateAsync(requestDto);
+    } else if (data.writing === "공지사항") {
+      const res = await noticeMutation.mutateAsync(requestDto);
+    }
   };
+
   return (
     <MarkdownEditorWrapper onSubmit={handleSubmit(onSubmit)}>
       <InputWrapper>
@@ -78,11 +88,12 @@ const MarkdownEditor = () => {
           {...register("important")}
           disabled={watch().writing !== "과제" ? true : false}
         >
-          <option value="5">5</option>
-          <option value="4">4</option>
-          <option value="3">3</option>
-          <option value="2">2</option>
+          <option value="0">0</option>
           <option value="1">1</option>
+          <option value="2">2</option>
+          <option value="3">3</option>
+          <option value="4">4</option>
+          <option value="5">5</option>
         </select>
       </InputWrapper>
       <InputWrapper>
