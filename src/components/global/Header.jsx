@@ -70,7 +70,7 @@ const HeaderWrapper = styled.header`
   z-index: 999;
   justify-content: space-around;
   width: 100vw;
-  height: 6rem;
+  height: 10rem;
   padding: 1rem;
   background: ${(props) => props.theme.color.zeroOne};
   .logo {

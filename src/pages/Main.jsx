@@ -14,7 +14,6 @@ import { toast } from "react-toastify";
 
 const GroupBoxComp = (props) => {
   const navigate = useNavigate();
-
   return (
     <>
       <GroupBox onClick={() => navigate(`/party/${props.groupId}`)}>
@@ -28,132 +27,15 @@ const GroupBoxComp = (props) => {
           </SubInfo>
         </TextWrapper>
         <GroupDeadlineContainer>
-        <GroupDeadline>
-          <h1>오늘 중 마감</h1>
-          <p>{props.groupInfo}</p>
-        </GroupDeadline>
+          <GroupDeadline>
+            <li>오늘까지 제출해야 할 파일</li>
+            <li>{props.groupInfo}</li>
+          </GroupDeadline>
         </GroupDeadlineContainer>
       </GroupBox>
     </>
   );
 };
-
-const GroupBox = styled.div`
-  cursor: pointer;
-  width: 32rem;
-  height: 45rem;
-  box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
-  border-radius: 0.8rem;
-  display: flex;
-  flex-direction: column;
-  @media (max-width: 1400px) {
-    width: 29rem;
-  }
-  @media (max-width: 965px) {
-    width: 32rem;
-  }
-  @media (max-width: 700px) {
-    width: 80vw;
-    min-width: 30rem;
-  }
-  padding: 0.8rem;
-  img {
-    background-color: yellow;
-    height: 45%;
-    border-radius: 0.8rem;
-    object-fit: cover;
-    object-position: center;
-  }
-  .tag {
-    margin: 1rem 0;
-    padding: 0.8rem;
-    background-color: #dc3545;
-    width: fit-content;
-    border-radius: 0.3rem;
-    font-size: 1.3rem;
-    color: white;
-    font-weight: 500;
-  }
-  h1 {
-    font-size: 2.3rem;
-    font-weight: 600;
-  }
-  p {
-    font-size: 1.6rem;
-  }
-`;
-
-const GroupDeadlineContainer = styled.div`
-padding-top: 1rem;
-display: flex;
-flex-direction: column;
-align-items: center;
-`
-
-const GroupDeadline = styled.div`
-display: flex;
-flex-direction: column;
-align-items: flex-start;
-  width: 26rem;
-  height: 10rem;
-  border: 0.2rem solid gray;
-  border-radius: 1.2rem;
-  padding: 1rem;
-`
-
-const SubInfo = styled.div`
-  font-size: 1.5rem;
-  color: #878d96;
-`;
-
-const TextWrapper = styled.section`
-  display: flex;
-  flex-direction: column;
-  gap: 0.6rem;
-`;
-
-const PaginationBox = styled.div`
-  .pagination {
-    display: flex;
-    justify-content: center;
-    margin-top: 15px;
-  }
-  ul {
-    list-style: none;
-    padding: 0;
-  }
-  ul.pagination li {
-    display: inline-block;
-    width: 30px;
-    height: 30px;
-    border: 1px solid #e2e2e2;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-size: 1rem;
-  }
-  ul.pagination li:first-child {
-    border-radius: 5px 0 0 5px;
-  }
-  ul.pagination li:last-child {
-    border-radius: 0 5px 5px 0;
-  }
-  ul.pagination li a {
-    text-decoration: none;
-    color: #337ab7;
-    font-size: 1rem;
-  }
-  ul.pagination li.active a {
-    color: white;
-  }
-  ul.pagination li.active {
-    background-color: #337ab7;
-  }
-  ul.pagination li a:hover,
-  ul.pagination li a.active {
-    color: blue;
-  }
-`;
 
 const Main = () => {
   const [groupList, setGroupList] = useState([]);
@@ -167,7 +49,7 @@ const Main = () => {
     () => getPartyPage({ page: pageNum, size: 8, category: "all" }),
     {
       onSuccess: ({ data }) => {
-        console.log(data.data)
+        console.log(data);
         setGroupList(data.data.content);
         setTotalNum(data.data.totalElements);
       },
@@ -234,16 +116,14 @@ const Main = () => {
             })
           ) : (
             <>
-              <Skeleton width={320} height={534} />
-              <Skeleton width={320} height={534} />
-              <Skeleton width={320} height={534} />
-              <Skeleton width={320} height={534} />
-              <Skeleton width={320} height={534} />
-              <Skeleton width={320} height={534} />
-              <Skeleton width={320} height={534} />
-              <Skeleton width={320} height={534} />
-              <Skeleton width={320} height={534} />
-              <Skeleton width={320} height={534} />
+              <Skeleton width={380} height={510} />
+              <Skeleton width={380} height={534} />
+              <Skeleton width={380} height={534} />
+              <Skeleton width={380} height={534} />
+              <Skeleton width={380} height={534} />
+              <Skeleton width={380} height={534} />
+              <Skeleton width={380} height={534} />
+              <Skeleton width={380} height={534} />
             </>
           )}
         </GroupContainer>
@@ -284,12 +164,138 @@ const GroupContainer = styled.div`
   align-items: flex-start;
 `;
 
-const PagenationButton = styled.button`
-  background-color: black;
-  color: white;
-  font-size: 1.45rem;
+const GroupBox = styled.div`
+  cursor: pointer;
+  width: 38rem;
+  height: 51rem;
+  background-color: ${(props) => props.theme.color.zeroOne};
   border-radius: 0.8rem;
-  text-align: center;
+  display: flex;
+  flex-direction: column;
+  @media (max-width: 1400px) {
+    width: 29rem;
+  }
+  @media (max-width: 965px) {
+    width: 32rem;
+  }
+  @media (max-width: 700px) {
+    width: 80vw;
+    min-width: 30rem;
+  }
+  padding: 1.6rem;
+  img {
+    background-color: yellow;
+    height: 26.6rem;
+    border-radius: 1.6rem;
+    object-fit: cover;
+    object-position: center;
+  }
+  .tag {
+    margin: 1rem 0;
+    padding: 0.6rem 0.8rem;
+    width: fit-content;
+    border-radius: 0.8rem;
+    font-size: 1.4rem;
+    background-color: #ffffff;
+    color: ${(props) => props.theme.color.zeroFour};
+    font-weight: 500;
+  }
+  h1 {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    font-size: 2.3rem;
+    font-weight: 600;
+  }
+  p {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    font-size: 1.6rem;
+  }
+`;
+
+const GroupDeadlineContainer = styled.div`
+  padding-top: 1rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+`;
+
+const GroupDeadline = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  width: 100%;
+  height: 7.2rem;
+  border-radius: 2.2rem;
+  padding: 1.2rem 1.6rem;
+  background-color: #ffffff;
+  gap: 0.4rem;
+
+  li {
+    font-size: 1.5rem;
+  }
+`;
+
+const SubInfo = styled.div`
+  font-size: 1.5rem;
+  color: #878d96;
+`;
+
+const TextWrapper = styled.section`
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+`;
+
+const PaginationBox = styled.div`
+  .pagination {
+    display: flex;
+    position: absolute;
+    bottom: 5rem;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+  ul {
+    list-style: none;
+    padding: 0;
+  }
+  ul.pagination li {
+    display: inline-block;
+    width: 5rem;
+    height: 3rem;
+    border: 0.05rem solid ${(props) => props.theme.color.zeroFour};
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    a {
+      font-size: 1.2rem;
+    }
+  }
+  ul.pagination li:first-child {
+    border-radius: 5px 0 0 5px;
+    a {
+      font-size: 1.8rem;
+    }
+  }
+  ul.pagination li:last-child {
+    border-radius: 0 5px 5px 0;
+    a {
+      font-size: 1.8rem;
+    }
+  }
+  ul.pagination li a {
+    text-decoration: none;
+    color: ${(props) => props.theme.color.zeroThree};
+  }
+  ul.pagination li.active {
+    background-color: ${(props) => props.theme.color.zeroFour};
+  }
 `;
 
 export default Main;
