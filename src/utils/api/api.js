@@ -59,7 +59,6 @@ export const getDetailPage = async (payload) => {
 };
 
 export const getBoardDetailPage = async (payload) => {
-  console.log(payload)
   const res = await axios.get(
     `api/${payload.groupId}/${payload.dtype}s/${payload.DetailId}`
   );
