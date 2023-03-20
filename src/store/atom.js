@@ -15,3 +15,10 @@ export const markdownState = atom({
   key: `state${v4()}`,
   default: "",
 });
+
+export const markdownInfoState = atom({
+  key: `state${v4()}`,
+  default: {
+    title: "",
+  },
+});
