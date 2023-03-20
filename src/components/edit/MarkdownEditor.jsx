@@ -166,7 +166,7 @@ const MarkdownEditor = ({ markdownInfo, setmarkdownInfo }) => {
         value={markdownValue}
         theme={"dark"}
         onChange={onMarkdownEditorChange}
-        height={"51vh"}
+        height={"525px"}
       />
       <div className="buttonWrapper">
         <Button>게시하기</Button>
@@ -180,7 +180,7 @@ const MarkdownEditorWrapper = styled.form`
     font-size: 1.5rem;
   }
   background-color: ${(props) => props.theme.color.zeroOne};
-  padding: 1.2rem;
+  padding: 3.7rem 3.2rem;
   width: 52%;
   font-family: Pretendard !important;
   display: flex;
@@ -188,7 +188,7 @@ const MarkdownEditorWrapper = styled.form`
   flex-direction: column;
   font-size: 1.3rem;
   border-radius: 2rem;
-
+  height: 865px;
   .buttonWrapper {
     justify-self: flex-end;
     align-self: flex-end;
@@ -229,6 +229,8 @@ const ReactMarkdownEditor = styled(ReactCodeMirror)`
   * {
     outline: none !important;
   }
+
+  height: 100%;
 
   .cm-selectionBackground {
     background-color: #e7e7fc !important;

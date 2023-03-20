@@ -5,12 +5,20 @@ import remarkGfm from "remark-gfm";
 import styled from "styled-components";
 import SyntaxHighlighter from "react-syntax-highlighter";
 import { a11yDark } from "react-syntax-highlighter/dist/esm/styles/prism";
+import { getLocalStorage } from "../../utils/infos/localStorage";
 
 const MarkdownRender = ({ markdownInfo }) => {
   const markdownValue = useRecoilValue(markdownState);
+  const userName = getLocalStorage("userInfo");
+  const date = new Date();
   return (
     <MarkdownWrapper>
-      <h1>{markdownInfo.title}</h1>
+      <TitleRenderContent>
+        <h1>{markdownInfo.title}</h1>
+        <span>{userName}</span>
+        <span>|</span>
+        <span>{date.toLocaleDateString()}</span>
+      </TitleRenderContent>
       <ReactMarkdownWrapper
         children={markdownValue}
         remarkPlugins={[remarkGfm]}
@@ -40,13 +48,45 @@ const MarkdownRender = ({ markdownInfo }) => {
 
 const MarkdownWrapper = styled.section`
   width: 50%;
-  padding: 0 1.2rem 0 0;
   height: 100%;
   border: 0.1rem solid #9795b5;
-  min-height: 80vh;
   border-radius: 2rem;
   padding: 1.5rem;
+  height: 865px;
+`;
 
+const TitleRenderContent = styled.section`
+  padding: 5rem 0 0.75rem 0;
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  h1 {
+    width: 30rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-size: 2.1rem;
+    line-height: 1.45;
+  }
+  span {
+    align-self: flex-cent;
+    font-size: 1.4rem;
+    color: ${(props) => props.theme.color.grey40};
+  }
+  border-bottom: 1px solid hsla(0, 0%, 50%, 0.33);
+`;
+
+const ReactMarkdownWrapper = styled(ReactMarkdown)`
+  * {
+    font-size: 1.4rem;
+    font-family: "Roboto Mono", monospace;
+  }
+  padding: 2.5rem 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  p {
+    word-wrap: break-word;
+  }
   h1 {
     padding: 2rem 0;
     font-size: 2.1rem;
@@ -58,20 +98,6 @@ const MarkdownWrapper = styled.section`
       top: 0.33em;
       border-bottom: 1px solid hsla(0, 0%, 50%, 0.33);
     }
-  }
-`;
-
-const ReactMarkdownWrapper = styled(ReactMarkdown)`
-  * {
-    font-size: 1.4rem;
-    font-family: "Roboto Mono", monospace;
-  }
-
-  display: flex;
-  flex-direction: column;
-
-  p {
-    word-wrap: break-word;
   }
 
   h2 {
