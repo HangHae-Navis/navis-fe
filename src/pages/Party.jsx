@@ -17,6 +17,8 @@ function Board(props) {
   const [hashtagText, setHashtagText] = useState()
   //console.log(props.hashtagList)
 
+  console.log(props)
+
   useEffect(() => {
     switch (props.dtype) {
       case "vote":
@@ -43,7 +45,8 @@ function Board(props) {
     <>
       <BoardBox
         onClick={() =>
-          navi(`/party/detail?groupId=${props.groupId}&detailId=${props.id}&dtype=${(props.dtype)}`)
+          navi(`/party/detail?groupId=${props.groupId}&detailId=${props.id}&dtype=${(props.dtype)}&groupName=${(props.groupName)}&groupInfo=${props.groupInfo}&groupCode=${props.groupCode}&admin=${props.isAdmin}
+          `)
         }
       >
         <BoardBoxTitleBox>
@@ -298,6 +301,10 @@ const Party = () => {
                   important={item.important}
                   hashtagList={item.hashtagList}
                   expirationDate = {item.expirationDate}
+                  groupName = {partyRes.data.data.data.groupName}
+                  groupInfo = {partyRes.data.data.data.groupInfo}
+                  groupCode = {partyRes.data.data.data.groupCode}
+                  isAdmin = {partyRes.data.data.data.admin}
                 />
               );
             })}
