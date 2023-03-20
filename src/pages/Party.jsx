@@ -15,7 +15,7 @@ function Board(props) {
   const navi = useNavigate();
   const [dtypeText, setDtypeText] = useState("")
   const [hashtagText, setHashtagText] = useState()
-  console.log(props.hashtagList)
+  //console.log(props.hashtagList)
 
   useEffect(() => {
     switch (props.dtype) {
@@ -43,14 +43,14 @@ function Board(props) {
     <>
       <BoardBox
         onClick={() =>
-          navi(`/party/detail?groupId=${props.groupId}&detailId=${props.id}&dtype="${props.dtype}"`)
+          navi(`/party/detail?groupId=${props.groupId}&detailId=${props.id}&dtype=${(props.dtype)}`)
         }
       >
         <BoardBoxTitleBox>
           <h1>제목 : {props.title}</h1>
           <p>부제 : {props.subtitle}</p>
           <p>작성일 : {DateCheck(props.createdAt)}</p>
-          {props.deadline !== null && (<p>작성일 : {DateCheck(props.deadline)}</p>)}
+          {props.expirationDate !== null && (<p>마감일 : {DateCheck(props.expirationDate)}</p>)}
           <p>작성자 : {props.nickName}</p>
           <p>분류 : {dtypeText}</p>
           <p>중요도 : {props.important}</p>
@@ -166,10 +166,10 @@ const RadioBox = styled.div`
 
 const Carousel = (props) =>{
   const currentTime = new Date()
-  const targetTime = new Date(props.deadline)
+  const targetTime = new Date(props.expirationDate)
   const timeDiffInMs = targetTime - currentTime;
   const hoursDiff = Math.floor(timeDiffInMs / (1000 * 60 * 60));
-  console.log(hoursDiff)
+  //console.log(hoursDiff)
 
   const navi = useNavigate() 
 return (<CarouselItem onClick={() => navi(`/party/detail?groupId=${props.groupId}&detailId=${props.id}&dtype=homework`)}>
@@ -178,7 +178,7 @@ return (<CarouselItem onClick={() => navi(`/party/detail?groupId=${props.groupId
   
   <h1>{props.title}</h1>
   <p>작성자 : {props.nickName}</p>
-  <p>마감일 : {DateCheck(props.deadline)}</p>
+  <p>마감일 : {DateCheck(props.expirationDate)}</p>
 </BoardBoxTitleBox>
 </CarouselItem>)
 }
@@ -269,7 +269,7 @@ const Party = () => {
         key = {item.id}
         groupId={pam.id}
         id = {item.id}
-        deadline={item.deadline}
+        expirationDate={item.expirationDate}
         nickName={item.nickname}
         title={item.title}
         />)
@@ -297,7 +297,7 @@ const Party = () => {
                   dtype={item.dtype}
                   important={item.important}
                   hashtagList={item.hashtagList}
-                  deadline = {null}
+                  expirationDate = {item.expirationDate}
                 />
               );
             })}
