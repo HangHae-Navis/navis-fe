@@ -1,50 +1,71 @@
-import { useQuery } from "react-query";
+import { useMutation, useQuery } from "react-query";
 import styled from "styled-components";
 import PartyRegist from "../components/modal/PartyRegist";
 import Button from "../element/Button";
-import { getBoardDetailPage, getDetailPage, getPartyBoard, getPartyPage } from "../utils/api/api";
+import { deletePageMembers, getBoardDetailPage, getDetailPage, getPartyBoard, getPartyPage } from "../utils/api/api";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 import Test from "../assets/d65d5952-d801-4225-ab16-8720733b499a.png";
 import Pagination from "react-js-pagination";
 import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { useEffect, useState } from "react";
+import DateCheck from "../element/DateCheck";
 
 
 function PartyDetail(){
-    const Pam = useParams()
+    const pam = useParams()
     const [searchParams, setSearchParams] = useSearchParams();
     const navi = useNavigate()
+    const code = window.location.search;
 
     const groupId = searchParams.get('groupId')
     const DetailId = searchParams.get('detailId')
     const dtype = searchParams.get('dtype')
-    console.log(groupId)
-    console.log(DetailId)
-    console.log(dtype)
-    const res = useQuery(['partyDetail'], ()=> getBoardDetailPage({groupId, DetailId, dtype}))
-    
-    console.log(res)
+
+const groupName = searchParams.get("groupName");
+const groupInfo = searchParams.get("groupInfo");
+const groupCode = searchParams.get("groupCode");
+const admin = searchParams.get("admin");
+    const res = useQuery(['partyDetail'], ()=> getBoardDetailPage({groupId, DetailId, dtype}), 
+    {onSuccess: ({data}) => {
+        console.log(data.data)
+    }})
+
+    const deletePartyMember = useMutation(deletePageMembers, {
+      onSuccess: (data) => {
+        console.log('해당 멤버가 퇴출되었습니다.')
+        window.alert('해당 멤버가 퇴출되었습니다')
+        navi('/')
+      }
+    })
+
+  const doDelete = (data) => {
+    const res = deletePartyMember.mutateAsync(data)
+  }
+
     return(
         <>
           <PageContainer>
             <LeftContainer>
               <LeftTitleBox>
-                {/*
-                <h1>{partyRes.data.data.data.groupName}</h1>
-                <p>{partyRes.data.data.data.groupInfo}</p>
-                <p>초대 코드 : {partyRes.data.data.data.groupCode}</p>
+                <h1>{groupName}</h1>
+                <p>{groupInfo}</p>
+                <p>초대 코드 : {groupCode}</p>
                 <Button onClick={() => navi(`/party/${pam.id}/edit`,)}>글쓰기</Button>
-                {partyRes.data.data.data.admin === true ? (
+                {admin === true ? (
                   <Button onClick={() => navi(`/party/${pam.id}/admin`)}>
                     어드민 페이지
                   </Button>
                 ) : (
                   <Button onClick={() => doDelete(pam.id)}>그룹 탈퇴하기</Button>
-                )}*/}
+                )}
               </LeftTitleBox>
             </LeftContainer>
             <RightTotalContainer>
+                <h1>제목 : {res.data.data.data.title}</h1>
+                <h1>작성자 : {res.data.data.data.nickname}</h1>
+                <h1>작성일 : {DateCheck(res.data.data.data.createAt)}</h1>
+                <h1>내용 : {res.data.data.data.content}</h1>
             </RightTotalContainer>
           </PageContainer>
         </>
