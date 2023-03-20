@@ -29,7 +29,12 @@ const GroupBoxComp = (props) => {
         <GroupDeadlineContainer>
           <GroupDeadline>
             <li>오늘까지 제출해야 할 파일</li>
-            <li>{props.groupInfo}</li>
+            <li>
+              <div className="wrapper">
+                <span className="time">08:25</span>
+                <span className="homework">{props.groupInfo}</span>
+              </div>
+            </li>
           </GroupDeadline>
         </GroupDeadlineContainer>
       </GroupBox>
@@ -238,7 +243,23 @@ const GroupDeadline = styled.div`
   gap: 0.4rem;
 
   li {
-    font-size: 1.5rem;
+    font-size: 1.6rem;
+    .wrapper {
+      display: flex;
+      gap: 0.8rem;
+      width: 28rem;
+      .time {
+        font-size: 1.5rem;
+        color: #dc3545;
+      }
+      .homework {
+        width: 20rem;
+        font-size: 1.5rem;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+    }
   }
 `;
 
