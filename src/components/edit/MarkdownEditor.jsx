@@ -13,7 +13,7 @@ import { InputStyle } from "../../utils/style/mixins";
 import Button from "../../element/Button";
 import { toast } from "react-toastify";
 
-const MarkdownEditor = () => {
+const MarkdownEditor = ({ markdownInfo, setmarkdownInfo }) => {
   const { id } = useParams();
   const navigate = useNavigate();
   const [markdownValue, setMarkdownValue] = useRecoilState(markdownState);
@@ -23,7 +23,7 @@ const MarkdownEditor = () => {
       important: "0",
     },
   });
-  const onChange = useCallback((value) => {
+  const onMarkdownEditorChange = useCallback((value) => {
     setMarkdownValue(value);
   }, []);
   const boardMutation = useMutation((data) => postBoard(id, data), {
@@ -68,12 +68,10 @@ const MarkdownEditor = () => {
     },
   });
 
-  console.log(watch());
-
   const onSubmit = async (data) => {
     const requestDto = new FormData();
-    requestDto.append("title", data.title);
-    requestDto.append("subtitle", data.subtitle);
+    requestDto.append("title", markdownInfo.title);
+    requestDto.append("subtitle", markdownInfo.subtitle);
     requestDto.append("content", markdownValue);
     requestDto.append("important", data.important);
     requestDto.append("hashtagList", data.tags);
@@ -87,6 +85,8 @@ const MarkdownEditor = () => {
         new Date(data.datetime).getTime() / 1000
       );
       const res = await homeWorkMutation.mutateAsync(requestDto);
+    } else if (data.writing === "투표") {
+      const res = await voteMutation.mutateAsync(requestDto);
     }
   };
 
@@ -118,7 +118,9 @@ const MarkdownEditor = () => {
         <input
           type="text"
           placeholder="글 제목을 입력해주세요."
-          {...register("title")}
+          onChange={(e) => {
+            setmarkdownInfo({ ...markdown, title: e.target.value });
+          }}
         />
       </InputWrapper>
       <InputWrapper>
@@ -127,6 +129,9 @@ const MarkdownEditor = () => {
           type="text"
           {...register("subtitle")}
           placeholder="안내문구를 입력해주세요."
+          onChange={(e) => {
+            setmarkdownInfo({ ...markdown, subtitle: e.target.value });
+          }}
         />
       </InputWrapper>
       <InputWrapper>
@@ -134,7 +139,7 @@ const MarkdownEditor = () => {
         <input
           type="text"
           {...register("tags")}
-          placeholder="#해시태그 #해시태그"
+          placeholder="ex) 공부 수학 미적분"
         />
       </InputWrapper>
       {watch().writing === "과제" || watch().writing === "투표" ? (
@@ -160,8 +165,8 @@ const MarkdownEditor = () => {
         ]}
         value={markdownValue}
         theme={"dark"}
-        onChange={onChange}
-        height={"70vh"}
+        onChange={onMarkdownEditorChange}
+        height={"51vh"}
       />
       <div className="buttonWrapper">
         <Button>게시하기</Button>

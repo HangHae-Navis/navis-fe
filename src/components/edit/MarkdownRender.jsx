@@ -6,10 +6,11 @@ import styled from "styled-components";
 import SyntaxHighlighter from "react-syntax-highlighter";
 import { a11yDark } from "react-syntax-highlighter/dist/esm/styles/prism";
 
-const MarkdownRender = () => {
+const MarkdownRender = ({ markdownInfo }) => {
   const markdownValue = useRecoilValue(markdownState);
   return (
     <MarkdownWrapper>
+      <h1>{markdownInfo.title}</h1>
       <ReactMarkdownWrapper
         children={markdownValue}
         remarkPlugins={[remarkGfm]}
@@ -40,24 +41,11 @@ const MarkdownRender = () => {
 const MarkdownWrapper = styled.section`
   width: 50%;
   padding: 0 1.2rem 0 0;
-`;
-
-const ReactMarkdownWrapper = styled(ReactMarkdown)`
-  * {
-    font-size: 1.4rem;
-    font-family: "Roboto Mono", monospace;
-  }
-  border-radius: 2rem;
-  padding: 1.5rem;
-  display: flex;
-  flex-direction: column;
-  gap: 0.8rem;
   height: 100%;
   border: 0.1rem solid #9795b5;
-
-  p {
-    word-wrap: break-word;
-  }
+  min-height: 80vh;
+  border-radius: 2rem;
+  padding: 1.5rem;
 
   h1 {
     padding: 2rem 0;
@@ -70,6 +58,20 @@ const ReactMarkdownWrapper = styled(ReactMarkdown)`
       top: 0.33em;
       border-bottom: 1px solid hsla(0, 0%, 50%, 0.33);
     }
+  }
+`;
+
+const ReactMarkdownWrapper = styled(ReactMarkdown)`
+  * {
+    font-size: 1.4rem;
+    font-family: "Roboto Mono", monospace;
+  }
+
+  display: flex;
+  flex-direction: column;
+
+  p {
+    word-wrap: break-word;
   }
 
   h2 {

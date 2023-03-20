@@ -1,14 +1,21 @@
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import MarkdownEditor from "../components/edit/MarkdownEditor";
 import MarkdownRender from "../components/edit/MarkdownRender";
 
 const EditPost = () => {
+  const [markdownInfo, setmarkdownInfo] = useState({
+    title: "",
+    subtitle: "",
+  });
   return (
     <EditPostWrapper>
       <MarkdownWrapper>
-        <MarkdownEditor />
-        <MarkdownRender />
+        <MarkdownEditor
+          markdownInfo={markdownInfo}
+          setmarkdownInfo={setmarkdownInfo}
+        />
+        <MarkdownRender markdownInfo={markdownInfo} />
       </MarkdownWrapper>
     </EditPostWrapper>
   );
