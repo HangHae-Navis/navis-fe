@@ -1,4 +1,4 @@
-import { markdownState } from "../../store/atom";
+import { markdownInfoState, markdownState } from "../../store/atom";
 import { ReactMarkdown } from "react-markdown/lib/react-markdown";
 import { useRecoilValue } from "recoil";
 import remarkGfm from "remark-gfm";
@@ -7,10 +7,11 @@ import SyntaxHighlighter from "react-syntax-highlighter";
 import { a11yDark } from "react-syntax-highlighter/dist/esm/styles/prism";
 import { getLocalStorage } from "../../utils/infos/localStorage";
 
-const MarkdownRender = ({ markdownInfo }) => {
+const MarkdownRender = () => {
   const markdownValue = useRecoilValue(markdownState);
   const userName = getLocalStorage("userInfo");
   const date = new Date();
+  const markdownInfo = useRecoilValue(markdownInfoState);
   return (
     <MarkdownWrapper>
       <TitleRenderContent>
@@ -61,11 +62,12 @@ const TitleRenderContent = styled.section`
   align-items: center;
   gap: 0.8rem;
   h1 {
-    width: 30rem;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    width: 29rem;
     font-size: 2.1rem;
     line-height: 1.45;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
   span {
     align-self: flex-cent;
