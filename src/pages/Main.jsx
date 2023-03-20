@@ -27,6 +27,12 @@ const GroupBoxComp = (props) => {
             {props.adminName} | {props.memberNumber}명
           </SubInfo>
         </TextWrapper>
+        <GroupDeadlineContainer>
+        <GroupDeadline>
+          <h1>오늘 중 마감</h1>
+          <p>{props.groupInfo}</p>
+        </GroupDeadline>
+        </GroupDeadlineContainer>
       </GroupBox>
     </>
   );
@@ -76,6 +82,24 @@ const GroupBox = styled.div`
     font-size: 1.6rem;
   }
 `;
+
+const GroupDeadlineContainer = styled.div`
+padding-top: 1rem;
+display: flex;
+flex-direction: column;
+align-items: center;
+`
+
+const GroupDeadline = styled.div`
+display: flex;
+flex-direction: column;
+align-items: flex-start;
+  width: 26rem;
+  height: 10rem;
+  border: 0.2rem solid gray;
+  border-radius: 1.2rem;
+  padding: 1rem;
+`
 
 const SubInfo = styled.div`
   font-size: 1.5rem;
@@ -143,6 +167,7 @@ const Main = () => {
     () => getPartyPage({ page: pageNum, size: 8, category: "all" }),
     {
       onSuccess: ({ data }) => {
+        console.log(data.data)
         setGroupList(data.data.content);
         setTotalNum(data.data.totalElements);
       },
