@@ -184,7 +184,7 @@ const GroupBox = styled.div`
   }
   padding: 1.6rem;
   img {
-    background-color: yellow;
+    background-color: ${(props) => props.theme.color.zeroThree};
     height: 26.6rem;
     border-radius: 1.6rem;
     object-fit: cover;
