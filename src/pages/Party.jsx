@@ -8,12 +8,14 @@ import "react-loading-skeleton/dist/skeleton.css";
 import Test from "../assets/d65d5952-d801-4225-ab16-8720733b499a.png";
 import Pagination from "react-js-pagination";
 import { useNavigate, useParams } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import DateCheck from "../element/DateCheck";
 
 function Board(props) {
   const navi = useNavigate();
   const [dtypeText, setDtypeText] = useState("")
-  const [hashtagText, setHashtagText] = useState([])
+  const [hashtagText, setHashtagText] = useState()
+  console.log(props.hashtagList)
 
   useEffect(() => {
     switch (props.dtype) {
@@ -32,19 +34,23 @@ function Board(props) {
       default:
         break;
     }
-    setHashtagText(props.hashtagList)
+    if(props.hashtagList[0] !== ''){
+      setHashtagText(props.hashtagList)
+    }
   }, [])
 
   return (
     <>
       <BoardBox
         onClick={() =>
-          navi(`/party/detail?groupId=${props.groupId}&detailId=${props.id}&dtype=${props.dtype}`)
+          navi(`/party/detail?groupId=${props.groupId}&detailId=${props.id}&dtype="${props.dtype}"`)
         }
       >
         <BoardBoxTitleBox>
-          <h1>{props.title}</h1>
-          <p>{props.subtitle}</p>
+          <h1>제목 : {props.title}</h1>
+          <p>부제 : {props.subtitle}</p>
+          <p>작성일 : {DateCheck(props.createdAt)}</p>
+          {props.deadline !== null && (<p>작성일 : {DateCheck(props.deadline)}</p>)}
           <p>작성자 : {props.nickName}</p>
           <p>분류 : {dtypeText}</p>
           <p>중요도 : {props.important}</p>
@@ -53,7 +59,8 @@ function Board(props) {
               return (
                 <HashTagBox key={item}># {item}</HashTagBox>
               )
-            })}
+            })
+            }
           </div>
         </BoardBoxTitleBox>
       </BoardBox>
@@ -95,7 +102,7 @@ const BoardBoxTitleBox = styled.div`
     font-weight: 600;
   }
   p {
-    font-size: 1.6rem;
+    font-size: 1.4rem;
   }
 `;
 
@@ -157,6 +164,35 @@ margin-right: 1rem;
 const RadioBox = styled.div`
 `
 
+const Carousel = (props) =>{
+  const currentTime = new Date()
+  const targetTime = new Date(props.deadline)
+  const timeDiffInMs = targetTime - currentTime;
+  const hoursDiff = Math.floor(timeDiffInMs / (1000 * 60 * 60));
+  console.log(hoursDiff)
+
+  const navi = useNavigate() 
+return (<CarouselItem onClick={() => navi(`/party/detail?groupId=${props.groupId}&detailId=${props.id}&dtype=homework`)}>
+<BoardBoxTitleBox>
+  {hoursDiff >= 0 ? <p>마감까지 {hoursDiff}시간 남음</p> : <p>마감시간 {-hoursDiff}시간 지남</p>}
+  
+  <h1>{props.title}</h1>
+  <p>작성자 : {props.nickName}</p>
+  <p>마감일 : {DateCheck(props.deadline)}</p>
+</BoardBoxTitleBox>
+</CarouselItem>)
+}
+
+const CarouselItem = styled.div`
+flex-shrink: 0;
+width: 25rem;
+height: 15rem;
+  background-color: aliceblue;
+border-radius: 1rem;
+padding-right: 1rem;
+overflow: hidden;
+`;
+
 
 const Party = () => {
   const navi = useNavigate();
@@ -164,6 +200,10 @@ const Party = () => {
   const [selected, setSelected] = useState(0);
   const [categoryValue, setCategoryValue] = useState("all");
   const options = ['전체', '공지', '투표', '과제', '게시글'];
+
+  
+  const [carouselList, setCarouselList] = useState([]);
+
   const [groupList, setGroupList] = useState([]);
   const [totalNum, setTotalNum] = useState(0);
   const [pageNum, setPageNum] = useState(1);
@@ -174,9 +214,13 @@ const Party = () => {
     {
       onSuccess: ({ data }) => {
         setGroupList(data.data.basicBoards.content);
+        setCarouselList(data.data.deadlines)
+        console.log(data.data)
       },
     }
   );
+
+
   
   const MakeBoards = () => {
     return <></>;
@@ -193,6 +237,7 @@ const Party = () => {
   const doDelete = (data) => {
     const res = deletePartyMember.mutateAsync(data)
   }
+
 
   if (partyRes.isLoading || partyRes.isError) {return (
     <>
@@ -218,6 +263,20 @@ const Party = () => {
           </LeftTitleBox>
         </LeftContainer>
         <RightTotalContainer>
+    <CarouselContainer>
+      {carouselList?.map((item) => {
+        return(<Carousel 
+        key = {item.id}
+        groupId={pam.id}
+        id = {item.id}
+        deadline={item.deadline}
+        nickName={item.nickname}
+        title={item.title}
+        />)
+      })
+
+      }
+    </CarouselContainer>
           <RadioBox>
             <RadioButtons
             options={options} categoryValue={setCategoryValue}
@@ -229,7 +288,7 @@ const Party = () => {
                 <Board
                   key={item.id}
                   groupId={pam.id}
-                  createAt={item.createAt}
+                  createdAt={item.createdAt}
                   content={item.content}
                   nickName={item.nickname}
                   subtitle={item.subtitle}
@@ -238,6 +297,7 @@ const Party = () => {
                   dtype={item.dtype}
                   important={item.important}
                   hashtagList={item.hashtagList}
+                  deadline = {null}
                 />
               );
             })}
@@ -247,7 +307,16 @@ const Party = () => {
     </>
   );
 };
-
+const CarouselContainer = styled.div`
+width: 60vw;
+height: 20rem;
+overflow-x: scroll;
+gap: 1rem;
+display: flex;
+flex-direction: row;
+background-color: violet;
+align-items: center;
+`;
 
 const TextWrapper = styled.section`
   display: flex;

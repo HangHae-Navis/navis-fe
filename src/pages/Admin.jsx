@@ -17,6 +17,7 @@ import Test from "../assets/d65d5952-d801-4225-ab16-8720733b499a.png";
 import Pagination from "react-js-pagination";
 import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { useEffect, useState } from "react";
+import DateCheck from "../element/DateCheck";
 
 function Board(props) {
   const deletePartyMember = useMutation(deletePageMembers , {onSuccess: (data) => {
@@ -26,17 +27,13 @@ function Board(props) {
   const doDeleteMember = (data) =>{
     const res = deletePartyMember.mutateAsync(data)
   }
-  const date = new Date(props.joinedAt)
-  const formatter = new Intl.DateTimeFormat('ko-KR', { year: 'numeric', month: 'long', day: 'numeric' });
-  const dateAt = formatter.format(date)
-
   return (
     <>
       <BoardBox>
         <BoardBoxTitleBox>
           <h1>{props.nickName}</h1>
           <p>{props.groupMemberRoleEnum}</p>
-          <p>{dateAt}</p>
+          <p>가입일자 : {DateCheck(props.joinedAt)}</p>
         </BoardBoxTitleBox>
         {props.groupMemberRoleEnum === "ADMIN" ? null : (
           <Button onClick={()=> doDeleteMember({"pam" : props.pam, "memberid" : props.id})}>탈퇴시키기</Button>
@@ -69,7 +66,7 @@ const BoardBoxTitleBox = styled.div`
     font-weight: 600;
   }
   p {
-    font-size: 1.6rem;
+    font-size: 1.3rem;
   }
 `;
 
