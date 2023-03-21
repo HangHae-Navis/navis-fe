@@ -42,6 +42,12 @@ const admin = searchParams.get("admin");
   const doDelete = (data) => {
     const res = deletePartyMember.mutateAsync(data)
   }
+  if(admin.isLoading){
+    return (<></>)
+  }
+  if(admin.isError){
+    return (<></>)
+  }
 
     return(
         <>
@@ -56,9 +62,7 @@ const admin = searchParams.get("admin");
                   <Button onClick={() => navi(`/party/${pam.id}/admin`)}>
                     어드민 페이지
                   </Button>
-                ) : (
-                  <Button onClick={() => doDelete(pam.id)}>그룹 탈퇴하기</Button>
-                )}
+                ) : null}
               </LeftTitleBox>
             </LeftContainer>
             <RightTotalContainer>
