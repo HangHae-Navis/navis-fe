@@ -1,4 +1,3 @@
-import React from "react";
 export function FullDateCheck(props) {
   const date = new Date(props);
   const formatter = new Intl.DateTimeFormat("ko-KR", {

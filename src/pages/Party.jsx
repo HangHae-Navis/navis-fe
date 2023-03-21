@@ -100,7 +100,7 @@ const HashTagBox = styled.div`
 
 const BoardBox = styled.div`
   width: 30vw;
-  max-width: 50rem;
+  max-width: 47rem;
   min-width: 25rem;
   height: 24.7rem;
   flex-direction: column;
