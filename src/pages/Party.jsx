@@ -55,8 +55,9 @@ function Board(props) {
         }
       >
         <BoardBoxTitleBox>
-          <h1>제목 : {props.title}</h1>
-          <p>부제 : {props.subtitle}</p>
+          <TagWrapper></TagWrapper>
+          <h1 className="title">{props.title}</h1>
+          <p className="subtitle">부제 : {props.subtitle}</p>
           <p>작성일 : {DateCheck(props.createdAt)}</p>
           {props.expirationDate !== null && (
             <p>마감일 : {DateCheck(props.expirationDate)}</p>
@@ -74,6 +75,19 @@ function Board(props) {
     </>
   );
 }
+
+const TagWrapper = styled.ul`
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  padding: 0.4rem 0.8rem;
+  height: 3.2rem;
+  .tag {
+    border-radius: 0.8rem;
+    width: fit-content;
+  }
+`;
+
 const HashTagBox = styled.div`
   display: inline-block;
   border: 0.1rem solid #ccc;
@@ -86,13 +100,21 @@ const HashTagBox = styled.div`
 `;
 
 const BoardBox = styled.div`
-  width: 41rem;
-  height: 25rem;
-  display: flex;
+  width: 30vw;
+  max-width: 50rem;
+  min-width: 25rem;
+  height: 24.7rem;
   flex-direction: column;
-  align-items: flex-start;
-  background-color: aliceblue;
-  border-radius: 2rem;
+  display: flex;
+  justify-content: space-between;
+  border: 0.1rem solid #dde1e6;
+  border-radius: 1.6rem;
+  background-color: #ffffff;
+
+  .title {
+    width: 80%;
+    font-size: 1.9rem;
+  }
 `;
 
 function RadioButtons({
@@ -406,7 +428,6 @@ const RightContainer = styled.div`
   justify-items: center;
   width: 60vw;
   gap: 1rem;
-  background-color: violet;
   color: black;
   font-size: 1.45rem;
 `;
