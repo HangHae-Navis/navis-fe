@@ -9,7 +9,7 @@ import Test from "../assets/d65d5952-d801-4225-ab16-8720733b499a.png";
 import Pagination from "react-js-pagination";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import { useRecoilState } from "recoil";
+import { useSetRecoilState } from "recoil";
 import { partyRegistModalState } from "../store/atom";
 import NavBar from "../components/party/NavBar";
 import { getCookie } from "../utils/infos/cookie";
@@ -61,7 +61,7 @@ const Main = () => {
       },
     }
   );
-  const [isOpen, setIsOpen] = useRecoilState(partyRegistModalState);
+  const setIsOpen = useSetRecoilState(partyRegistModalState);
 
   const MakeGroupHandler = () => {
     setIsOpen(true);
@@ -290,11 +290,10 @@ const TextWrapper = styled.section`
 
 const PaginationBox = styled.div`
   .pagination {
+    padding: 10rem 0;
     display: flex;
-    position: absolute;
     bottom: 5rem;
     left: 50%;
-    transform: translateX(-50%);
   }
   ul {
     list-style: none;
