@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useQuery } from "react-query";
 import styled from "styled-components";
-import PartyRegist from "../components/modal/PartyRegist";
 import Button from "../element/Button";
 import { getPartyPage } from "../utils/api/api";
 import Skeleton from "react-loading-skeleton";
@@ -9,12 +8,14 @@ import "react-loading-skeleton/dist/skeleton.css";
 import Test from "../assets/d65d5952-d801-4225-ab16-8720733b499a.png";
 import Pagination from "react-js-pagination";
 import { useNavigate } from "react-router-dom";
-import { getLocalStorage } from "../utils/infos/localStorage";
 import { toast } from "react-toastify";
+import { useRecoilState } from "recoil";
+import { partyRegistModalState } from "../store/atom";
+import NavBar from "../components/party/NavBar";
+import { getCookie } from "../utils/infos/cookie";
 
 const GroupBoxComp = (props) => {
   const navigate = useNavigate();
-
   return (
     <>
       <GroupBox onClick={() => navigate(`/party/${props.groupId}`)}>
@@ -27,109 +28,21 @@ const GroupBoxComp = (props) => {
             {props.adminName} | {props.memberNumber}명
           </SubInfo>
         </TextWrapper>
+        <GroupDeadlineContainer>
+          <GroupDeadline>
+            <li>오늘까지 제출해야 할 파일</li>
+            <li>
+              <div className="wrapper">
+                <span className="time">08:25</span>
+                <span className="homework">{props.groupInfo}</span>
+              </div>
+            </li>
+          </GroupDeadline>
+        </GroupDeadlineContainer>
       </GroupBox>
     </>
   );
 };
-
-const GroupBox = styled.div`
-  cursor: pointer;
-  width: 32rem;
-  height: 45rem;
-  box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
-  border-radius: 0.8rem;
-  display: flex;
-  flex-direction: column;
-  @media (max-width: 1400px) {
-    width: 29rem;
-  }
-  @media (max-width: 965px) {
-    width: 32rem;
-  }
-  @media (max-width: 700px) {
-    width: 80vw;
-    min-width: 30rem;
-  }
-  padding: 0.8rem;
-  img {
-    background-color: yellow;
-    height: 45%;
-    border-radius: 0.8rem;
-    object-fit: cover;
-    object-position: center;
-  }
-  .tag {
-    margin: 1rem 0;
-    padding: 0.8rem;
-    background-color: #dc3545;
-    width: fit-content;
-    border-radius: 0.3rem;
-    font-size: 1.3rem;
-    color: white;
-    font-weight: 500;
-  }
-  h1 {
-    font-size: 2.3rem;
-    font-weight: 600;
-  }
-  p {
-    font-size: 1.6rem;
-  }
-`;
-
-const SubInfo = styled.div`
-  font-size: 1.5rem;
-  color: #878d96;
-`;
-
-const TextWrapper = styled.section`
-  display: flex;
-  flex-direction: column;
-  gap: 0.6rem;
-`;
-
-const PaginationBox = styled.div`
-  .pagination {
-    display: flex;
-    justify-content: center;
-    margin-top: 15px;
-  }
-  ul {
-    list-style: none;
-    padding: 0;
-  }
-  ul.pagination li {
-    display: inline-block;
-    width: 30px;
-    height: 30px;
-    border: 1px solid #e2e2e2;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-size: 1rem;
-  }
-  ul.pagination li:first-child {
-    border-radius: 5px 0 0 5px;
-  }
-  ul.pagination li:last-child {
-    border-radius: 0 5px 5px 0;
-  }
-  ul.pagination li a {
-    text-decoration: none;
-    color: #337ab7;
-    font-size: 1rem;
-  }
-  ul.pagination li.active a {
-    color: white;
-  }
-  ul.pagination li.active {
-    background-color: #337ab7;
-  }
-  ul.pagination li a:hover,
-  ul.pagination li a.active {
-    color: blue;
-  }
-`;
 
 const Main = () => {
   const [groupList, setGroupList] = useState([]);
@@ -148,15 +61,15 @@ const Main = () => {
       },
     }
   );
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useRecoilState(partyRegistModalState);
 
   const MakeGroupHandler = () => {
     setIsOpen(true);
   };
 
   useEffect(() => {
-    const isUserLocal = getLocalStorage("userInfo");
-    if (isUserLocal === null) {
+    const isUserCookie = getCookie("token");
+    if (isUserCookie === undefined) {
       navigate("/");
       toast.error("로그인이 다시 필요합니다.", {
         toastId: "rollback",
@@ -185,13 +98,17 @@ const Main = () => {
   return (
     <>
       <PageContainer>
-        <Button
-          className="topBtn"
-          transparent={false}
-          onClick={() => MakeGroupHandler()}
-        >
-          그룹 참여하기
-        </Button>
+        <GroupHeaderWrapper>
+          <NavBar />
+          <Button
+            className="topBtn"
+            transparent={false}
+            onClick={() => MakeGroupHandler()}
+            br={false}
+          >
+            +그룹 추가
+          </Button>
+        </GroupHeaderWrapper>
         <GroupContainer>
           {isLoading === false ? (
             groupList?.map((item) => {
@@ -209,22 +126,19 @@ const Main = () => {
             })
           ) : (
             <>
-              <Skeleton width={320} height={534} />
-              <Skeleton width={320} height={534} />
-              <Skeleton width={320} height={534} />
-              <Skeleton width={320} height={534} />
-              <Skeleton width={320} height={534} />
-              <Skeleton width={320} height={534} />
-              <Skeleton width={320} height={534} />
-              <Skeleton width={320} height={534} />
-              <Skeleton width={320} height={534} />
-              <Skeleton width={320} height={534} />
+              <Skeleton width={380} height={510} />
+              <Skeleton width={380} height={534} />
+              <Skeleton width={380} height={534} />
+              <Skeleton width={380} height={534} />
+              <Skeleton width={380} height={534} />
+              <Skeleton width={380} height={534} />
+              <Skeleton width={380} height={534} />
+              <Skeleton width={380} height={534} />
             </>
           )}
         </GroupContainer>
         <MakeButton />
       </PageContainer>
-      {isOpen === true ? <PartyRegist isOpen={setIsOpen} /> : null}
     </>
   );
 };
@@ -244,6 +158,7 @@ const GroupContainer = styled.div`
   justify-content: center;
   gap: 2rem;
   display: flex;
+  max-width: 160rem;
   flex-direction: row;
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -259,12 +174,163 @@ const GroupContainer = styled.div`
   align-items: flex-start;
 `;
 
-const PagenationButton = styled.button`
-  background-color: black;
-  color: white;
-  font-size: 1.45rem;
+const GroupHeaderWrapper = styled.section`
+  justify-content: space-between;
+  display: flex;
+  align-items: center;
+  width: 85vw;
+  margin-bottom: 3rem;
+  max-width: 158rem;
+`;
+
+const GroupBox = styled.div`
+  cursor: pointer;
+  width: 38rem;
+  height: 51rem;
+  background-color: ${(props) => props.theme.color.zeroOne};
   border-radius: 0.8rem;
-  text-align: center;
+  display: flex;
+  flex-direction: column;
+  @media (max-width: 1400px) {
+    width: 29rem;
+  }
+  @media (max-width: 965px) {
+    width: 32rem;
+  }
+  @media (max-width: 700px) {
+    width: 80vw;
+    min-width: 30rem;
+  }
+  padding: 1.6rem;
+  img {
+    background-color: ${(props) => props.theme.color.zeroThree};
+    height: 26.6rem;
+    border-radius: 1.6rem;
+    object-fit: cover;
+    object-position: center;
+  }
+  .tag {
+    margin: 1rem 0;
+    padding: 0.6rem 0.8rem;
+    width: fit-content;
+    border-radius: 0.8rem;
+    font-size: 1.4rem;
+    background-color: #ffffff;
+    color: ${(props) => props.theme.color.zeroFour};
+    font-weight: 500;
+  }
+  h1 {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    font-size: 2.3rem;
+    font-weight: 600;
+  }
+  p {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    font-size: 1.6rem;
+  }
+`;
+
+const GroupDeadlineContainer = styled.div`
+  padding-top: 1rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+`;
+
+const GroupDeadline = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  width: 100%;
+  height: 7.2rem;
+  border-radius: 2.2rem;
+  padding: 1.2rem 1.6rem;
+  background-color: #ffffff;
+  gap: 0.4rem;
+
+  li {
+    font-size: 1.6rem;
+    .wrapper {
+      display: flex;
+      gap: 0.5rem;
+      width: 28rem;
+      .time {
+        font-size: 1.5rem;
+        color: #dc3545;
+      }
+      .homework {
+        width: 20rem;
+        font-size: 1.5rem;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+    }
+  }
+`;
+
+const SubInfo = styled.div`
+  font-size: 1.5rem;
+  color: #878d96;
+`;
+
+const TextWrapper = styled.section`
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+`;
+
+const PaginationBox = styled.div`
+  .pagination {
+    display: flex;
+    position: absolute;
+    bottom: 5rem;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+  ul {
+    list-style: none;
+    padding: 0;
+  }
+  ul.pagination li {
+    display: inline-block;
+    width: 5rem;
+    height: 3rem;
+    border: 0.05rem solid ${(props) => props.theme.color.zeroFour};
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    a {
+      font-size: 1.2rem;
+    }
+  }
+  ul.pagination li:first-child {
+    border-radius: 5px 0 0 5px;
+    a {
+      font-size: 1.8rem;
+    }
+  }
+  ul.pagination li:last-child {
+    border-radius: 0 5px 5px 0;
+    a {
+      font-size: 1.8rem;
+    }
+  }
+  ul.pagination li a {
+    text-decoration: none;
+    color: ${(props) => props.theme.color.zeroThree};
+  }
+  ul.pagination li.active {
+    background-color: ${(props) => props.theme.color.zeroFour};
+  }
 `;
 
 export default Main;

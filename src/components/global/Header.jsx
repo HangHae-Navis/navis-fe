@@ -67,10 +67,10 @@ const HeaderWrapper = styled.header`
   top: 0%;
   display: flex;
   align-items: center;
-  z-index: 999;
+  z-index: 700;
   justify-content: space-around;
   width: 100vw;
-  height: 6rem;
+  height: 10rem;
   padding: 1rem;
   background: ${(props) => props.theme.color.zeroOne};
   .logo {

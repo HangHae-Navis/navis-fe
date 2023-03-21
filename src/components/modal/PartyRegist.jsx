@@ -10,36 +10,35 @@ import Input from "../../element/Input";
 import Button from "../../element/Button";
 import Test from "../../assets/d65d5952-d801-4225-ab16-8720733b499a.png";
 import { useNavigate } from "react-router";
+import { useRecoilState } from "recoil";
+import { partyRegistModalState } from "../../store/atom";
 
-const PartyRegist = (props) => {
-  const navi = useNavigate()
+const PartyRegist = () => {
+  const navi = useNavigate();
   const { register, formState: errors, handleSubmit } = useForm();
   const [images, setImages] = useState(Test);
   const [postImages, setPostImages] = useState(null);
   const [modalChange, setModalChange] = useState(true);
+  const [isOpen, setIsOpen] = useRecoilState(partyRegistModalState);
   const postgroup = useMutation(postGroup, {
     onSuccess: ({ data }) => {
-      console.log(data)
-      window.alert(
-        "등록 성공!"
-      );
-      navi(`/party/${data.data}`)
+      console.log(data);
+      window.alert("등록 성공!");
+      navi(`/party/${data.data}`);
     },
   });
 
   const postParticipation = useMutation(postGroupApply, {
     onSuccess: ({ data }) => {
-      console.log(data)
-      window.alert(
-        "참가 성공!"
-      );
-      navi(`/party/${data.data}`)
+      console.log(data);
+      window.alert("참가 성공!");
+      navi(`/party/${data.data}`);
     },
-  })
+  });
 
   const ModalClose = (event) => {
     if (event.target === event.currentTarget) {
-      props.isOpen(false);
+      setIsOpen(false);
     }
   };
 
@@ -77,14 +76,13 @@ const PartyRegist = (props) => {
     const res = await postgroup.mutateAsync(postRequest);
   };
 
-  const onParticipation = async (data) =>{
-    const payload = { "groupCode" : data.code}
+  const onParticipation = async (data) => {
+    const payload = { groupCode: data.code };
     const res = await postParticipation.mutateAsync(payload);
-  }
+  };
 
   return (
     <RegistModalBackGround onClick={ModalClose}>
-      
       <RegistModalWrapper
         variants={modalVariants}
         initial="start"
@@ -92,52 +90,57 @@ const PartyRegist = (props) => {
         exit="exit"
       >
         <TopButtonBox>
-        <Button onClick={() => setModalChange(true)}> 그룹 생성하기</Button>
-        <Button onClick={() => setModalChange(false)}>그룹 참여하기</Button>
+          <Button onClick={() => setModalChange(true)}> 그룹 생성하기</Button>
+          <Button onClick={() => setModalChange(false)}>그룹 참여하기</Button>
         </TopButtonBox>
-        {modalChange === true ? <>
-        <h1>그룹 생성하기</h1>
-        <form onSubmit={handleSubmit(onPost)}>
-          <RegistInputContainer>
-            <img
-              src={images ? images : Test}
-              alt="이미지를 가져와 주십시오"
-              value={images}
-              style={{ width: "400px", height: "240px" }}
-            />
-            <input
-              type="file"
-              accept="image/jpeg, image/png"
-              onChange={ImageHandler}
-            ></input>
-            <Input
-              placeholder="그룹명을 입력하세요."
-              register={register}
-              name="groupname"
-              type="text"
-              label="그룹명"
-            />
-            <Input
-              placeholder="그룹설명을 입력하세요."
-              register={register}
-              name="groupinfo"
-              type="text"
-              label="그룹설명"
-            />
-            <Button>그룹 생성하기</Button>
-          </RegistInputContainer>
-        </form></>
-        : <>
-        <form onSubmit={handleSubmit(onParticipation)}>
-            <Input
-              placeholder="초대 코드를 입력하세요."
-              register={register}
-              name="code"
-              type="text"
-              label="code"
-            />
-            <Button>그룹 참여하기</Button>
-        </form></>}
+        {modalChange === true ? (
+          <>
+            <h1>그룹 생성하기</h1>
+            <form onSubmit={handleSubmit(onPost)}>
+              <RegistInputContainer>
+                <img
+                  src={images ? images : Test}
+                  alt="이미지를 가져와 주십시오"
+                  value={images}
+                  style={{ width: "400px", height: "240px" }}
+                />
+                <input
+                  type="file"
+                  accept="image/jpeg, image/png"
+                  onChange={ImageHandler}
+                ></input>
+                <Input
+                  placeholder="그룹명을 입력하세요."
+                  register={register}
+                  name="groupname"
+                  type="text"
+                  label="그룹명"
+                />
+                <Input
+                  placeholder="그룹설명을 입력하세요."
+                  register={register}
+                  name="groupinfo"
+                  type="text"
+                  label="그룹설명"
+                />
+                <Button>그룹 생성하기</Button>
+              </RegistInputContainer>
+            </form>
+          </>
+        ) : (
+          <>
+            <form onSubmit={handleSubmit(onParticipation)}>
+              <Input
+                placeholder="초대 코드를 입력하세요."
+                register={register}
+                name="code"
+                type="text"
+                label="code"
+              />
+              <Button>그룹 참여하기</Button>
+            </form>
+          </>
+        )}
       </RegistModalWrapper>
     </RegistModalBackGround>
   );
@@ -147,7 +150,7 @@ const TopButtonBox = styled.div`
   display: flex;
   flex-direction: row;
   align-items: center;
-`
+`;
 
 const RegistModalBackGround = styled.div`
   position: fixed;

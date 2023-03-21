@@ -1,13 +1,12 @@
 import React from "react";
 import styled, { css } from "styled-components";
-import { flexCenter } from "../utils/style/mixins";
 
-const Button = ({ onClick, size, children, transparent, disabled, full }) => {
+const Button = ({ onClick, br, children, transparent, disabled, full }) => {
   return (
     <CustomButton
       disabled={disabled}
       transparent={transparent}
-      size={size}
+      br={br}
       onClick={onClick}
       full={full}
     >
@@ -23,7 +22,7 @@ const CustomButton = styled.button`
   border-radius: 3.4rem;
   color: white;
   background-color: ${(props) => props.theme.color.zeroFour};
-  font-size: 1.25rem;
+  font-size: 1.4rem;
   border: none;
 
   ${(props) =>
@@ -39,11 +38,17 @@ const CustomButton = styled.button`
     css`
       width: 100%;
     `}
+
+  ${(props) =>
+    props.br === false &&
+    css`
+      border-radius: 0.8rem;
+    `}
 `;
 
 Button.defaultProps = {
   onClick: () => {},
-  size: "m",
+  br: true,
   transparent: false,
   disabled: false,
   full: false,

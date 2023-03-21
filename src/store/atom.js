@@ -6,6 +6,11 @@ export const loginModalState = atom({
   default: false,
 });
 
+export const partyRegistModalState = atom({
+  key: `state${v4()}`,
+  default: false,
+});
+
 export const userInfoState = atom({
   key: `state${v4()}`,
   default: "",
@@ -14,4 +19,11 @@ export const userInfoState = atom({
 export const markdownState = atom({
   key: `state${v4()}`,
   default: "",
+});
+
+export const markdownInfoState = atom({
+  key: `state${v4()}`,
+  default: {
+    title: "",
+  },
 });
