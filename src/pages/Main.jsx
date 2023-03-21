@@ -180,8 +180,9 @@ const GroupHeaderWrapper = styled.section`
   justify-content: space-between;
   display: flex;
   align-items: center;
-  width: 70vw;
+  width: 85vw;
   margin-bottom: 3rem;
+  max-width: 158rem;
 `;
 
 const GroupBox = styled.div`
