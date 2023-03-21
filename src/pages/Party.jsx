@@ -24,9 +24,6 @@ function Board(props) {
   const [dtypeText, setDtypeText] = useState("");
   const [hashtagText, setHashtagText] = useState();
   //console.log(props.hashtagList)
-
-  console.log(props);
-
   useEffect(() => {
     switch (props.dtype) {
       case "vote":
@@ -112,7 +109,8 @@ function RadioButtons({
         partyRes.refetch();
         break;
       case 1:
-        //categoryValue("notice")
+        categoryValue("notice");
+        partyRes.refetch();
         break;
       case 2:
         categoryValue("vote");
@@ -147,12 +145,11 @@ function RadioButtons({
 }
 
 const RadioButtonStyled = styled.button`
-  margin-right: 1rem;
-  width: 6rem;
+  width: 5rem;
   height: 4rem;
   border: none;
   border-radius: 1rem;
-  font-size: 2rem;
+  font-size: 1.6rem;
   background-color: ${({ selected }) => (selected ? "#ccc" : "transparent")};
   opacity: ${({ selected }) => (selected ? 1 : 0.5)};
 `;
@@ -358,7 +355,8 @@ const Party = () => {
 const CarouselContainer = styled.div`
   width: 60vw;
   height: 30.2rem;
-  overflow-x: scroll;
+  overflow-x: auto;
+  margin-bottom: 5.6rem;
   gap: 3rem;
   padding: 3.2rem;
   display: flex;
