@@ -181,7 +181,6 @@ const Carousel = (props) => {
   const targetTime = new Date(props.expirationDate);
   const timeDiffInMs = targetTime - currentTime;
   const hoursDiff = Math.floor(timeDiffInMs / (1000 * 60 * 60));
-  //console.log(hoursDiff)
 
   const navi = useNavigate();
   return (
@@ -193,15 +192,19 @@ const Carousel = (props) => {
       }
     >
       <BoardBoxTitleBox>
-        {hoursDiff >= 0 ? (
-          <p>마감까지 {hoursDiff}시간 남음</p>
-        ) : (
-          <p>마감시간 {-hoursDiff}시간 지남</p>
-        )}
-
-        <h1>{props.title}</h1>
-        <p>작성자 : {props.nickName}</p>
-        <p>마감일 : {HourCheck(props.expirationDate)}</p>
+        <TopInfoWrapper>
+          {hoursDiff >= 0 ? (
+            <span className="plus">마감 {hoursDiff}시간 전</span>
+          ) : (
+            <span className="minus">마감 {-hoursDiff}시간 지남</span>
+          )}
+          <h1>{props.title}</h1>
+        </TopInfoWrapper>
+        <BottomInfoWrapper>
+          <p>
+            {props.nickName} | {FullDateCheck(props.expirationDate)}
+          </p>
+        </BottomInfoWrapper>
       </BoardBoxTitleBox>
     </CarouselItem>
   );
@@ -289,10 +292,6 @@ const Party = () => {
       toast.error("로그인 정보가 만료되었습니다.");
     }
   }, []);
-
-  const MakeBoards = () => {
-    return <></>;
-  };
 
   const deletePartyMember = useMutation(deletePageMembers, {
     onSuccess: (data) => {
