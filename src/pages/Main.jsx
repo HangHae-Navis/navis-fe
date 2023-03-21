@@ -13,15 +13,14 @@ import { useSetRecoilState } from "recoil";
 import { partyRegistModalState } from "../store/atom";
 import NavBar from "../components/party/NavBar";
 import { getCookie } from "../utils/infos/cookie";
-import DateCheck from "../element/DateCheck";
+import {FullDateCheck, HourCheck} from "../element/DateCheck";
 
 const GroupBoxComp = (props) => {
   const navigate = useNavigate();
   const [onDeadLine, setOnDeadLine] = useState(false)
   const [DeadLineTime, setDeadLineTime] = useState(false)
-  console.log(props)
   useEffect(() => {
-    if(props.expirationDate !== "1970년 1월 1일 오전 9시"){
+    if(props.expirationDate !== "1970년 1월 1일 오전 9:00" && props.expirationDate !== "1월 1일 오전 9:00" ){
       setOnDeadLine(true)
     }
   }, [])
@@ -41,7 +40,7 @@ const GroupBoxComp = (props) => {
           <GroupDeadline>
             {onDeadLine ===true ?
             <>
-            <li>오늘까지 제출해야 할 파일</li>
+            <li>24시간 안에 제출해야 할 파일</li>
             <li>
               <div className="wrapper">
                 <span className="time">{props.expirationDate}</span>
@@ -137,7 +136,7 @@ const Main = () => {
                   memberNumber={item.memberNumber}
                   groupImage={item.groupImage}
 
-                  expirationDate = {DateCheck(item.expirationDate)}
+                  expirationDate = {HourCheck(item.expirationDate)}
                   homeworkTitle = {item.homeworkTitle}
                 />
               );

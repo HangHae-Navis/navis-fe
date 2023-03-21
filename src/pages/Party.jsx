@@ -9,7 +9,7 @@ import Test from "../assets/d65d5952-d801-4225-ab16-8720733b499a.png";
 import Pagination from "react-js-pagination";
 import { useNavigate, useParams } from "react-router-dom";
 import { useEffect, useRef, useState } from "react";
-import DateCheck from "../element/DateCheck";
+import { FullDateCheck, HourCheck }from "../element/DateCheck";
 
 function Board(props) {
   const navi = useNavigate();
@@ -52,8 +52,8 @@ function Board(props) {
         <BoardBoxTitleBox>
           <h1>제목 : {props.title}</h1>
           <p>부제 : {props.subtitle}</p>
-          <p>작성일 : {DateCheck(props.createdAt)}</p>
-          {props.expirationDate !== null && (<p>마감일 : {DateCheck(props.expirationDate)}</p>)}
+          <p>작성일 : {FullDateCheck(props.createdAt)}</p>
+          {props.expirationDate !== null && (<p>마감일 : {FullDateCheck(props.expirationDate)}</p>)}
           <p>작성자 : {props.nickName}</p>
           <p>분류 : {dtypeText}</p>
           <p>중요도 : {props.important}</p>
@@ -181,7 +181,7 @@ return (<CarouselItem onClick={() => navi(`/party/detail?groupId=${props.groupId
   
   <h1>{props.title}</h1>
   <p>작성자 : {props.nickName}</p>
-  <p>마감일 : {DateCheck(props.expirationDate)}</p>
+  <p>마감일 : {HourCheck(props.expirationDate)}</p>
 </BoardBoxTitleBox>
 </CarouselItem>)
 }
