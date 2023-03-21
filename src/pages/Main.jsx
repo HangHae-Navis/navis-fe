@@ -11,6 +11,9 @@ import Pagination from "react-js-pagination";
 import { useNavigate } from "react-router-dom";
 import { getLocalStorage } from "../utils/infos/localStorage";
 import { toast } from "react-toastify";
+import { useRecoilState } from "recoil";
+import { partyRegistModalState } from "../store/atom";
+import NavBar from "../components/party/NavBar";
 
 const GroupBoxComp = (props) => {
   const navigate = useNavigate();
@@ -60,7 +63,7 @@ const Main = () => {
       },
     }
   );
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useRecoilState(partyRegistModalState);
 
   const MakeGroupHandler = () => {
     setIsOpen(true);
@@ -97,13 +100,17 @@ const Main = () => {
   return (
     <>
       <PageContainer>
-        <Button
-          className="topBtn"
-          transparent={false}
-          onClick={() => MakeGroupHandler()}
-        >
-          그룹 참여하기
-        </Button>
+        <GroupHeaderWrapper>
+          <NavBar />
+          <Button
+            className="topBtn"
+            transparent={false}
+            onClick={() => MakeGroupHandler()}
+            br={false}
+          >
+            +그룹 추가
+          </Button>
+        </GroupHeaderWrapper>
         <GroupContainer>
           {isLoading === false ? (
             groupList?.map((item) => {
@@ -134,7 +141,6 @@ const Main = () => {
         </GroupContainer>
         <MakeButton />
       </PageContainer>
-      {isOpen === true ? <PartyRegist isOpen={setIsOpen} /> : null}
     </>
   );
 };
@@ -154,6 +160,7 @@ const GroupContainer = styled.div`
   justify-content: center;
   gap: 2rem;
   display: flex;
+  max-width: 160rem;
   flex-direction: row;
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -167,6 +174,14 @@ const GroupContainer = styled.div`
     grid-template-columns: repeat(1, 1fr);
   }
   align-items: flex-start;
+`;
+
+const GroupHeaderWrapper = styled.section`
+  justify-content: space-between;
+  display: flex;
+  align-items: center;
+  width: 70vw;
+  margin-bottom: 3rem;
 `;
 
 const GroupBox = styled.div`
@@ -246,7 +261,7 @@ const GroupDeadline = styled.div`
     font-size: 1.6rem;
     .wrapper {
       display: flex;
-      gap: 0.8rem;
+      gap: 0.5rem;
       width: 28rem;
       .time {
         font-size: 1.5rem;
