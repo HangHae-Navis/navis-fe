@@ -1,5 +1,11 @@
-import React from "react";
-import { BrowserRouter, Route, Routes, useLocation } from "react-router-dom";
+import React, { useEffect } from "react";
+import {
+  BrowserRouter,
+  Route,
+  Routes,
+  useLocation,
+  useNavigate,
+} from "react-router-dom";
 import Home from "../pages/Home";
 import Main from "../pages/Main";
 import Party from "../pages/Party";

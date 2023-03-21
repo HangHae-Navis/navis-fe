@@ -24,6 +24,7 @@ const CustomButton = styled.button`
   background-color: ${(props) => props.theme.color.zeroFour};
   font-size: 1.6rem;
   border: none;
+  cursor: pointer;
 
   ${(props) =>
     props.transparent === true &&
