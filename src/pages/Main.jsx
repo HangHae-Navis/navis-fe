@@ -13,17 +13,20 @@ import { useSetRecoilState } from "recoil";
 import { partyRegistModalState } from "../store/atom";
 import NavBar from "../components/party/NavBar";
 import { getCookie } from "../utils/infos/cookie";
-import {FullDateCheck, HourCheck} from "../element/DateCheck";
+import { FullDateCheck, HourCheck } from "../element/DateCheck";
 
 const GroupBoxComp = (props) => {
   const navigate = useNavigate();
-  const [onDeadLine, setOnDeadLine] = useState(false)
-  const [DeadLineTime, setDeadLineTime] = useState(false)
+  const [onDeadLine, setOnDeadLine] = useState(false);
+  const [DeadLineTime, setDeadLineTime] = useState(false);
   useEffect(() => {
-    if(props.expirationDate !== "1970년 1월 1일 오전 9:00" && props.expirationDate !== "1월 1일 오전 9:00" ){
-      setOnDeadLine(true)
+    if (
+      props.expirationDate !== "1970년 1월 1일 오전 9:00" &&
+      props.expirationDate !== "1월 1일 오전 9:00"
+    ) {
+      setOnDeadLine(true);
     }
-  }, [])
+  }, []);
   return (
     <>
       <GroupBox onClick={() => navigate(`/party/${props.groupId}`)}>
@@ -38,17 +41,19 @@ const GroupBoxComp = (props) => {
         </TextWrapper>
         <GroupDeadlineContainer>
           <GroupDeadline>
-            {onDeadLine ===true ?
-            <>
-            <li>24시간 안에 제출해야 할 파일</li>
-            <li>
-              <div className="wrapper">
-                <span className="time">{props.expirationDate}</span>
-                <span className="homework">{props.homeworkTitle}</span>
-              </div>
-            </li>  
-            </>
-            : null}
+            {onDeadLine === true ? (
+              <>
+                <li>24시간 내 제출해야 할 과제</li>
+                <li>
+                  <div className="wrapper">
+                    <span className="time">{props.expirationDate}</span>
+                    <span className="homework">{props.homeworkTitle}</span>
+                  </div>
+                </li>
+              </>
+            ) : (
+              <li>24시간 내 제출해야 할 과제가 존재하지 않습니다.</li>
+            )}
           </GroupDeadline>
         </GroupDeadlineContainer>
       </GroupBox>
@@ -135,9 +140,8 @@ const Main = () => {
                   groupName={item.groupName}
                   memberNumber={item.memberNumber}
                   groupImage={item.groupImage}
-
-                  expirationDate = {HourCheck(item.expirationDate)}
-                  homeworkTitle = {item.homeworkTitle}
+                  expirationDate={HourCheck(item.expirationDate)}
+                  homeworkTitle={item.homeworkTitle}
                 />
               );
             })
@@ -274,17 +278,19 @@ const GroupDeadline = styled.div`
   gap: 0.4rem;
 
   li {
+    width: 100%;
     font-size: 1.6rem;
     .wrapper {
       display: flex;
       gap: 0.5rem;
       width: 28rem;
       .time {
+        width: 49%;
         font-size: 1.5rem;
         color: #dc3545;
       }
       .homework {
-        width: 20rem;
+        width: 49%;
         font-size: 1.5rem;
         white-space: nowrap;
         overflow: hidden;

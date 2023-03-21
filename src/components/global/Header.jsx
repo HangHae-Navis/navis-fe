@@ -62,7 +62,6 @@ const Header = () => {
 };
 
 const HeaderWrapper = styled.header`
-  cursor: pointer;
   position: fixed;
   left: 0%;
   top: 0%;
