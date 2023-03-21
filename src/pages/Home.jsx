@@ -3,13 +3,14 @@ import { useNavigate } from "react-router-dom";
 import { useRecoilValue } from "recoil";
 import Login from "../components/modal/Login";
 import { loginModalState } from "../store/atom";
-import { getLocalStorage } from "../utils/infos/localStorage";
 import { path } from "../constants/path";
+import { getCookie } from "../utils/infos/cookie";
 
 const Home = () => {
   const navigate = useNavigate();
   useEffect(() => {
-    if (getLocalStorage("userInfo") !== null) {
+    const isUserCookie = getCookie("token");
+    if (isUserCookie !== undefined) {
       navigate(`/${path.MAIN}`);
     }
   }, []);

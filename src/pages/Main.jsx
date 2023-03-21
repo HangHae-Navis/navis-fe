@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useQuery } from "react-query";
 import styled from "styled-components";
-import PartyRegist from "../components/modal/PartyRegist";
 import Button from "../element/Button";
 import { getPartyPage } from "../utils/api/api";
 import Skeleton from "react-loading-skeleton";
@@ -9,11 +8,11 @@ import "react-loading-skeleton/dist/skeleton.css";
 import Test from "../assets/d65d5952-d801-4225-ab16-8720733b499a.png";
 import Pagination from "react-js-pagination";
 import { useNavigate } from "react-router-dom";
-import { getLocalStorage } from "../utils/infos/localStorage";
 import { toast } from "react-toastify";
 import { useRecoilState } from "recoil";
 import { partyRegistModalState } from "../store/atom";
 import NavBar from "../components/party/NavBar";
+import { getCookie } from "../utils/infos/cookie";
 
 const GroupBoxComp = (props) => {
   const navigate = useNavigate();
@@ -57,7 +56,6 @@ const Main = () => {
     () => getPartyPage({ page: pageNum, size: 8, category: "all" }),
     {
       onSuccess: ({ data }) => {
-        console.log(data);
         setGroupList(data.data.content);
         setTotalNum(data.data.totalElements);
       },
@@ -70,8 +68,8 @@ const Main = () => {
   };
 
   useEffect(() => {
-    const isUserLocal = getLocalStorage("userInfo");
-    if (isUserLocal === null) {
+    const isUserCookie = getCookie("token");
+    if (isUserCookie === undefined) {
       navigate("/");
       toast.error("로그인이 다시 필요합니다.", {
         toastId: "rollback",
