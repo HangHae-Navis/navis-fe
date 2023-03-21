@@ -2,7 +2,7 @@ import { useMutation, useQuery } from "react-query";
 import styled from "styled-components";
 import PartyRegist from "../components/modal/PartyRegist";
 import Button from "../element/Button";
-import { deletePageMembers, getBoardDetailPage, getDetailPage, getPartyBoard, getPartyPage, postComment } from "../utils/api/api";
+import { deletePageMembers, getBoardDetailPage, getCommentPage, getDetailPage, getPartyBoard, getPartyPage, postComment } from "../utils/api/api";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 import Test from "../assets/d65d5952-d801-4225-ab16-8720733b499a.png";
@@ -13,10 +13,45 @@ import DateCheck from "../element/DateCheck";
 import Input from "../element/Input";
 import { useForm } from "react-hook-form";
 
+function Comment(props){
+  console.log(props)
+return(
+<CommentBox>
+<p>닉네임 : {props.nickname} </p>
+<p>작성일자 : {DateCheck(props.createAt)}</p>
+<p>내용 : {props.content}</p>
+
+{props.isAdmin == true ? <Button>수정하기</Button> : null}
+</CommentBox>)
+}
+
+const CommentBox = styled.div`
+  width: 70rem;
+  height: 10rem;
+  border: 0.3rem solid white;
+  border-radius: 1.5rem;
+
+  padding: 1rem;
+  p {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 1.1rem;
+
+    span {
+      cursor: pointer;
+      text-decoration: underline;
+      font-size: 1.1rem;
+    }
+  }
+
+`
 
 function PartyDetail() {
   const pam = useParams()
   const [searchParams, setSearchParams] = useSearchParams();
+  const [commentList, setCommentList] = useState()
+  const [isAdmin, setIsAdmin] = useState()
   const navi = useNavigate()
   const code = window.location.search;
   const { register, formState: errors, handleSubmit } = useForm();
@@ -29,17 +64,29 @@ function PartyDetail() {
   const groupInfo = searchParams.get("groupInfo");
   const groupCode = searchParams.get("groupCode");
   const admin = searchParams.get("admin");
+  const res = useQuery(['partyDetail'], () => getBoardDetailPage({ groupId, detailId, dtype }),
+    {
+      onSuccess: ({ data }) => {
+        console.log(data.data)
+        if(data.data.role == "ADMIN"){
+          setIsAdmin(true)
+        }
+      }
+    })
+  const getComment = useQuery(
+      ["comment", {groupId, boardId : detailId, page : 1, size : 999}], ()=>
+      getCommentPage({groupId, boardId : detailId, page : 1, size : 999}),{
+        onSuccess: ({data}) =>{
+          console.log(data.data.content)
+          setCommentList(data.data.content)
+        }
+      }
+  )
   const post = useMutation(postComment, {
     onSuccess: ({data}) => {
       console.log("와우 성공!")
     }
   })
-  const res = useQuery(['partyDetail'], () => getBoardDetailPage({ groupId, detailId, dtype }),
-    {
-      onSuccess: ({ data }) => {
-        console.log(data.data)
-      }
-    })
 
   const deletePartyMember = useMutation(deletePageMembers, {
     onSuccess: (data) => {
@@ -62,10 +109,10 @@ function PartyDetail() {
   const doDelete = (data) => {
     const res = deletePartyMember.mutateAsync(data)
   }
-  if (res.isLoading) {
+  if (res.isLoading && getComment.isLoading) {
     return (<></>)
   }
-  if (res.isError) {
+  if (res.isError && getComment.isError) {
     return (<></>)
   }
 
@@ -100,7 +147,13 @@ function PartyDetail() {
             />
             <Button>댓글 올리기</Button>
           </form>
+              <Commentcontainer>
+                {commentList?.map((item) =>{
+                  return(<Comment key = {item.id} content = {item.content} nickname  = {item.nickname} createAt = {item.createAt} isAdmin = {isAdmin}></Comment>)
 
+                })}
+
+              </Commentcontainer>
         </RightTotalContainer>
         <>
         </>
@@ -110,6 +163,12 @@ function PartyDetail() {
 }
 
 
+const Commentcontainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 1rem;
+`
 const CarouselContainer = styled.div`
 width: 60vw;
 height: 20rem;
