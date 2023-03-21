@@ -22,7 +22,7 @@ const CustomButton = styled.button`
   border-radius: 3.4rem;
   color: white;
   background-color: ${(props) => props.theme.color.zeroFour};
-  font-size: 1.4rem;
+  font-size: 1.6rem;
   border: none;
 
   ${(props) =>

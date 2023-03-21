@@ -5,7 +5,7 @@ import { useSetRecoilState } from "recoil";
 import styled from "styled-components";
 import { loginModalState } from "../../store/atom";
 import { getKaKaoLogin } from "../../utils/api/api";
-import { removeCookie, setCookie } from "../../utils/infos/cookie";
+import { getCookie, removeCookie, setCookie } from "../../utils/infos/cookie";
 import { path } from "../../constants/path";
 import { removeLocalStorage } from "../../utils/infos/localStorage";
 import Button from "../../element/Button";
@@ -17,6 +17,7 @@ const Header = () => {
   const [currentPam, setCurrentPam] = useState(code);
   const [isCallBool, setIsCallBool] = useState(false);
   const nickname = localStorage.getItem("userInfo");
+  const token = getCookie("token");
   const getCode = useQuery(
     ["getCode", currentPam],
     () => getKaKaoLogin(currentPam),
@@ -31,7 +32,7 @@ const Header = () => {
   );
 
   useEffect(() => {
-    if (nickname === null && code !== "") {
+    if (token === null && code !== "") {
       setCurrentPam(code);
       setIsCallBool(true);
     }
@@ -47,7 +48,7 @@ const Header = () => {
     <HeaderWrapper>
       {/* <img src={Logo} className="logo" alt="logo" /> */}
       <h1>로고</h1>
-      {nickname === null ? (
+      {token === undefined ? (
         <Button transparent={true} onClick={() => setLoginModal(true)}>
           Login
         </Button>
@@ -67,7 +68,7 @@ const HeaderWrapper = styled.header`
   top: 0%;
   display: flex;
   align-items: center;
-  z-index: 999;
+  z-index: 700;
   justify-content: space-around;
   width: 100vw;
   height: 10rem;

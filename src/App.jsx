@@ -6,12 +6,8 @@ import GlobalStyle from "./utils/style/GlobalStyle";
 import { pageMargin } from "./utils/style/mixins";
 import "react-toastify/dist/ReactToastify.css";
 import { ToastContainer } from "react-toastify";
-import PartyRegist from "./components/modal/PartyRegist";
-import { useRecoilValue } from "recoil";
-import { partyRegistModalState } from "./store/atom";
 
 const App = () => {
-  const isPartyRegistModal = useRecoilValue(partyRegistModalState);
   return (
     <ThemeProvider theme={theme}>
       <GlobalStyle />
@@ -19,7 +15,6 @@ const App = () => {
         <Router />
       </RootWrapper>
       <ToastContainerCustom autoClose={2000} limit={1} position="top-right" />
-      {isPartyRegistModal === true && <PartyRegist />}
     </ThemeProvider>
   );
 };

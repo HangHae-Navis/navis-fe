@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useQuery } from "react-query";
 import styled from "styled-components";
-import PartyRegist from "../components/modal/PartyRegist";
 import Button from "../element/Button";
 import { getPartyPage } from "../utils/api/api";
 import Skeleton from "react-loading-skeleton";
@@ -9,11 +8,11 @@ import "react-loading-skeleton/dist/skeleton.css";
 import Test from "../assets/d65d5952-d801-4225-ab16-8720733b499a.png";
 import Pagination from "react-js-pagination";
 import { useNavigate } from "react-router-dom";
-import { getLocalStorage } from "../utils/infos/localStorage";
 import { toast } from "react-toastify";
-import { useRecoilState } from "recoil";
+import { useSetRecoilState } from "recoil";
 import { partyRegistModalState } from "../store/atom";
 import NavBar from "../components/party/NavBar";
+import { getCookie } from "../utils/infos/cookie";
 
 const GroupBoxComp = (props) => {
   const navigate = useNavigate();
@@ -50,6 +49,7 @@ const Main = () => {
   const [totalNum, setTotalNum] = useState(0);
   const [pageNum, setPageNum] = useState(1);
   const navigate = useNavigate();
+  const [activeState, setActiveState] = useState("전체그룹");
   //받아오는 데이터는 content(목록), totalElements(총 갯수), totalPages(총 페이지)를 받아옴
   //현재 받아오는 response 중 사용 중인 것은 content와 totalelements 둘 뿐, totalPages를 사용하려면 MakeButton의 로직 변경 필요
   const { isLoading } = useQuery(
@@ -57,21 +57,20 @@ const Main = () => {
     () => getPartyPage({ page: pageNum, size: 8, category: "all" }),
     {
       onSuccess: ({ data }) => {
-        console.log(data);
         setGroupList(data.data.content);
         setTotalNum(data.data.totalElements);
       },
     }
   );
-  const [isOpen, setIsOpen] = useRecoilState(partyRegistModalState);
+  const setIsOpen = useSetRecoilState(partyRegistModalState);
 
   const MakeGroupHandler = () => {
     setIsOpen(true);
   };
 
   useEffect(() => {
-    const isUserLocal = getLocalStorage("userInfo");
-    if (isUserLocal === null) {
+    const isUserCookie = getCookie("token");
+    if (isUserCookie === undefined) {
       navigate("/");
       toast.error("로그인이 다시 필요합니다.", {
         toastId: "rollback",
@@ -101,7 +100,7 @@ const Main = () => {
     <>
       <PageContainer>
         <GroupHeaderWrapper>
-          <NavBar />
+          <NavBar activeState={activeState} setActiveState={setActiveState} />
           <Button
             className="topBtn"
             transparent={false}
@@ -292,11 +291,10 @@ const TextWrapper = styled.section`
 
 const PaginationBox = styled.div`
   .pagination {
+    padding: 10rem 0;
     display: flex;
-    position: absolute;
     bottom: 5rem;
     left: 50%;
-    transform: translateX(-50%);
   }
   ul {
     list-style: none;
