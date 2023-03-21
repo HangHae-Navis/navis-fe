@@ -76,6 +76,7 @@ const Main = () => {
       onSuccess: ({ data }) => {
         setGroupList(data.data.content);
         setTotalNum(data.data.totalElements);
+        console.log(data.data)
       },
     }
   );
