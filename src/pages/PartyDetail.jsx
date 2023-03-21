@@ -42,10 +42,10 @@ const admin = searchParams.get("admin");
   const doDelete = (data) => {
     const res = deletePartyMember.mutateAsync(data)
   }
-  if(admin.isLoading){
+  if(res.isLoading){
     return (<></>)
   }
-  if(admin.isError){
+  if(res.isError){
     return (<></>)
   }
 
