@@ -2,32 +2,76 @@ import { useMutation, useQuery } from "react-query";
 import styled from "styled-components";
 import PartyRegist from "../components/modal/PartyRegist";
 import Button from "../element/Button";
-import { deletePageMembers, getBoardDetailPage, getCommentPage, getDetailPage, getPartyBoard, getPartyPage, postComment } from "../utils/api/api";
+import { deleteCommentPage, deletePageMembers, getBoardDetailPage, getCommentPage, getDetailPage, getPartyBoard, getPartyPage, postComment, putCommentPage } from "../utils/api/api";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 import Test from "../assets/d65d5952-d801-4225-ab16-8720733b499a.png";
 import Pagination from "react-js-pagination";
 import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { useEffect, useState } from "react";
-import DateCheck from "../element/DateCheck";
+import { FullDateCheck }from "../element/DateCheck";
 import Input from "../element/Input";
 import { useForm } from "react-hook-form";
 
 function Comment(props){
-  console.log(props)
+  const navi = useNavigate()
+  const [isPut, setIsPut] = useState(false)
+  const { register, formState: errors, handleSubmit } = useForm();
+  const deleteComment = useMutation(deleteCommentPage , {onSuccess: (data) => {
+    window.alert('댓글이 삭제되었습니다')
+    window.location.reload()
+  }})
+
+  const putComment = useMutation(putCommentPage, {onSuccess: (data) => {
+    window.alert('댓글이 수정되었습니다')
+    window.location.reload()
+  }})
+
+  
+  const onPut = async (data) =>{
+    const payload = {
+      groupId: props.groupId,
+      detailId: props.detailId,
+      commentId: props.id,
+      "value" : data
+    }
+    const res = await putComment.mutateAsync(payload)
+    console.log(data)
+  }
+  
+  const doDeletComment = () => {
+    const res = deleteComment.mutateAsync({groupId: props.groupId, detailId: props.detailId, commentId: props.id})
+  }
+  const doPutComment = () =>{
+    //const res = putComment.mutateAsync({groupId: props.groupId, detailId: props.detailId, commentId: props.id, value : })
+  }
+
 return(
 <CommentBox>
 <p>닉네임 : {props.nickname} </p>
-<p>작성일자 : {DateCheck(props.createAt)}</p>
+<p>작성일자 : {FullDateCheck(props.createAt)}</p>
 <p>내용 : {props.content}</p>
 
-{props.isAdmin == true ? <Button>수정하기</Button> : null}
+{props.isAdmin == true ? <Button onClick={() => setIsPut(!isPut)}>수정하기</Button> : null}
+{props.isAdmin == true || props.owned == true ? <Button onClick={doDeletComment}>삭제하기</Button> : null}
+{isPut == false ? null
+: <CommentBox>
+<form onSubmit={handleSubmit(onPut)}>
+<Input
+  placeholder="댓글을 수정하시오."
+  register={register}
+  name="content"
+  type="text"
+  label="댓글수정"
+  />
+  <Button>수정 완료</Button>
+</form>
+  </CommentBox>}
 </CommentBox>)
 }
 
 const CommentBox = styled.div`
   width: 70rem;
-  height: 10rem;
   border: 0.3rem solid white;
   border-radius: 1.5rem;
 
@@ -46,6 +90,7 @@ const CommentBox = styled.div`
   }
 
 `
+
 
 function PartyDetail() {
   const pam = useParams()
@@ -135,7 +180,7 @@ function PartyDetail() {
         <RightTotalContainer>
           <h1>제목 : {res.data.data.data.title}</h1>
           <h1>작성자 : {res.data.data.data.nickname}</h1>
-          <h1>작성일 : {DateCheck(res.data.data.data.createAt)}</h1>
+          <h1>작성일 : {FullDateCheck(res.data.data.data.createAt)}</h1>
           <h1>내용 : {res.data.data.data.content}</h1>
           <form onSubmit={handleSubmit(onPost)}>
           <Input
@@ -149,7 +194,7 @@ function PartyDetail() {
           </form>
               <Commentcontainer>
                 {commentList?.map((item) =>{
-                  return(<Comment key = {item.id} content = {item.content} nickname  = {item.nickname} createAt = {item.createAt} isAdmin = {isAdmin}></Comment>)
+                  return(<Comment key = {item.id} id = {item.id} groupId = {groupId} detailId = {detailId} content = {item.content} nickname  = {item.nickname} createAt = {item.createAt} isAdmin = {isAdmin} owned = {item.owned}></Comment>)
 
                 })}
 

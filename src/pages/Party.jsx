@@ -14,7 +14,7 @@ import Test from "../assets/d65d5952-d801-4225-ab16-8720733b499a.png";
 import Pagination from "react-js-pagination";
 import { useNavigate, useParams } from "react-router-dom";
 import { useEffect, useRef, useState } from "react";
-import DateCheck from "../element/DateCheck";
+import DateCheck, { FullDateCheck, HourCheck } from "../element/DateCheck";
 import PartyInfo from "../components/party/PartyInfo";
 import { getCookie } from "../utils/infos/cookie";
 import { toast } from "react-toastify";
@@ -55,12 +55,11 @@ function Board(props) {
         }
       >
         <BoardBoxTitleBox>
-          <TagWrapper></TagWrapper>
-          <h1 className="title">{props.title}</h1>
-          <p className="subtitle">부제 : {props.subtitle}</p>
-          <p>작성일 : {DateCheck(props.createdAt)}</p>
+          <h1>제목 : {props.title}</h1>
+          <p>부제 : {props.subtitle}</p>
+          <p>작성일 : {FullDateCheck(props.createdAt)}</p>
           {props.expirationDate !== null && (
-            <p>마감일 : {DateCheck(props.expirationDate)}</p>
+            <p>마감일 : {FullDateCheck(props.expirationDate)}</p>
           )}
           <p>작성자 : {props.nickName}</p>
           <p>분류 : {dtypeText}</p>
@@ -194,19 +193,15 @@ const Carousel = (props) => {
       }
     >
       <BoardBoxTitleBox>
-        <TopInfoWrapper>
-          {hoursDiff >= 0 ? (
-            <span className="plus">마감 {hoursDiff}시간 전</span>
-          ) : (
-            <span className="minus">마감 {-hoursDiff}시간 지남</span>
-          )}
-          <h1>{props.title}</h1>
-        </TopInfoWrapper>
-        <BottomInfoWrapper>
-          <p>
-            {props.nickName} | {DateCheck(props.expirationDate)}
-          </p>
-        </BottomInfoWrapper>
+        {hoursDiff >= 0 ? (
+          <p>마감까지 {hoursDiff}시간 남음</p>
+        ) : (
+          <p>마감시간 {-hoursDiff}시간 지남</p>
+        )}
+
+        <h1>{props.title}</h1>
+        <p>작성자 : {props.nickName}</p>
+        <p>마감일 : {HourCheck(props.expirationDate)}</p>
       </BoardBoxTitleBox>
     </CarouselItem>
   );

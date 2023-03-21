@@ -17,7 +17,7 @@ import Test from "../assets/d65d5952-d801-4225-ab16-8720733b499a.png";
 import Pagination from "react-js-pagination";
 import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { useEffect, useState } from "react";
-import DateCheck from "../element/DateCheck";
+import {FullDateCheck} from "../element/DateCheck";
 
 function Board(props) {
   const deletePartyMember = useMutation(deletePageMembers , {onSuccess: (data) => {
@@ -33,7 +33,7 @@ function Board(props) {
         <BoardBoxTitleBox>
           <h1>{props.nickName}</h1>
           <p>{props.groupMemberRoleEnum}</p>
-          <p>가입일자 : {DateCheck(props.joinedAt)}</p>
+          <p>가입일자 : {FullDateCheck(props.joinedAt)}</p>
         </BoardBoxTitleBox>
         {props.groupMemberRoleEnum === "ADMIN" ? null : (
           <Button onClick={()=> doDeleteMember({"pam" : props.pam, "memberid" : props.id})}>탈퇴시키기</Button>
