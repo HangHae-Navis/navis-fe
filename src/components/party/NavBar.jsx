@@ -2,11 +2,29 @@ import React from "react";
 import styled from "styled-components";
 
 const NavBar = ({ activeState, setActiveState }) => {
+  const onChangeNavi = (e) => {
+    setActiveState(e.target.innerText);
+  };
   return (
     <NavList>
-      <li className="active">전체그룹</li>
-      <li className="inActive">나의그룹</li>
-      <li className="inActive">참여그룹</li>
+      <li
+        className={activeState === "전체그룹" ? "active" : "inActive"}
+        onClick={onChangeNavi}
+      >
+        전체그룹
+      </li>
+      <li
+        className={activeState === "나의그룹" ? "active" : "inActive"}
+        onClick={onChangeNavi}
+      >
+        나의그룹
+      </li>
+      <li
+        className={activeState === "참여그룹" ? "active" : "inActive"}
+        onClick={onChangeNavi}
+      >
+        참여그룹
+      </li>
     </NavList>
   );
 };
@@ -16,7 +34,8 @@ const NavList = styled.ul`
   gap: 1.6rem;
 
   li {
-    font-size: 3.1rem;
+    cursor: pointer;
+    font-size: 2.5rem;
     font-weight: 500;
   }
 

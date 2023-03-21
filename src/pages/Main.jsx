@@ -49,6 +49,7 @@ const Main = () => {
   const [totalNum, setTotalNum] = useState(0);
   const [pageNum, setPageNum] = useState(1);
   const navigate = useNavigate();
+  const [activeState, setActiveState] = useState("전체그룹");
   //받아오는 데이터는 content(목록), totalElements(총 갯수), totalPages(총 페이지)를 받아옴
   //현재 받아오는 response 중 사용 중인 것은 content와 totalelements 둘 뿐, totalPages를 사용하려면 MakeButton의 로직 변경 필요
   const { isLoading } = useQuery(
@@ -99,7 +100,7 @@ const Main = () => {
     <>
       <PageContainer>
         <GroupHeaderWrapper>
-          <NavBar />
+          <NavBar activeState={activeState} setActiveState={setActiveState} />
           <Button
             className="topBtn"
             transparent={false}
