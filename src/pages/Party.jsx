@@ -18,6 +18,7 @@ import DateCheck, { FullDateCheck, HourCheck } from "../element/DateCheck";
 import PartyInfo from "../components/party/PartyInfo";
 import { getCookie } from "../utils/infos/cookie";
 import { toast } from "react-toastify";
+import { flexCenter } from "../utils/style/mixins";
 
 function Board(props) {
   const navi = useNavigate();
@@ -55,47 +56,75 @@ function Board(props) {
         }
       >
         <BoardBoxTitleBox>
-          <h1>제목 : {props.title}</h1>
-          <p>부제 : {props.subtitle}</p>
-          <p>작성일 : {FullDateCheck(props.createdAt)}</p>
-          {props.expirationDate !== null && (
-            <p>마감일 : {FullDateCheck(props.expirationDate)}</p>
-          )}
-          <p>작성자 : {props.nickName}</p>
-          <p>분류 : {dtypeText}</p>
-          <p>중요도 : {props.important}</p>
-          <div>
+          <BigTagWrapper>
+            <BigTag>{dtypeText}</BigTag>
+            {props.important !== 0 && <BigTag>중요도 {props.important}</BigTag>}
+          </BigTagWrapper>
+          <h1 className="title">{props.title}</h1>
+          <p className="subtitle">{props.subtitle}</p>
+          <TagWrapper>
             {hashtagText?.map((item) => {
-              return <HashTagBox key={item}># {item}</HashTagBox>;
+              return <HashTagBox key={item.id}># {item}</HashTagBox>;
             })}
-          </div>
+          </TagWrapper>
+          <BoardBottom>
+            <p>{props.nickName}</p>
+            <p>|</p>
+            <p>{FullDateCheck(props.createdAt)}</p>
+            {/* {props.expirationDate !== null && (
+              <>
+                <p>|</p>
+                <p>{FullDateCheck(props.expirationDate)}</p>
+              </>
+            )} */}
+          </BoardBottom>
         </BoardBoxTitleBox>
       </BoardBox>
     </>
   );
 }
 
-const TagWrapper = styled.ul`
+const BoardBottom = styled.section`
   display: flex;
-  gap: 1rem;
+  gap: 0.3rem;
   align-items: center;
-  padding: 0.4rem 0.8rem;
-  height: 3.2rem;
-  .tag {
-    border-radius: 0.8rem;
-    width: fit-content;
+
+  p {
+    font-size: 1.2rem;
+    color: ${(props) => props.theme.color.grey40};
   }
 `;
 
-const HashTagBox = styled.div`
-  display: inline-block;
-  border: 0.1rem solid #ccc;
-  border-radius: 0.5rem;
-  padding: 0.5rem;
-  margin-right: 1rem;
-  font-size: 1.5rem;
-  opacity: 0.8;
+const BigTagWrapper = styled.ul`
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+`;
+
+const BigTag = styled.li`
   width: fit-content;
+  height: 2.4rem;
+  border-radius: 0.6rem;
+  padding: 0.4rem 0.8rem;
+  background-color: ${(props) => props.theme.color.zeroOne};
+  ${flexCenter}
+  font-size: 1.2rem;
+`;
+
+const TagWrapper = styled.ul`
+  display: flex;
+  gap: 0.4rem;
+  align-items: center;
+  height: 3.2rem;
+`;
+
+const HashTagBox = styled.div`
+  width: fit-content;
+  height: 2.4rem;
+  border-radius: 999px;
+  padding: 0.4rem 0.8rem;
+
+  border: 0.1rem solid ${(props) => props.theme.color.grey40};
 `;
 
 const BoardBox = styled.div`
@@ -231,21 +260,24 @@ const CarouselItem = styled.div`
 `;
 
 const BoardBoxTitleBox = styled.div`
-  padding: 1rem;
+  padding: 2rem;
   height: 100%;
   flex-direction: column;
   justify-content: space-around;
-  width: 30rem;
+  width: 100%;
   font-size: 2.45rem;
   display: flex;
   gap: 0.8rem;
-  h1 {
-    width: 23rem;
+  .title {
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
     font-size: 1.8rem;
     font-weight: 600;
+  }
+  .subtitle {
+    font-size: 1.3rem;
+    color: ${(props) => props.theme.color.grey80};
   }
   span {
     background: rgba(220, 53, 69, 0.2);
