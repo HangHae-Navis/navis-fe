@@ -149,4 +149,10 @@ export const getBoardDetailPage = async (payload) => {
   return res;
 };
 
+export const getCommentPage = async (payload) => {
+  const res = await axios.get(
+    `api/${payload.groupId}/${payload.boardId}/comments?page=${payload.page}&size=${payload.size}`
+  );
+  return res;
+};
 /*-----------------------상세 페이지 기능------------------------------*/
