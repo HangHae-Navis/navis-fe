@@ -58,13 +58,6 @@ export const getDetailPage = async (payload) => {
   return res;
 };
 
-export const getBoardDetailPage = async (payload) => {
-  const res = await axios.get(
-    `api/${payload.groupId}/${payload.dtype}s/${payload.DetailId}`
-  );
-  return res;
-};
-
 export const getPartyBoard = async (payload) => {
   const res = await axios.get(`api/${payload}/boards/`);
   return res;
@@ -137,3 +130,23 @@ export const deletePage = async (payload) => {
 };
 
 /*-----------------------어드민 페이지 기능------------------------------*/
+
+
+/*-----------------------상세 페이지 기능------------------------------*/
+
+export const postComment = async (data) =>{
+  console.log(data)
+  console.log(data.comment.comment)
+  const payload = { "content" : data.comment.comment}
+  const res = await axios.post(`api/${data.groupId}/${data.detailId}/comments`, payload)
+  return res
+}
+
+export const getBoardDetailPage = async (payload) => {
+  const res = await axios.get(
+    `api/${payload.groupId}/${payload.dtype}s/${payload.detailId}`
+  );
+  return res;
+};
+
+/*-----------------------상세 페이지 기능------------------------------*/

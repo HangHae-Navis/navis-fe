@@ -2,7 +2,7 @@ import { useMutation, useQuery } from "react-query";
 import styled from "styled-components";
 import PartyRegist from "../components/modal/PartyRegist";
 import Button from "../element/Button";
-import { deletePageMembers, getBoardDetailPage, getDetailPage, getPartyBoard, getPartyPage } from "../utils/api/api";
+import { deletePageMembers, getBoardDetailPage, getDetailPage, getPartyBoard, getPartyPage, postComment } from "../utils/api/api";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 import Test from "../assets/d65d5952-d801-4225-ab16-8720733b499a.png";
@@ -10,66 +10,103 @@ import Pagination from "react-js-pagination";
 import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import DateCheck from "../element/DateCheck";
+import Input from "../element/Input";
+import { useForm } from "react-hook-form";
 
 
-function PartyDetail(){
-    const pam = useParams()
-    const [searchParams, setSearchParams] = useSearchParams();
-    const navi = useNavigate()
-    const code = window.location.search;
+function PartyDetail() {
+  const pam = useParams()
+  const [searchParams, setSearchParams] = useSearchParams();
+  const navi = useNavigate()
+  const code = window.location.search;
+  const { register, formState: errors, handleSubmit } = useForm();
 
-    const groupId = searchParams.get('groupId')
-    const DetailId = searchParams.get('detailId')
-    const dtype = searchParams.get('dtype')
+  const groupId = searchParams.get('groupId')
+  const detailId = searchParams.get('detailId')
+  const dtype = searchParams.get('dtype')
 
-const groupName = searchParams.get("groupName");
-const groupInfo = searchParams.get("groupInfo");
-const groupCode = searchParams.get("groupCode");
-const admin = searchParams.get("admin");
-    const res = useQuery(['partyDetail'], ()=> getBoardDetailPage({groupId, DetailId, dtype}), 
-    {onSuccess: ({data}) => {
+  const groupName = searchParams.get("groupName");
+  const groupInfo = searchParams.get("groupInfo");
+  const groupCode = searchParams.get("groupCode");
+  const admin = searchParams.get("admin");
+  const post = useMutation(postComment, {
+    onSuccess: ({data}) => {
+      console.log("와우 성공!")
+    }
+  })
+  const res = useQuery(['partyDetail'], () => getBoardDetailPage({ groupId, detailId, dtype }),
+    {
+      onSuccess: ({ data }) => {
         console.log(data.data)
-    }})
-
-    const deletePartyMember = useMutation(deletePageMembers, {
-      onSuccess: (data) => {
-        console.log('해당 멤버가 퇴출되었습니다.')
-        window.alert('해당 멤버가 퇴출되었습니다')
-        navi('/')
       }
     })
+
+  const deletePartyMember = useMutation(deletePageMembers, {
+    onSuccess: (data) => {
+      console.log('해당 멤버가 퇴출되었습니다.')
+      window.alert('해당 멤버가 퇴출되었습니다')
+      navi('/')
+    }
+  })
+
+  const onPost = async (data) =>{
+    const payload = {
+      groupId,
+      detailId,
+      "comment" : data
+    }
+    const res = await post.mutateAsync(payload)
+    console.log(data)
+  }
 
   const doDelete = (data) => {
     const res = deletePartyMember.mutateAsync(data)
   }
+  if (res.isLoading) {
+    return (<></>)
+  }
+  if (res.isError) {
+    return (<></>)
+  }
 
-    return(
+  return (
+    <>
+      <PageContainer>
+        <LeftContainer>
+          <LeftTitleBox>
+            <h1>{groupName}</h1>
+            <p>{groupInfo}</p>
+            <p>초대 코드 : {groupCode}</p>
+            <Button onClick={() => navi(`/party/${pam.id}/edit`,)}>글쓰기</Button>
+            {admin === "true" ? (
+              <Button onClick={() => navi(`/party/${pam.id}/admin`)}>
+                어드민 페이지
+              </Button>)
+              : null}
+          </LeftTitleBox>
+        </LeftContainer>
+        <RightTotalContainer>
+          <h1>제목 : {res.data.data.data.title}</h1>
+          <h1>작성자 : {res.data.data.data.nickname}</h1>
+          <h1>작성일 : {DateCheck(res.data.data.data.createAt)}</h1>
+          <h1>내용 : {res.data.data.data.content}</h1>
+          <form onSubmit={handleSubmit(onPost)}>
+          <Input
+            placeholder="댓글을 입력하시오."
+            register={register}
+            name="comment"
+            type="text"
+            label="댓글작성"
+            />
+            <Button>댓글 올리기</Button>
+          </form>
+
+        </RightTotalContainer>
         <>
-          <PageContainer>
-            <LeftContainer>
-              <LeftTitleBox>
-                <h1>{groupName}</h1>
-                <p>{groupInfo}</p>
-                <p>초대 코드 : {groupCode}</p>
-                <Button onClick={() => navi(`/party/${pam.id}/edit`,)}>글쓰기</Button>
-                {admin === true ? (
-                  <Button onClick={() => navi(`/party/${pam.id}/admin`)}>
-                    어드민 페이지
-                  </Button>
-                ) : (
-                  <Button onClick={() => doDelete(pam.id)}>그룹 탈퇴하기</Button>
-                )}
-              </LeftTitleBox>
-            </LeftContainer>
-            <RightTotalContainer>
-                <h1>제목 : {res.data.data.data.title}</h1>
-                <h1>작성자 : {res.data.data.data.nickname}</h1>
-                <h1>작성일 : {DateCheck(res.data.data.data.createAt)}</h1>
-                <h1>내용 : {res.data.data.data.content}</h1>
-            </RightTotalContainer>
-          </PageContainer>
         </>
-      );
+      </PageContainer>
+    </>
+  );
 }
 
 
@@ -116,6 +153,7 @@ const LeftContainer = styled.div`
 
 const RightTotalContainer = styled.div`
 flex-direction: column;
+display: flex;
 justify-content: center;
 align-items: center;
 `
