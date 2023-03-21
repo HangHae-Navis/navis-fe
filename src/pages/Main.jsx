@@ -13,9 +13,17 @@ import { useSetRecoilState } from "recoil";
 import { partyRegistModalState } from "../store/atom";
 import NavBar from "../components/party/NavBar";
 import { getCookie } from "../utils/infos/cookie";
+import {FullDateCheck, HourCheck} from "../element/DateCheck";
 
 const GroupBoxComp = (props) => {
   const navigate = useNavigate();
+  const [onDeadLine, setOnDeadLine] = useState(false)
+  const [DeadLineTime, setDeadLineTime] = useState(false)
+  useEffect(() => {
+    if(props.expirationDate !== "1970년 1월 1일 오전 9:00" && props.expirationDate !== "1월 1일 오전 9:00" ){
+      setOnDeadLine(true)
+    }
+  }, [])
   return (
     <>
       <GroupBox onClick={() => navigate(`/party/${props.groupId}`)}>
@@ -30,13 +38,17 @@ const GroupBoxComp = (props) => {
         </TextWrapper>
         <GroupDeadlineContainer>
           <GroupDeadline>
-            <li>오늘까지 제출해야 할 파일</li>
+            {onDeadLine ===true ?
+            <>
+            <li>24시간 안에 제출해야 할 파일</li>
             <li>
               <div className="wrapper">
-                <span className="time">08:25</span>
-                <span className="homework">{props.groupInfo}</span>
+                <span className="time">{props.expirationDate}</span>
+                <span className="homework">{props.homeworkTitle}</span>
               </div>
-            </li>
+            </li>  
+            </>
+            : null}
           </GroupDeadline>
         </GroupDeadlineContainer>
       </GroupBox>
@@ -59,6 +71,7 @@ const Main = () => {
       onSuccess: ({ data }) => {
         setGroupList(data.data.content);
         setTotalNum(data.data.totalElements);
+        console.log(data.data)
       },
     }
   );
@@ -122,6 +135,9 @@ const Main = () => {
                   groupName={item.groupName}
                   memberNumber={item.memberNumber}
                   groupImage={item.groupImage}
+
+                  expirationDate = {HourCheck(item.expirationDate)}
+                  homeworkTitle = {item.homeworkTitle}
                 />
               );
             })

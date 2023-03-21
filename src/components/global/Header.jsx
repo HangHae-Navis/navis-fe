@@ -32,7 +32,7 @@ const Header = () => {
   );
 
   useEffect(() => {
-    if (token === null && code !== "") {
+    if (token === undefined && code !== "") {
       setCurrentPam(code);
       setIsCallBool(true);
     }

@@ -149,4 +149,22 @@ export const getBoardDetailPage = async (payload) => {
   return res;
 };
 
+export const getCommentPage = async (payload) => {
+  const res = await axios.get(
+    `api/${payload.groupId}/${payload.boardId}/comments?page=${payload.page}&size=${payload.size}`
+  );
+  return res;
+};
+
+export const deleteCommentPage = async (payload) =>{
+  console.log(payload)
+  const res = await axios.delete(`api/${payload.groupId}/${payload.detailId}/comments/${payload.commentId}`)
+  return res
+}
+
+export const putCommentPage = async (payload) =>{
+  console.log(payload)
+  const res = await axios.put(`api/${payload.groupId}/${payload.detailId}/comments/${payload.commentId}`, payload.value)
+  return res
+}
 /*-----------------------상세 페이지 기능------------------------------*/
