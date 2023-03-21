@@ -11,8 +11,12 @@ import Admin from "../pages/Admin";
 import { path } from "../constants/path";
 import Header from "../components/global/Header";
 import PartyDetail from "../pages/PartyDetail";
+import PartyRegist from "../components/modal/PartyRegist";
+import { useRecoilValue } from "recoil";
+import { partyRegistModalState } from "../store/atom";
 
 const Router = () => {
+  const isPartyRegistModal = useRecoilValue(partyRegistModalState);
   return (
     <BrowserRouter>
       <Header />
@@ -27,6 +31,7 @@ const Router = () => {
         <Route element={<EditPost />} path={`/${path.EDITPOST}`} />
         <Route element={<Admin />} path={`/${path.ADMIN}`} />
       </Routes>
+      {isPartyRegistModal === true && <PartyRegist />}
     </BrowserRouter>
   );
 };
