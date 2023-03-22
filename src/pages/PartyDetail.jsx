@@ -12,6 +12,7 @@ import { useEffect, useState } from "react";
 import { FullDateCheck }from "../element/DateCheck";
 import Input from "../element/Input";
 import { useForm } from "react-hook-form";
+import PartyInfo from "../components/party/PartyInfo";
 
 function Comment(props){
   const navi = useNavigate()
@@ -108,7 +109,6 @@ function PartyDetail() {
   const groupName = searchParams.get("groupName");
   const groupInfo = searchParams.get("groupInfo");
   const groupCode = searchParams.get("groupCode");
-  const admin = searchParams.get("admin");
   const res = useQuery(['partyDetail'], () => getBoardDetailPage({ groupId, detailId, dtype }),
     {
       onSuccess: ({ data }) => {
@@ -165,17 +165,13 @@ function PartyDetail() {
     <>
       <PageContainer>
         <LeftContainer>
-          <LeftTitleBox>
-            <h1>{groupName}</h1>
-            <p>{groupInfo}</p>
-            <p>초대 코드 : {groupCode}</p>
-            <Button onClick={() => navi(`/party/${pam.id}/edit`,)}>글쓰기</Button>
-            {admin === "true" ? (
-              <Button onClick={() => navi(`/party/${pam.id}/admin`)}>
-                어드민 페이지
-              </Button>)
-              : null}
-          </LeftTitleBox>
+          <PartyInfo
+          groupName = {groupName}
+          groupInfo = {groupInfo}
+          groupCode = {groupCode}
+          groupId = {groupId}
+          isAdmin = {isAdmin}
+          />
         </LeftContainer>
         <RightTotalContainer>
           <h1>제목 : {res.data.data.data.title}</h1>
