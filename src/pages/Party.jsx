@@ -51,8 +51,7 @@ function Board(props) {
     <>
       <BoardBox
         onClick={() =>
-          navi(`/party/detail?groupId=${props.groupId}&detailId=${props.id}&dtype=${props.dtype}&groupName=${props.groupName}&groupInfo=${props.groupInfo}&groupCode=${props.groupCode}&admin=${props.isAdmin}
-          `)
+          navi(`/party/detail?groupId=${props.groupId}&detailId=${props.id}&dtype=${props.dtype}&groupName=${props.groupName}&groupInfo=${props.groupInfo}&groupCode=${props.groupCode}`)
         }
       >
         <BoardBoxTitleBox>
@@ -63,8 +62,8 @@ function Board(props) {
           <h1 className="title">{props.title}</h1>
           <p className="subtitle">{props.subtitle}</p>
           <TagWrapper>
-            {hashtagText?.map((item) => {
-              return <HashTagBox key={item.id}># {item}</HashTagBox>;
+            {hashtagText?.map((item, index) => {
+              return <HashTagBox key={index}># {item}</HashTagBox>;
             })}
           </TagWrapper>
           <BoardBottom>
@@ -311,6 +310,7 @@ const Party = () => {
       }),
     {
       onSuccess: ({ data }) => {
+        console.log(data)
         setGroupList(data.data.basicBoards.content);
         setCarouselList(data.data.deadlines);
       },
@@ -344,7 +344,13 @@ const Party = () => {
     <>
       <PageContainer>
         <LeftContainer>
-          <PartyInfo props={partyRes.data.data.data} />
+          <PartyInfo
+          groupName = {partyRes.data.data.data.groupName}
+          groupInfo = {partyRes.data.data.data.groupInfo}
+          groupCode = {partyRes.data.data.data.groupCode}
+          groupId = {pam.id}
+          isAdmin = {partyRes.data.data.data.admin}
+          />
         </LeftContainer>
         <RightTotalContainer>
           <CarouselContainer>
