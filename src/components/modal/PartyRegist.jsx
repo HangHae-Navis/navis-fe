@@ -1,15 +1,15 @@
 import { motion } from "framer-motion";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { flexCenter } from "../../utils/style/mixins";
 import { modalVariants } from "../../utils/variants/variants";
 import { useForm } from "react-hook-form";
 import { useMutation } from "react-query";
-import { postGroup, postGroupApply } from "../../utils/api/api";
+import { postGroup, postGroupApply, PutGroup } from "../../utils/api/api";
 import Input from "../../element/Input";
 import Button from "../../element/Button";
 import Test from "../../assets/d65d5952-d801-4225-ab16-8720733b499a.png";
-import { useNavigate } from "react-router";
+import { useNavigate, useParams } from "react-router";
 import { useRecoilState } from "recoil";
 import { partyRegistModalState } from "../../store/atom";
 
@@ -19,12 +19,21 @@ const PartyRegist = () => {
   const [images, setImages] = useState(Test);
   const [postImages, setPostImages] = useState(null);
   const [modalChange, setModalChange] = useState(true);
+  const [isPut, setIsPut] = useState(true);
+  const [currentPage, setCurrentPage] = useState();
   const [isOpen, setIsOpen] = useRecoilState(partyRegistModalState);
   const postgroup = useMutation(postGroup, {
     onSuccess: ({ data }) => {
       console.log(data);
       window.alert("등록 성공!");
       navi(`/party/${data.data}`);
+    },
+  });
+  const putgroup = useMutation(PutGroup, {
+    onSuccess: ({ data }) => {
+      console.log(data);
+      window.alert("등록 성공!");
+      navi(`/main`);
     },
   });
 
@@ -36,11 +45,19 @@ const PartyRegist = () => {
     },
   });
 
+  useEffect(() => {
+    return () => {
+      setCurrentPage(window.location.pathname)
+      currentPage == '/main' ?setIsPut(false) : setIsPut(true)
+    };
+  }, [])
+
   const ModalClose = (event) => {
     if (event.target === event.currentTarget) {
       setIsOpen(false);
     }
   };
+  console.log(currentPage)
 
   const ImageHandler = (event) => {
     console.log("핸들러 발동");
@@ -62,10 +79,14 @@ const PartyRegist = () => {
   };
 
   //리액트 훅 폼으로 POST 보낼 Json 생성, 후에 이미지 추가되면 FormData로변경되어야함
-  const onPost = async (data) => {
+  const onPostOrPut = async (data) => {
     const postRequest = new FormData();
-    postRequest.append("groupName", data.groupname);
-    postRequest.append("groupInfo", data.groupinfo);
+    if(data.groupname != null){
+      postRequest.append("groupName", data.groupname);
+    }
+    if( data.groupinfo != null){
+      postRequest.append("groupInfo", data.groupinfo);
+    }
     if (postImages != null) {
       postRequest.append("groupImage", postImages);
     }
@@ -73,9 +94,24 @@ const PartyRegist = () => {
     for (const [key, value] of postRequest.entries()) {
       console.log(key, value);
     }
-    const res = await postgroup.mutateAsync(postRequest);
-  };
+    if (currentPage == '/main') {
+      const res = await postgroup.mutateAsync(postRequest);
+    }
+    else {
+      const url = "/party/44/admin";
+      const regex = /\/party\/(\d+)\/admin/; // 정규식
 
+      const match = url.match(regex); // 문자열과 정규식을 비교하여 매치되는 부분 추출
+
+        const partyId = match[1]; // 매치된 부분 중 첫 번째 괄호 안에 있는 숫자 추출
+        console.log(partyId); // 44 출력
+      const payload = {
+        ID: partyId,
+        form: postRequest
+      }
+      const res = await putgroup.mutateAsync(payload);
+    }
+  };
   const onParticipation = async (data) => {
     const payload = { groupCode: data.code };
     const res = await postParticipation.mutateAsync(payload);
@@ -90,13 +126,17 @@ const PartyRegist = () => {
         exit="exit"
       >
         <TopButtonBox>
-          <Button onClick={() => setModalChange(true)}> 그룹 생성하기</Button>
-          <Button onClick={() => setModalChange(false)}>그룹 참여하기</Button>
+          {currentPage == '/main'
+            ? <>
+              <Button onClick={() => setModalChange(true)}> 그룹 생성하기</Button>
+              <Button onClick={() => setModalChange(false)}>그룹 참여하기</Button>
+            </> : null}
+
         </TopButtonBox>
         {modalChange === true ? (
           <>
             <h1>그룹 생성하기</h1>
-            <form onSubmit={handleSubmit(onPost)}>
+            <form onSubmit={handleSubmit(onPostOrPut)}>
               <RegistInputContainer>
                 <img
                   src={images ? images : Test}
@@ -115,6 +155,7 @@ const PartyRegist = () => {
                   name="groupname"
                   type="text"
                   label="그룹명"
+                  isput={isPut}
                 />
                 <Input
                   placeholder="그룹설명을 입력하세요."
@@ -122,8 +163,13 @@ const PartyRegist = () => {
                   name="groupinfo"
                   type="text"
                   label="그룹설명"
+                  isput={isPut}
                 />
-                <Button>그룹 생성하기</Button>
+                {currentPage == '/main'
+                  ? <>
+                    <Button>그룹 생성하기</Button>
+                  </>
+                  : <Button>그룹 수정하기</Button>}
               </RegistInputContainer>
             </form>
           </>

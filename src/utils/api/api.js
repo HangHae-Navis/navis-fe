@@ -124,6 +124,12 @@ export const deletePageMembers = async (payload) => {
   //
 };
 
+export const PutGroup = async (payload) => {
+  const res = axios.put(`api/groups/${payload.ID}/admin`, payload.form);
+  return res;
+}
+
+
 export const deletePage = async (payload) => {
   const res = await axios.delete(`api/groups/${payload}/admin`);
   return res;
