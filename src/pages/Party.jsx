@@ -51,7 +51,9 @@ function Board(props) {
     <>
       <BoardBox
         onClick={() =>
-          navi(`/party/detail?groupId=${props.groupId}&detailId=${props.id}&dtype=${props.dtype}&groupName=${props.groupName}&groupInfo=${props.groupInfo}&groupCode=${props.groupCode}`)
+          navi(
+            `/party/detail?groupId=${props.groupId}&detailId=${props.id}&dtype=${props.dtype}&groupName=${props.groupName}&groupInfo=${props.groupInfo}&groupCode=${props.groupCode}`
+          )
         }
       >
         <BoardBoxTitleBox>
@@ -310,7 +312,7 @@ const Party = () => {
       }),
     {
       onSuccess: ({ data }) => {
-        console.log(data)
+        console.log(data);
         setGroupList(data.data.basicBoards.content);
         setCarouselList(data.data.deadlines);
       },
@@ -345,11 +347,11 @@ const Party = () => {
       <PageContainer>
         <LeftContainer>
           <PartyInfo
-          groupName = {partyRes.data.data.data.groupName}
-          groupInfo = {partyRes.data.data.data.groupInfo}
-          groupCode = {partyRes.data.data.data.groupCode}
-          groupId = {pam.id}
-          isAdmin = {partyRes.data.data.data.admin}
+            groupName={partyRes.data.data.data.groupName}
+            groupInfo={partyRes.data.data.data.groupInfo}
+            groupCode={partyRes.data.data.data.groupCode}
+            groupId={pam.id}
+            isAdmin={partyRes.data.data.data.admin}
           />
         </LeftContainer>
         <RightTotalContainer>
