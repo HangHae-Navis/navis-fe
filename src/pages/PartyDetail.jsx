@@ -13,6 +13,8 @@ import { FullDateCheck }from "../element/DateCheck";
 import Input from "../element/Input";
 import { useForm } from "react-hook-form";
 import PartyInfo from "../components/party/PartyInfo";
+import { partyInfoState } from "../store/atom";
+import { useSetRecoilState } from "recoil";
 
 function Comment(props){
   const navi = useNavigate()

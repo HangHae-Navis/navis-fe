@@ -11,17 +11,20 @@ import Button from "../../element/Button";
 import Test from "../../assets/d65d5952-d801-4225-ab16-8720733b499a.png";
 import { useNavigate, useParams } from "react-router";
 import { useRecoilState } from "recoil";
-import { partyRegistModalState } from "../../store/atom";
+import { partyInfoState, partyRegistModalState } from "../../store/atom";
 
 const PartyRegist = () => {
   const navi = useNavigate();
   const { register, formState: errors, handleSubmit } = useForm();
   const [images, setImages] = useState(Test);
   const [postImages, setPostImages] = useState(null);
+  const [titleState, setTitleState] = useState(null);
+  const [infoState, setInfoState] = useState(null);
   const [modalChange, setModalChange] = useState(true);
   const [isPut, setIsPut] = useState(true);
   const [currentPage, setCurrentPage] = useState();
   const [isOpen, setIsOpen] = useRecoilState(partyRegistModalState);
+  const [partyInfos, setPartyInfos] = useRecoilState(partyInfoState);
   const postgroup = useMutation(postGroup, {
     onSuccess: ({ data }) => {
       console.log(data);
@@ -49,6 +52,11 @@ const PartyRegist = () => {
     return () => {
       setCurrentPage(window.location.pathname)
       currentPage == '/main' ?setIsPut(false) : setIsPut(true)
+      console.log(partyInfos)
+      console.log(partyInfos.groupName)
+      console.log(partyInfos.groupInfo)
+      setTitleState(partyInfos.groupName)
+      setInfoState(partyInfos.groupInfo)
     };
   }, [])
 
@@ -57,7 +65,6 @@ const PartyRegist = () => {
       setIsOpen(false);
     }
   };
-  console.log(currentPage)
 
   const ImageHandler = (event) => {
     console.log("핸들러 발동");
@@ -77,7 +84,6 @@ const PartyRegist = () => {
       console.log(postImages);
     }
   };
-
   //리액트 훅 폼으로 POST 보낼 Json 생성, 후에 이미지 추가되면 FormData로변경되어야함
   const onPostOrPut = async (data) => {
     const postRequest = new FormData();
@@ -156,7 +162,8 @@ const PartyRegist = () => {
                   type="text"
                   label="그룹명"
                   isput={isPut}
-                />
+                  defaultValue= {titleState}
+                ></Input>
                 <Input
                   placeholder="그룹설명을 입력하세요."
                   register={register}
@@ -164,7 +171,8 @@ const PartyRegist = () => {
                   type="text"
                   label="그룹설명"
                   isput={isPut}
-                />
+                  defaultValue= {infoState}
+                ></Input>
                 {currentPage == '/main'
                   ? <>
                     <Button>그룹 생성하기</Button>

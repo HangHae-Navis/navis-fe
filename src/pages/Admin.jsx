@@ -11,7 +11,7 @@ import {
   getPartyBoard,
   getPartyPage,
 } from "../utils/api/api";
-import { partyRegistModalState } from "../store/atom";
+import { partyRegistModalState, partyInfoState } from "../store/atom";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 import Test from "../assets/d65d5952-d801-4225-ab16-8720733b499a.png";
@@ -80,6 +80,7 @@ const Admin = () => {
     onSuccess: (data) => {
       console.log(data.data.data);
       setUserList(data.data.data.groupMembers);
+      setPartyInfo({groupName : data.data.data.groupName, groupId : pam.id, groupInfo: data.data.data.groupInfo})
     },
   });
 
@@ -92,10 +93,12 @@ const Admin = () => {
     navi('/')
   }})
 
+  const setPartyInfo = useSetRecoilState(partyInfoState);
 
   const setIsOpen = useSetRecoilState(partyRegistModalState);
 
   const MakeGroupHandler = () => {
+    console.log()
     setIsOpen(true);
   };
   return (
