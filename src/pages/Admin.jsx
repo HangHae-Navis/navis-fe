@@ -11,6 +11,7 @@ import {
   getPartyBoard,
   getPartyPage,
 } from "../utils/api/api";
+import { partyRegistModalState } from "../store/atom";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 import Test from "../assets/d65d5952-d801-4225-ab16-8720733b499a.png";
@@ -18,6 +19,7 @@ import Pagination from "react-js-pagination";
 import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import {FullDateCheck} from "../element/DateCheck";
+import { useSetRecoilState } from "recoil";
 
 function Board(props) {
   const deletePartyMember = useMutation(deletePageMembers , {onSuccess: (data) => {
@@ -76,7 +78,7 @@ const Admin = () => {
   const [userList, setUserList] = useState([]);
   const getDetailPage = useQuery(["admin"], () => getDetailPageForAdmin(pam.id), {
     onSuccess: (data) => {
-      console.log(data.data.data.groupMembers);
+      console.log(data.data.data);
       setUserList(data.data.data.groupMembers);
     },
   });
@@ -91,8 +93,14 @@ const Admin = () => {
   }})
 
 
+  const setIsOpen = useSetRecoilState(partyRegistModalState);
+
+  const MakeGroupHandler = () => {
+    setIsOpen(true);
+  };
   return (
     <>
+      <Button onClick={()=> MakeGroupHandler()}>그룹 정보 수정하기</Button>
       <Button onClick={()=> doDeletePage()}>그룹 삭제하기</Button>
       <PageContainer>
         {userList.map((item) => {
