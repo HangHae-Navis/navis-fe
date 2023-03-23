@@ -1,11 +1,24 @@
 import React from "react";
 import styled from "styled-components";
+import Star from "../../assets/ic20/star.svg";
 
 const MarkdownTitle = (props) => {
   const date = new Date(props.createAt);
+  const arr = new Array(props?.important).fill(0);
   console.log(props);
   return (
     <TitleRenderContent>
+      <TitleTopWrapper>
+        <Tag></Tag>
+        {props?.important !== 0 && (
+          <Tag>
+            {arr.map((_) => (
+              <img src={Star} alt="star" />
+            ))}
+            중요도
+          </Tag>
+        )}
+      </TitleTopWrapper>
       <TitleMidWrapper>
         <h1>{props?.title}</h1>
         <HashTagWrapper>
@@ -23,6 +36,15 @@ const MarkdownTitle = (props) => {
     </TitleRenderContent>
   );
 };
+
+const Tag = styled.section`
+  width: fit-content;
+`;
+
+const TitleTopWrapper = styled.section`
+  display: flex;
+  gap: 0.8rem;
+`;
 
 const TitleBottomWrapper = styled.section`
   display: flex;
