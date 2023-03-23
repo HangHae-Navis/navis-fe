@@ -47,17 +47,17 @@ const PartyRegist = () => {
 
   useEffect(() => {
     return () => {
-      setCurrentPage(window.location.pathname)
-      currentPage == '/main' ?setIsPut(false) : setIsPut(true)
+      setCurrentPage(window.location.pathname);
+      currentPage == "/main" ? setIsPut(false) : setIsPut(true);
     };
-  }, [])
+  }, []);
 
   const ModalClose = (event) => {
     if (event.target === event.currentTarget) {
       setIsOpen(false);
     }
   };
-  console.log(currentPage)
+  console.log(currentPage);
 
   const ImageHandler = (event) => {
     console.log("핸들러 발동");
@@ -81,10 +81,10 @@ const PartyRegist = () => {
   //리액트 훅 폼으로 POST 보낼 Json 생성, 후에 이미지 추가되면 FormData로변경되어야함
   const onPostOrPut = async (data) => {
     const postRequest = new FormData();
-    if(data.groupname != null){
+    if (data.groupname != null) {
       postRequest.append("groupName", data.groupname);
     }
-    if( data.groupinfo != null){
+    if (data.groupinfo != null) {
       postRequest.append("groupInfo", data.groupinfo);
     }
     if (postImages != null) {
@@ -94,21 +94,20 @@ const PartyRegist = () => {
     for (const [key, value] of postRequest.entries()) {
       console.log(key, value);
     }
-    if (currentPage == '/main') {
+    if (currentPage === "/main") {
       const res = await postgroup.mutateAsync(postRequest);
-    }
-    else {
+    } else {
       const url = "/party/44/admin";
       const regex = /\/party\/(\d+)\/admin/; // 정규식
 
       const match = url.match(regex); // 문자열과 정규식을 비교하여 매치되는 부분 추출
 
-        const partyId = match[1]; // 매치된 부분 중 첫 번째 괄호 안에 있는 숫자 추출
-        console.log(partyId); // 44 출력
+      const partyId = match[1]; // 매치된 부분 중 첫 번째 괄호 안에 있는 숫자 추출
+      console.log(partyId); // 44 출력
       const payload = {
         ID: partyId,
-        form: postRequest
-      }
+        form: postRequest,
+      };
       const res = await putgroup.mutateAsync(payload);
     }
   };
@@ -126,12 +125,17 @@ const PartyRegist = () => {
         exit="exit"
       >
         <TopButtonBox>
-          {currentPage == '/main'
-            ? <>
-              <Button onClick={() => setModalChange(true)}> 그룹 생성하기</Button>
-              <Button onClick={() => setModalChange(false)}>그룹 참여하기</Button>
-            </> : null}
-
+          {currentPage === "/main" ? (
+            <>
+              <Button onClick={() => setModalChange(true)}>
+                {" "}
+                그룹 생성하기
+              </Button>
+              <Button onClick={() => setModalChange(false)}>
+                그룹 참여하기
+              </Button>
+            </>
+          ) : null}
         </TopButtonBox>
         {modalChange === true ? (
           <>
@@ -165,11 +169,13 @@ const PartyRegist = () => {
                   label="그룹설명"
                   isput={isPut}
                 />
-                {currentPage == '/main'
-                  ? <>
+                {currentPage === "/main" ? (
+                  <>
                     <Button>그룹 생성하기</Button>
                   </>
-                  : <Button>그룹 수정하기</Button>}
+                ) : (
+                  <Button>그룹 수정하기</Button>
+                )}
               </RegistInputContainer>
             </form>
           </>
