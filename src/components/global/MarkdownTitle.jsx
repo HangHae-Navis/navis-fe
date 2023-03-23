@@ -15,7 +15,7 @@ const MarkdownTitle = (props) => {
             {arr.map((_) => (
               <img src={Star} alt="star" />
             ))}
-            중요도
+            <span>중요도</span>
           </Tag>
         )}
       </TitleTopWrapper>
@@ -38,7 +38,20 @@ const MarkdownTitle = (props) => {
 };
 
 const Tag = styled.section`
+  display: flex;
   width: fit-content;
+  align-items: center;
+  padding: 0.4rem 1rem 0.4rem 0.8rem;
+  border-radius: 3.6rem;
+  border: 0.1rem solid ${(props) => props.theme.color.zeroFour};
+  img {
+    width: 1rem;
+  }
+  span {
+    padding-left: 0.5rem;
+    color: ${(props) => props.theme.color.zeroFour};
+    font-size: 1.1rem;
+  }
 `;
 
 const TitleTopWrapper = styled.section`
