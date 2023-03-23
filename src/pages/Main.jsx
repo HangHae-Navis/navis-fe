@@ -76,7 +76,7 @@ const Main = () => {
       onSuccess: ({ data }) => {
         setGroupList(data.data.content);
         setTotalNum(data.data.totalElements);
-        console.log(data.data)
+        console.log(data.data);
       },
     }
   );
@@ -182,7 +182,7 @@ const GroupContainer = styled.div`
   max-width: 160rem;
   flex-direction: row;
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(3, 1fr);
   @media (max-width: 1400px) {
     grid-template-columns: repeat(3, 1fr);
   }
@@ -236,8 +236,8 @@ const GroupBox = styled.div`
     width: fit-content;
     border-radius: 0.8rem;
     font-size: 1.4rem;
-    background-color: #ffffff;
-    color: ${(props) => props.theme.color.zeroFour};
+    background-color: ${(props) => props.theme.color.zeroThree};
+    color: ${(props) => props.theme.color.zeroOne};
     font-weight: 500;
   }
   h1 {

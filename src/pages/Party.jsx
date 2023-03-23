@@ -196,6 +196,7 @@ function RadioButtons({
 }
 
 const RadioButtonStyled = styled.button`
+  cursor: pointer;
   width: 5rem;
   height: 4rem;
   border: none;

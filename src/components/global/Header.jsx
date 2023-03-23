@@ -9,6 +9,7 @@ import { getCookie, removeCookie, setCookie } from "../../utils/infos/cookie";
 import { path } from "../../constants/path";
 import { removeLocalStorage } from "../../utils/infos/localStorage";
 import Button from "../../element/Button";
+import Logo from "../../assets/logo.svg";
 
 const Header = () => {
   const setLoginModal = useSetRecoilState(loginModalState);
@@ -47,7 +48,7 @@ const Header = () => {
   return (
     <HeaderWrapper>
       {/* <img src={Logo} className="logo" alt="logo" /> */}
-      <h1>로고</h1>
+      <img src={Logo} className="logo" alt="navis-logo" />
       {token === undefined ? (
         <Button transparent={true} onClick={() => setLoginModal(true)}>
           Login
@@ -74,7 +75,7 @@ const HeaderWrapper = styled.header`
   padding: 1rem;
   background: ${(props) => props.theme.color.zeroOne};
   .logo {
-    width: 10.5rem;
+    width: 10.6rem;
   }
 `;
 
