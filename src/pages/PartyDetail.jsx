@@ -11,7 +11,7 @@ import {
 } from "../utils/api/api";
 import "react-loading-skeleton/dist/skeleton.css";
 import { useNavigate, useParams, useSearchParams } from "react-router-dom";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FullDateCheck } from "../element/DateCheck";
 import Input from "../element/Input";
 import { useForm } from "react-hook-form";
@@ -21,6 +21,9 @@ import { ReactMarkdown } from "react-markdown/lib/react-markdown";
 import SyntaxHighlighter from "react-syntax-highlighter/dist/esm/default-highlight";
 import remarkGfm from "remark-gfm";
 import { a11yDark } from "react-syntax-highlighter/dist/esm/styles/prism";
+import MarkdownTitle from "../components/global/MarkdownTitle";
+import { getCookie } from "../utils/infos/cookie";
+import { toast } from "react-toastify";
 
 function Comment(props) {
   const navi = useNavigate();
@@ -120,6 +123,16 @@ function PartyDetail() {
   const navi = useNavigate();
   const [postInfo, setPostInfo] = useState({});
 
+  useEffect(() => {
+    const isUserCookie = getCookie("token");
+    if (isUserCookie === undefined) {
+      navi("/");
+      toast.error("로그인 정보가 만료되었습니다.", {
+        toastId: "postDetailLoginErr",
+      });
+    }
+  }, []);
+
   const groupId = searchParams.get("groupId");
   const detailId = searchParams.get("detailId");
   const dtype = searchParams.get("dtype");
@@ -193,12 +206,7 @@ function PartyDetail() {
         isAdmin={isAdmin}
       />
       <ContentsWrapper>
-        <TitleRenderContent>
-          <h1>{postInfo.title}</h1>
-          <span>{postInfo.userName}</span>
-          <span>|</span>
-          <span>{postInfo.createAt}</span>
-        </TitleRenderContent>
+        <MarkdownTitle {...postInfo} />
         <ReactMarkdownWrapper
           children={postInfo.content}
           remarkPlugins={[remarkGfm]}
@@ -369,29 +377,11 @@ const ReactMarkdownWrapper = styled(ReactMarkdown)`
   }
 `;
 
-const TitleRenderContent = styled.section`
-  display: flex;
-  flex-direction: column;
-  h1 {
-    width: 20rem;
-    font-size: 2.1rem;
-    line-height: 1.45;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
-  span {
-    align-self: flex-cent;
-    font-size: 1.4rem;
-    color: ${(props) => props.theme.color.grey40};
-  }
-  border-bottom: 1px solid hsla(0, 0%, 50%, 0.33);
-`;
-
 const ContentsWrapper = styled.section`
   display: flex;
   flex-direction: column;
-  width: 50vw;
+  width: 60vw;
+  margin-left: 6rem;
 `;
 
 export default PartyDetail;
