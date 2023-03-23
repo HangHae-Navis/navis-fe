@@ -9,7 +9,7 @@ import { postGroup, postGroupApply, PutGroup } from "../../utils/api/api";
 import Input from "../../element/Input";
 import Button from "../../element/Button";
 import Test from "../../assets/d65d5952-d801-4225-ab16-8720733b499a.png";
-import { useNavigate, useParams } from "react-router";
+import { useNavigate } from "react-router";
 import { useRecoilState } from "recoil";
 import { partyRegistModalState } from "../../store/atom";
 

@@ -303,12 +303,11 @@ const Party = () => {
   const [totalNum, setTotalNum] = useState(0);
   const [pageNum, setPageNum] = useState(1);
 
-
-  const[groupName, setGroupName]  = useState()
-  const[groupInfo, setGroupInfo]  = useState()
-  const[groupCode, setGroupCode]  = useState()
-  const[groupId, setGroupId]  = useState(pam.id)
-  const[isAdmin ,setIsAdmin]  = useState(false)
+  const [groupName, setGroupName] = useState();
+  const [groupInfo, setGroupInfo] = useState();
+  const [groupCode, setGroupCode] = useState();
+  const [groupId, setGroupId] = useState(pam.id);
+  const [isAdmin, setIsAdmin] = useState(false);
 
   const partyRes = useQuery(
     ["party", { id: pam.id, page: pageNum, size: 99, category: categoryValue }],
@@ -323,11 +322,11 @@ const Party = () => {
       onSuccess: ({ data }) => {
         console.log(data);
         setGroupList(data.data.basicBoards.content);
-        setGroupName(data.data.groupName)
-        setGroupInfo(data.data.groupInfo)
-        setGroupCode(data.data.groupCode)
-        setGroupId(pam.id)
-        setIsAdmin(data.data.admin)
+        setGroupName(data.data.groupName);
+        setGroupInfo(data.data.groupInfo);
+        setGroupCode(data.data.groupCode);
+        setGroupId(pam.id);
+        setIsAdmin(data.data.admin);
         setCarouselList(data.data.deadlines);
       },
     }
@@ -354,26 +353,26 @@ const Party = () => {
   };
 
   if (partyRes.isLoading || partyRes.isError) {
-    return <>
-      <PageContainer>
-        <LeftContainer>
-          <PartyInfo
-          groupName = {groupName}
-          groupInfo = {groupInfo}
-          groupCode = {groupCode}
-          groupId = {pam.id}
-          isAdmin = {isAdmin}
-          />
-        </LeftContainer>
-        <RightTotalContainer>
-          <CarouselContainer>
-            <h1 className="title">오늘 마감</h1>
-          </CarouselContainer>
-        </RightTotalContainer>
-
-      </PageContainer>
-    
-     </>;
+    return (
+      <>
+        <PageContainer>
+          <LeftContainer>
+            <PartyInfo
+              groupName={groupName}
+              groupInfo={groupInfo}
+              groupCode={groupCode}
+              groupId={pam.id}
+              isAdmin={isAdmin}
+            />
+          </LeftContainer>
+          <RightTotalContainer>
+            <CarouselContainer>
+              <h1 className="title">오늘 마감</h1>
+            </CarouselContainer>
+          </RightTotalContainer>
+        </PageContainer>
+      </>
+    );
   }
 
   return (
@@ -445,7 +444,7 @@ const Party = () => {
 const CarouselContainer = styled.div`
   width: 60vw;
   height: 30.2rem;
-  overflow-x: scroll;
+  overflow-x: auto;
   margin-bottom: 5.6rem;
   gap: 3rem;
   padding: 3.2rem;
