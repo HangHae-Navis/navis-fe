@@ -3,7 +3,7 @@ import styled from "styled-components";
 import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai";
 import { InputStyle } from "../utils/style/mixins";
 
-const Input = ({ register, placeholder, type, name, error, label }) => {
+const Input = ({ register, placeholder, type, name, error, label, defaultValue }) => {
   const [passwordVisible, setPasswordVisible] = useState(false);
   const onVisible = (e) => {
     e.stopPropagation();
@@ -21,6 +21,7 @@ const Input = ({ register, placeholder, type, name, error, label }) => {
               {...register(name, {
                 required: "값을 입력해주세요.",
               })}
+              defaultValue = {defaultValue}
             />
             {error && <ErrorMessage>{error}</ErrorMessage>}
           </InputWrapper>
@@ -35,6 +36,7 @@ const Input = ({ register, placeholder, type, name, error, label }) => {
               {...register(name, {
                 required: "값을 입력해주세요.",
               })}
+              defaultValue = {defaultValue}
             />
             <IconsWrapper onClick={onVisible}>
               {passwordVisible === true ? (

@@ -121,8 +121,12 @@ export const deletePageMembers = async (payload) => {
     const res = await axios.delete(`api/groups/${payload}`);
     return res;
   }
-  //
 };
+
+export const undoDeletePagemembers = async (payload) =>{
+  const res = await axios.delete(`api/groups/${payload.pam}/admin/unban?bannedMemberId=${payload.bannedMemberId}`)
+  return res
+}
 
 export const PutGroup = async (payload) => {
   const res = axios.put(`api/groups/${payload.ID}/admin`, payload.form);

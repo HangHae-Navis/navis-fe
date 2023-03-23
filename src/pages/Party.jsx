@@ -19,6 +19,9 @@ import PartyInfo from "../components/party/PartyInfo";
 import { getCookie } from "../utils/infos/cookie";
 import { toast } from "react-toastify";
 import { flexCenter } from "../utils/style/mixins";
+import Slider from "react-slick";
+import 'slick-carousel/slick/slick.css';
+import 'slick-carousel/slick/slick-theme.css';
 
 function Board(props) {
   const navi = useNavigate();
@@ -351,6 +354,24 @@ const Party = () => {
     const res = deletePartyMember.mutateAsync(data);
   };
 
+  const settings = {
+    dots: false, // 개수 표시 점
+    infinite: false, // 무한 캐러셀
+    speed: 100, // 다음 컨텐츠 까지의 속도
+    slidesToShow: 4, // 화면에 보이는 컨텐츠 수
+    slidesToScroll: 1, // 스크롤 시 넘어가는 컨텐츠 수
+    centerMode: false, // 현재 컨텐츠 가운데 정렬
+    centerPadding: '10px', // 중앙 컨텐츠 padding 값
+    autoplay: false, // 자동 캐러셀
+    autoplaySpeed: 2000, // 자동 캐러셀 속도
+    draggable: true, // 드래그      
+    fade: false, // 사라졌다 나타나는 효과
+    arrows: true, // 좌,우 버튼
+    vertical: false, // 세로 캐러셀
+    initialSlide:0, // 첫 컨텐츠 번호
+    pauseOnFocus: true, // focus시 정지
+    pauseOnHover: true, // hover시 정지
+  };
   if (partyRes.isLoading || partyRes.isError) {
     return <>
       <PageContainer>
@@ -388,7 +409,10 @@ const Party = () => {
         </LeftContainer>
         <RightTotalContainer>
           <CarouselContainer>
+            <CarouselTitle>
             <h1 className="title">오늘 마감</h1>
+            </CarouselTitle>
+            <Slider {...settings}>
             {carouselList?.map((item) => {
               return (
                 <Carousel
@@ -401,6 +425,7 @@ const Party = () => {
                 />
               );
             })}
+            </Slider>
           </CarouselContainer>
           <RadioBox>
             <RadioButtons
@@ -443,11 +468,12 @@ const Party = () => {
 const CarouselContainer = styled.div`
   width: 60vw;
   height: 30.2rem;
-  overflow-x: scroll;
+  overflow-x: hidden;
   margin-bottom: 5.6rem;
   gap: 3rem;
   padding: 3.2rem;
   display: flex;
+  flex-direction: column;
   background-color: ${(props) => props.theme.color.zeroThree};
   border-radius: 3.2rem;
 
@@ -457,6 +483,14 @@ const CarouselContainer = styled.div`
     color: #ffffff;
   }
 `;
+
+const CarouselTitle = styled.div`
+.title {
+  font-weight: 500;
+  font-size: 2.2rem;
+  color: #ffffff;
+}
+`
 
 const PageContainer = styled.div`
   display: flex;
