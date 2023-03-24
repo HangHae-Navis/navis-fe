@@ -133,6 +133,10 @@ export const PutGroup = async (payload) => {
   return res;
 }
 
+export const PutMemberRole = async (payload) => {
+  const res = axios.put(`api/groups/${payload.pam}/admin/updaterole?memberId=${payload.memberId}`);
+  return res;
+}
 
 export const deletePage = async (payload) => {
   const res = await axios.delete(`api/groups/${payload}/admin`);
