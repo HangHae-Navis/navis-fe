@@ -1,36 +1,55 @@
 import React from "react";
 import styled from "styled-components";
 import Star from "../../assets/ic20/star.svg";
+import impo from "../../assets/ic20/importance.svg";
+import vote from "../../assets/ic20/vote.svg";
+import task from "../../assets/ic20/task.svg";
 
-const MarkdownTitle = (props) => {
-  const date = new Date(props.createAt);
-  const arr = new Array(props?.important).fill(0);
-  console.log(props);
+const MarkdownTitle = ({ postInfo, dtype }) => {
+  const date = new Date(postInfo.createAt);
+  const arr = new Array(postInfo?.important).fill(0);
   return (
     <TitleRenderContent>
       <TitleTopWrapper>
-        <Tag></Tag>
-        {props?.important !== 0 && (
+        {dtype === "homework" && (
           <Tag>
-            {arr.map((_) => (
-              <img src={Star} alt="star" />
+            <img src={task} alt="과제" />
+            <span>과제</span>
+          </Tag>
+        )}
+        {dtype === "notice" && (
+          <Tag>
+            <img src={impo} alt="공지사항" />
+            <span>공지</span>
+          </Tag>
+        )}
+        {dtype === "vote" && (
+          <Tag>
+            <img src={vote} alt="투표" />
+            <span>투표</span>
+          </Tag>
+        )}
+        {postInfo?.important !== 0 && (
+          <Tag>
+            {arr.map((_, i) => (
+              <img src={Star} key={i} alt="star" />
             ))}
             <span>중요도</span>
           </Tag>
         )}
       </TitleTopWrapper>
       <TitleMidWrapper>
-        <h1>{props?.title}</h1>
+        <h1>{postInfo?.title}</h1>
         <HashTagWrapper>
-          {props?.hashtagList?.map((tag, i) => (
+          {postInfo?.hashtagList?.map((tag, i) => (
             <li key={i}>#{tag}</li>
           ))}
         </HashTagWrapper>
       </TitleMidWrapper>
       <TitleBottomWrapper>
-        <p>{props?.subtitle}</p>
+        <p>{postInfo?.subtitle}</p>
         <span>
-          {props?.nickname} | {`${date.toLocaleDateString()}`}
+          {postInfo?.nickname} | {`${date.toLocaleDateString()}`}
         </span>
       </TitleBottomWrapper>
     </TitleRenderContent>
@@ -45,12 +64,12 @@ const Tag = styled.section`
   border-radius: 3.6rem;
   border: 0.1rem solid ${(props) => props.theme.color.zeroFour};
   img {
-    width: 1rem;
+    width: 1.45rem;
   }
   span {
     padding-left: 0.5rem;
     color: ${(props) => props.theme.color.zeroFour};
-    font-size: 1.1rem;
+    font-size: 1.15rem;
   }
 `;
 

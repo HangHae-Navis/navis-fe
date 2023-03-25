@@ -123,16 +123,17 @@ export const deletePageMembers = async (payload) => {
   }
 };
 
-export const undoDeletePagemembers = async (payload) =>{
-  const res = await axios.delete(`api/groups/${payload.pam}/admin/unban?bannedMemberId=${payload.bannedMemberId}`)
-  return res
-}
+export const undoDeletePagemembers = async (payload) => {
+  const res = await axios.delete(
+    `api/groups/${payload.pam}/admin/unban?bannedMemberId=${payload.bannedMemberId}`
+  );
+  return res;
+};
 
 export const PutGroup = async (payload) => {
   const res = axios.put(`api/groups/${payload.ID}/admin`, payload.form);
   return res;
-}
-
+};
 
 export const deletePage = async (payload) => {
   const res = await axios.delete(`api/groups/${payload}/admin`);
@@ -141,16 +142,16 @@ export const deletePage = async (payload) => {
 
 /*-----------------------어드민 페이지 기능------------------------------*/
 
-
 /*-----------------------상세 페이지 기능------------------------------*/
 
-export const postComment = async (data) =>{
-  console.log(data)
-  console.log(data.comment.comment)
-  const payload = { "content" : data.comment.comment}
-  const res = await axios.post(`api/${data.groupId}/${data.detailId}/comments`, payload)
-  return res
-}
+export const postComment = async (data) => {
+  const payload = { content: data.comment };
+  const res = await axios.post(
+    `api/${data.groupId}/${data.detailId}/comments`,
+    payload
+  );
+  return res;
+};
 
 export const getBoardDetailPage = async (payload) => {
   const res = await axios.get(
@@ -166,15 +167,20 @@ export const getCommentPage = async (payload) => {
   return res;
 };
 
-export const deleteCommentPage = async (payload) =>{
-  console.log(payload)
-  const res = await axios.delete(`api/${payload.groupId}/${payload.detailId}/comments/${payload.commentId}`)
-  return res
-}
+export const deleteCommentPage = async (payload) => {
+  console.log(payload);
+  const res = await axios.delete(
+    `api/${payload.groupId}/${payload.detailId}/comments/${payload.commentId}`
+  );
+  return res;
+};
 
-export const putCommentPage = async (payload) =>{
-  console.log(payload)
-  const res = await axios.put(`api/${payload.groupId}/${payload.detailId}/comments/${payload.commentId}`, payload.value)
-  return res
-}
+export const putCommentPage = async (payload) => {
+  console.log(payload);
+  const res = await axios.put(
+    `api/${payload.groupId}/${payload.detailId}/comments/${payload.commentId}`,
+    payload.value
+  );
+  return res;
+};
 /*-----------------------상세 페이지 기능------------------------------*/

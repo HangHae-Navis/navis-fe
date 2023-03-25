@@ -1,20 +1,14 @@
-import { useMutation, useQuery } from "react-query";
+import { useMutation, useQuery, useQueryClient } from "react-query";
 import styled from "styled-components";
-import Button from "../element/Button";
 import {
-  deleteCommentPage,
   deletePageMembers,
   getBoardDetailPage,
   getCommentPage,
   postComment,
-  putCommentPage,
 } from "../utils/api/api";
 import "react-loading-skeleton/dist/skeleton.css";
-import { useNavigate, useParams, useSearchParams } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { FullDateCheck } from "../element/DateCheck";
-import Input from "../element/Input";
-import { useForm } from "react-hook-form";
 import PartyInfo from "../components/party/PartyInfo";
 import { flexCenter } from "../utils/style/mixins";
 import { ReactMarkdown } from "react-markdown/lib/react-markdown";
@@ -24,104 +18,19 @@ import { a11yDark } from "react-syntax-highlighter/dist/esm/styles/prism";
 import MarkdownTitle from "../components/global/MarkdownTitle";
 import { getCookie } from "../utils/infos/cookie";
 import { toast } from "react-toastify";
-
-function Comment(props) {
-  const navi = useNavigate();
-  const [isPut, setIsPut] = useState(false);
-  const { register, formState: errors, handleSubmit } = useForm();
-  const deleteComment = useMutation(deleteCommentPage, {
-    onSuccess: (data) => {
-      window.alert("댓글이 삭제되었습니다");
-      window.location.reload();
-    },
-  });
-
-  const putComment = useMutation(putCommentPage, {
-    onSuccess: (data) => {
-      window.alert("댓글이 수정되었습니다");
-      window.location.reload();
-    },
-  });
-
-  const onPut = async (data) => {
-    const payload = {
-      groupId: props.groupId,
-      detailId: props.detailId,
-      commentId: props.id,
-      value: data,
-    };
-    const res = await putComment.mutateAsync(payload);
-    console.log(data);
-  };
-
-  const doDeletComment = () => {
-    const res = deleteComment.mutateAsync({
-      groupId: props.groupId,
-      detailId: props.detailId,
-      commentId: props.id,
-    });
-  };
-  const doPutComment = () => {
-    //const res = putComment.mutateAsync({groupId: props.groupId, detailId: props.detailId, commentId: props.id, value : })
-  };
-
-  return (
-    <CommentBox>
-      <p>닉네임 : {props.nickname} </p>
-      <p>작성일자 : {FullDateCheck(props.createAt)}</p>
-      <p>내용 : {props.content}</p>
-
-      {props.isAdmin === true ? (
-        <Button onClick={() => setIsPut(!isPut)}>수정하기</Button>
-      ) : null}
-      {props.isAdmin === true || props.owned == true ? (
-        <Button onClick={doDeletComment}>삭제하기</Button>
-      ) : null}
-      {isPut === false ? null : (
-        <CommentBox>
-          <form onSubmit={handleSubmit(onPut)}>
-            <Input
-              placeholder="댓글을 수정하시오."
-              register={register}
-              name="content"
-              type="text"
-              label="댓글수정"
-            />
-            <Button>수정 완료</Button>
-          </form>
-        </CommentBox>
-      )}
-    </CommentBox>
-  );
-}
-
-const CommentBox = styled.div`
-  width: 70rem;
-  border: 0.3rem solid white;
-  border-radius: 1.5rem;
-
-  padding: 1rem;
-  p {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    font-size: 1.1rem;
-
-    span {
-      cursor: pointer;
-      text-decoration: underline;
-      font-size: 1.1rem;
-    }
-  }
-`;
+import conver from "../assets/ic24/conversation.svg";
+import profile from "../assets/ic54/profile.svg";
+import { getLocalStorage } from "../utils/infos/localStorage";
+import Comment from "../element/Comment";
 
 function PartyDetail() {
-  const pam = useParams();
   const [searchParams, setSearchParams] = useSearchParams();
   const [commentList, setCommentList] = useState();
   const [isAdmin, setIsAdmin] = useState();
   const navi = useNavigate();
   const [postInfo, setPostInfo] = useState({});
+  const myUserName = getLocalStorage("userInfo");
+  const [comment, setComment] = useState("");
 
   useEffect(() => {
     const isUserCookie = getCookie("token");
@@ -136,7 +45,7 @@ function PartyDetail() {
   const groupId = searchParams.get("groupId");
   const detailId = searchParams.get("detailId");
   const dtype = searchParams.get("dtype");
-
+  const queryClient = useQueryClient();
   const groupName = searchParams.get("groupName");
   const groupInfo = searchParams.get("groupInfo");
   const groupCode = searchParams.get("groupCode");
@@ -163,14 +72,13 @@ function PartyDetail() {
   );
   const post = useMutation(postComment, {
     onSuccess: ({ data }) => {
-      console.log("와우 성공!");
+      queryClient.invalidateQueries("comment");
+      toast.success("댓글이 작성되었습니다.");
     },
   });
-  console.log(postInfo);
 
   const deletePartyMember = useMutation(deletePageMembers, {
     onSuccess: (data) => {
-      console.log("해당 멤버가 퇴출되었습니다.");
       window.alert("해당 멤버가 퇴출되었습니다");
       navi("/");
     },
@@ -183,7 +91,6 @@ function PartyDetail() {
       comment: data,
     };
     const res = await post.mutateAsync(payload);
-    console.log(data);
   };
 
   const doDelete = (data) => {
@@ -195,7 +102,6 @@ function PartyDetail() {
   if (res.isError && getComment.isError) {
     return <></>;
   }
-
   return (
     <PageContainer>
       <PartyInfo
@@ -206,7 +112,7 @@ function PartyDetail() {
         isAdmin={isAdmin}
       />
       <ContentsWrapper>
-        <MarkdownTitle {...postInfo} />
+        <MarkdownTitle postInfo={postInfo} dtype={dtype} />
         <ReactMarkdownWrapper
           children={postInfo.content}
           remarkPlugins={[remarkGfm]}
@@ -231,67 +137,75 @@ function PartyDetail() {
           }}
         />
       </ContentsWrapper>
+      <Commentcontainer>
+        <CommentTopWrapper>
+          <span>댓글 2</span>
+          <img src={conver} alt="댓글" />
+        </CommentTopWrapper>
+        <CommentsWrapper />
+        <CommentMapWrapper>
+          {commentList?.map((comment) => (
+            <Comment
+              key={comment.id}
+              id={comment.id}
+              groupId={groupId}
+              detailId={detailId}
+              content={comment.content}
+              nickname={comment.nickname}
+              createAt={comment.createAt}
+              isAdmin={isAdmin}
+              owned={comment.owned}
+            ></Comment>
+          ))}
+        </CommentMapWrapper>
+        <CommentInputWrapper>
+          <img src={profile} alt="프로필" />
+          <form
+            className="form"
+            onSubmit={(e) => {
+              e.preventDefault();
+              onPost(comment);
+            }}
+          >
+            <section className="center">
+              <span>{myUserName}</span>
+              <div className="inputLayout">
+                <textarea
+                  cols="49"
+                  rows="2"
+                  maxLength="98"
+                  placeholder="댓글을 입력해주세요."
+                  value={comment}
+                  onChange={(e) => setComment(e.target.value)}
+                />
+                <button>등록</button>
+              </div>
+            </section>
+          </form>
+        </CommentInputWrapper>
+      </Commentcontainer>
     </PageContainer>
   );
-
-  {
-    /* <LeftContainer>
-          <PartyInfo
-            groupName={groupName}
-            groupInfo={groupInfo}
-            groupCode={groupCode}
-            groupId={groupId}
-            isAdmin={isAdmin}
-          />
-        </LeftContainer>
-        <RightTotalContainer>
-          <h1>제목 : {res.data.data.data.title}</h1>
-          <h1>작성자 : {res.data.data.data.nickname}</h1>
-          <h1>작성일 : {FullDateCheck(res.data.data.data.createAt)}</h1>
-          <h1>내용 : {res.data.data.data.content}</h1>
-          <form onSubmit={handleSubmit(onPost)}>
-            <Input
-              placeholder="댓글을 입력하시오."
-              register={register}
-              name="comment"
-              type="text"
-              label="댓글작성"
-            />
-            <Button>댓글 올리기</Button>
-          </form>
-          <Commentcontainer>
-            {commentList?.map((item) => {
-              return (
-                <Comment
-                  key={item.id}
-                  id={item.id}
-                  groupId={groupId}
-                  detailId={detailId}
-                  content={item.content}
-                  nickname={item.nickname}
-                  createAt={item.createAt}
-                  isAdmin={isAdmin}
-                  owned={item.owned}
-                ></Comment>
-              );
-            })}
-          </Commentcontainer>
-        </RightTotalContainer> */
-  }
 }
 
 const Commentcontainer = styled.div`
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
   gap: 1rem;
+  max-width: 128rem;
+  width: 60vw;
+  background-color: ${(props) => props.theme.color.zeroOne};
+  padding: 3.2rem;
+  margin-left: 5rem;
 `;
 
 const PageContainer = styled.div`
   width: 100vw;
   max-width: 128rem;
   display: flex;
+  flex-direction: column;
   ${flexCenter}
+  margin: 0 auto;
 `;
 
 const ReactMarkdownWrapper = styled(ReactMarkdown)`
@@ -382,6 +296,85 @@ const ContentsWrapper = styled.section`
   flex-direction: column;
   width: 60vw;
   margin-left: 6rem;
+`;
+
+const CommentsWrapper = styled.section`
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  justify-content: center;
+
+  img {
+    width: 3.2rem;
+    height: 3.2rem;
+    border-radius: 50%;
+  }
+`;
+
+const CommentMapWrapper = styled.ul`
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+`;
+
+const CommentInputWrapper = styled.section`
+  display: flex;
+  gap: 1rem;
+
+  .center {
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+  }
+
+  .form {
+    width: 100%;
+    button {
+      cursor: pointer;
+      width: 5rem;
+      height: 5rem;
+      border-radius: 1.6rem;
+      border: none;
+      color: ${(props) => props.theme.color.zeroOne};
+      background-color: ${(props) => props.theme.color.zeroThree};
+      margin-left: 0.8rem;
+      font-size: 1.2rem;
+    }
+    .inputLayout {
+      display: flex;
+      align-items: center;
+      textarea {
+        width: 80%;
+        border-radius: 0.4rem;
+        border: none;
+        font-size: 1.1rem;
+        padding: 0.8rem;
+        resize: none;
+        &:focus {
+          outline: none;
+        }
+      }
+    }
+  }
+
+  img {
+    width: 3.2rem;
+    height: 3.2rem;
+    border-radius: 50%;
+  }
+`;
+
+const CommentTopWrapper = styled.section`
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  color: ${(props) => props.theme.color.zeroFour};
+  span {
+    font-size: 1.3rem;
+  }
+  img {
+    width: 1.8rem;
+  }
 `;
 
 export default PartyDetail;
