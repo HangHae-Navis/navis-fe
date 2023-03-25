@@ -1,24 +1,14 @@
 import { useMutation, useQuery, useQueryClient } from "react-query";
 import styled from "styled-components";
-<<<<<<< HEAD
 import {
-=======
-import Button from "../element/Button";
-import {
-  deleteCommentPage,
->>>>>>> b86f821 (feat : markdown-editor detail)
   deletePageMembers,
   getBoardDetailPage,
   getCommentPage,
   postComment,
-  putCommentPage,
 } from "../utils/api/api";
 import "react-loading-skeleton/dist/skeleton.css";
-import { useNavigate, useParams, useSearchParams } from "react-router-dom";
-import { useState } from "react";
-import { FullDateCheck } from "../element/DateCheck";
-import Input from "../element/Input";
-import { useForm } from "react-hook-form";
+import { useNavigate, useSearchParams } from "react-router-dom";
+import { useEffect, useState } from "react";
 import PartyInfo from "../components/party/PartyInfo";
 import { flexCenter } from "../utils/style/mixins";
 import { ReactMarkdown } from "react-markdown/lib/react-markdown";
