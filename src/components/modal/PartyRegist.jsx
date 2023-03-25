@@ -126,7 +126,6 @@ const PartyRegist = () => {
 
   return (
     <RegistModalBackGround onClick={ModalClose}>
-    <form onSubmit={handleSubmit(onPostOrPut)}>
       <RegistModalWrapper
         variants={modalVariants}
         initial="start"
@@ -137,13 +136,13 @@ const PartyRegist = () => {
         {currentPage == '/main'
           ? <>
             {modalChange == true
-            ?<h1 className="buttontitle" onClick={() => setModalChange(true)}> 그룹 가입하기</h1>
-            :<h1 className="buttontitleoff" onClick={() => setModalChange(true)}> 그룹 가입하기</h1>
+            ?<h1 className="buttontitle" onClick={() => setModalChange(true)}>그룹 생성하기</h1>
+            :<h1 className="buttontitleoff" onClick={() => setModalChange(true)}>그룹 생성하기</h1>
             }
             
             {modalChange == false
-            ?<h1 className="buttontitle" onClick={() => setModalChange(false)}>그룹 생성하기</h1>
-            :<h1 className="buttontitleoff" onClick={() => setModalChange(false)}>그룹 생성하기</h1>
+            ?<h1 className="buttontitle" onClick={() => setModalChange(false)}>그룹 가입하기</h1>
+            :<h1 className="buttontitleoff" onClick={() => setModalChange(false)}>그룹 가입하기</h1>
             }
             
           </> : null}
@@ -151,6 +150,7 @@ const PartyRegist = () => {
       </TopButtonBox>
         <ModalContentContainer>
         {modalChange === true ? (
+    <form onSubmit={handleSubmit(onPostOrPut)}>
           <ModalContentWraper>
           <ModalContentBox>
             
@@ -214,8 +214,9 @@ const PartyRegist = () => {
                       <Button>그룹 수정하기</Button>
                       </ModalButtonBox>}
           </ModalContentWraper>
+            </form>
         ) : (
-
+            
             <form onSubmit={handleSubmit(onParticipation)}>
             <InputWrapper>
                 <h2>NAVIS GROUP은 초대 코드가 있어야 입장이 가능합니다.</h2>
@@ -224,6 +225,7 @@ const PartyRegist = () => {
                 register={register}
                 name="code"
                 type="text"
+                isput = {isPut}
               />
             </InputWrapper>
               <Button>그룹 참여하기</Button>
@@ -231,7 +233,6 @@ const PartyRegist = () => {
         )}
         </ModalContentContainer>
       </RegistModalWrapper>
-            </form>
     </RegistModalBackGround>
   );
 };
