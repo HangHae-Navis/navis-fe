@@ -3,7 +3,8 @@ import styled from "styled-components";
 import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai";
 import { InputStyle } from "../utils/style/mixins";
 
-const Input = ({ register, placeholder, type, name, error, label, defaultValue }) => {
+const Input = ({ register, placeholder, type, name, error, label, defaultValue, width }) => {
+  console.log(width)
   const [passwordVisible, setPasswordVisible] = useState(false);
   const onVisible = (e) => {
     e.stopPropagation();
@@ -14,7 +15,7 @@ const Input = ({ register, placeholder, type, name, error, label, defaultValue }
       {type !== "password" ? (
         <InputLayout>
           <Label>{label}</Label>
-          <InputWrapper>
+          <InputWrapper width = {width}>
             <InputCustom
               placeholder={placeholder}
               type={type}
@@ -29,7 +30,7 @@ const Input = ({ register, placeholder, type, name, error, label, defaultValue }
       ) : (
         <InputLayout>
           <Label>{label}</Label>
-          <InputWrapper>
+          <InputWrapper width = {width}>
             <InputCustom
               placeholder={placeholder}
               type={passwordVisible ? "text" : type}
@@ -78,7 +79,7 @@ const ErrorMessage = styled.p`
 
 const InputWrapper = styled.section`
   position: relative;
-  width: 27rem;
+  width: ${({ width }) => (width ? width : "27rem")};
   display: flex;
   align-items: center;
 `;

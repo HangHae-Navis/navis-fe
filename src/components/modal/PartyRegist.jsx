@@ -12,6 +12,7 @@ import Test from "../../assets/d65d5952-d801-4225-ab16-8720733b499a.png";
 import { useNavigate, useParams } from "react-router";
 import { useRecoilState } from "recoil";
 import { partyInfoState, partyRegistModalState } from "../../store/atom";
+import { InputStyle } from "../../utils/style/mixins";
 
 const PartyRegist = () => {
   const navi = useNavigate();
@@ -131,80 +132,205 @@ const PartyRegist = () => {
         animate="animate"
         exit="exit"
       >
-        <TopButtonBox>
-          {currentPage == '/main'
-            ? <>
-              <Button onClick={() => setModalChange(true)}> 그룹 생성하기</Button>
-              <Button onClick={() => setModalChange(false)}>그룹 참여하기</Button>
-            </> : null}
+      <TopButtonBox>
+        {currentPage == '/main'
+          ? <>
+            {modalChange == true
+            ?<h1 className="buttontitle" onClick={() => setModalChange(true)}>그룹 생성하기</h1>
+            :<h1 className="buttontitleoff" onClick={() => setModalChange(true)}>그룹 생성하기</h1>
+            }
+            
+            {modalChange == false
+            ?<h1 className="buttontitle" onClick={() => setModalChange(false)}>그룹 가입하기</h1>
+            :<h1 className="buttontitleoff" onClick={() => setModalChange(false)}>그룹 가입하기</h1>
+            }
+            
+          </> : null}
 
-        </TopButtonBox>
+      </TopButtonBox>
+        <ModalContentContainer>
         {modalChange === true ? (
-          <>
-            <h1>그룹 생성하기</h1>
-            <form onSubmit={handleSubmit(onPostOrPut)}>
-              <RegistInputContainer>
+    <form onSubmit={handleSubmit(onPostOrPut)}>
+          <ModalContentWraper>
+          <ModalContentBox>
+            
+          <ImageInputBox>
+            <h1 className="infotitle">그룹 이미지</h1>
+                <label htmlFor="file-upload">
                 <img
                   src={images ? images : Test}
                   alt="이미지를 가져와 주십시오"
                   value={images}
-                  style={{ width: "400px", height: "240px" }}
+                  style={{ width: "240px", height: "200px", borderRadius: "24px"}}
                 />
+                </label>
                 <input
+                  id="file-upload"
                   type="file"
                   accept="image/jpeg, image/png"
                   onChange={ImageHandler}
+                  style={{ display: "none" }}
                 ></input>
+                <div>
+                <h1 className="infocontent">그룹을 표현할 이미지를 등록해주세요.</h1>
+                </div>
+          </ImageInputBox>
+
+
+              <RegistInputContainer>
+                <InputWrapper>
+                <h1 className="infotitle">그룹 이름</h1>
                 <Input
                   placeholder="그룹명을 입력하세요."
                   register={register}
                   name="groupname"
                   type="text"
-                  label="그룹명"
-                  isput={isPut}
+                  isput = {isPut}
                   defaultValue= {titleState}
-                ></Input>
+                  width = {'46rem'}
+                />
+                </InputWrapper>
+                <InputWrapper>
+                <h1 className="infotitle">그룹 설명</h1>
                 <Input
                   placeholder="그룹설명을 입력하세요."
                   register={register}
                   name="groupinfo"
                   type="text"
-                  label="그룹설명"
-                  isput={isPut}
+                  isput = {isPut}
                   defaultValue= {infoState}
-                ></Input>
-                {currentPage == '/main'
-                  ? <>
-                    <Button>그룹 생성하기</Button>
-                  </>
-                  : <Button>그룹 수정하기</Button>}
+                  width = {'46rem'}
+                />
+                </InputWrapper>
               </RegistInputContainer>
+          </ModalContentBox>
+                  {currentPage == '/main'
+                    ? 
+                    <ModalButtonBox>
+                      <Button>그룹 생성하기</Button>
+                      <Button transparent = {true} onClick={ModalClose}>취소하기</Button>
+                    </ModalButtonBox>
+                    : <ModalButtonBox>
+                      <Button>그룹 수정하기</Button>
+                      </ModalButtonBox>}
+          </ModalContentWraper>
             </form>
-          </>
         ) : (
-          <>
+            
             <form onSubmit={handleSubmit(onParticipation)}>
+            <InputWrapper>
+                <h2>NAVIS GROUP은 초대 코드가 있어야 입장이 가능합니다.</h2>
               <Input
                 placeholder="초대 코드를 입력하세요."
                 register={register}
                 name="code"
                 type="text"
-                label="code"
+                isput = {isPut}
               />
+            </InputWrapper>
               <Button>그룹 참여하기</Button>
             </form>
-          </>
         )}
+        </ModalContentContainer>
       </RegistModalWrapper>
     </RegistModalBackGround>
   );
 };
 
+const ModalButtonBox = styled.div`
+padding-top: 5rem;
+display: flex;
+flex-direction: row;
+align-items: center;
+gap: 2rem;
+`
+
+const InputWrapper = styled.section`
+  width: 90%;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 1rem;
+  h1 {
+    color: ${(props) => props.theme.color.zeroFour};
+    max-width: 30rem;
+  }
+  h2 {
+  font-weight: 700;
+  font-size: 2.2rem;
+  color: #5D5A88;
+  }
+  input {
+    width: 85% !important;
+    ${InputStyle}
+  }
+  .vote {
+    width: 45% !important;
+  }
+  select {
+    width: 8rem;
+    border-radius: 5rem;
+    padding-left: 0.6rem;
+    height: 4.2rem;
+    border: 0.1rem solid ${(props) => props.theme.color.zeroTwo};
+    color: ${(props) => props.theme.color.zeroThree};
+    &:focus {
+      outline: none;
+    }
+    font-size: 1.3rem;
+  }
+`;
+const ModalContentContainer = styled.div`
+  width: 80%;
+  height: 80%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+justify-content: center;
+`
+const ModalContentWraper = styled.div`
+display: flex;
+flex-direction: column;
+align-items: center;
+justify-content: center;
+`
+const ModalContentBox = styled.div`
+width: 80rem;
+display: flex;
+flex-direction: row;
+align-items: center;
+justify-content: center;
+gap: 3rem;
+`
+const ShowImage = styled.image`
+  width: 24rem;
+  height: 20rem;
+  border-radius: 1rem;
+`
+
 const TopButtonBox = styled.div`
   display: flex;
   flex-direction: row;
   align-items: center;
+  gap: 5rem;
+  position: relative;
+  &::before {
+    content: '';
+    position: absolute;
+    left: calc(50% - 1px);
+    top: 0;
+    bottom: 0;
+    width: 0.2rem;
+    background-color: #9795B5;
+  }
 `;
+const ImageInputBox = styled.div`
+display: flex;
+align-items: flex-start;
+flex-direction: column;
+justify-content: flex-start;
+  gap: 1rem;
+`
 
 const RegistModalBackGround = styled.div`
   position: fixed;
@@ -215,26 +341,47 @@ const RegistModalBackGround = styled.div`
   z-index: 999;
   background-color: rgba(0, 0, 0, 0.5);
   ${flexCenter}
+.buttontitle {
+  font-weight: 700;
+  font-size: 3.2rem;
+  color: #5D5A88;
+}
+.buttontitleoff {
+  font-weight: 700;
+  font-size: 3.2rem;
+  color: #9795B5;
+}
+.infotitle{
+  font-weight: 700;
+  font-size: 2.4rem;
+  color: #5D5A88;
+}
+.infocontent{
+  font-weight: 400;
+  font-size: 1.8rem;
+  color: #9795B5
+}
 `;
 
 const RegistInputContainer = styled.div`
-  width: 50rem;
-  height: 60rem;
+width: 50%;
   display: flex;
   align-items: center;
   flex-direction: column;
   justify-content: center;
-  background-color: wheat;
+  gap: 2rem;
 `;
 
 const RegistModalWrapper = styled(motion.section)`
-  width: 60rem;
-  height: 70rem;
+  min-width: 95rem;
+  min-height: 70rem;
   display: flex;
   align-items: center;
   flex-direction: column;
-  padding: 5rem;
-  background-color: white;
+  padding: 7rem;
+  border-radius: 2.5rem;
+  background-color: #F2F1FA;
+  gap: 10rem;
 `;
 
 export default PartyRegist;
