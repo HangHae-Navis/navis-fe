@@ -20,8 +20,8 @@ import { getCookie } from "../utils/infos/cookie";
 import { toast } from "react-toastify";
 import { flexCenter } from "../utils/style/mixins";
 import Slider from "react-slick";
-import 'slick-carousel/slick/slick.css';
-import 'slick-carousel/slick/slick-theme.css';
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
 
 function Board(props) {
   const navi = useNavigate();
@@ -54,7 +54,9 @@ function Board(props) {
     <>
       <BoardBox
         onClick={() =>
-          navi(`/party/detail?groupId=${props.groupId}&detailId=${props.id}&dtype=${props.dtype}&groupName=${props.groupName}&groupInfo=${props.groupInfo}&groupCode=${props.groupCode}`)
+          navi(
+            `/party/detail?groupId=${props.groupId}&detailId=${props.id}&dtype=${props.dtype}&groupName=${props.groupName}&groupInfo=${props.groupInfo}&groupCode=${props.groupCode}`
+          )
         }
       >
         <BoardBoxTitleBox>
@@ -304,12 +306,11 @@ const Party = () => {
   const [totalNum, setTotalNum] = useState(0);
   const [pageNum, setPageNum] = useState(1);
 
-
-  const[groupName, setGroupName]  = useState()
-  const[groupInfo, setGroupInfo]  = useState()
-  const[groupCode, setGroupCode]  = useState()
-  const[groupId, setGroupId]  = useState(pam.id)
-  const[isAdmin ,setIsAdmin]  = useState(false)
+  const [groupName, setGroupName] = useState();
+  const [groupInfo, setGroupInfo] = useState();
+  const [groupCode, setGroupCode] = useState();
+  const [groupId, setGroupId] = useState(pam.id);
+  const [isAdmin, setIsAdmin] = useState(false);
 
   const partyRes = useQuery(
     ["party", { id: pam.id, page: pageNum, size: 99, category: categoryValue }],
@@ -322,13 +323,13 @@ const Party = () => {
       }),
     {
       onSuccess: ({ data }) => {
-        console.log(data)
+        console.log(data);
         setGroupList(data.data.basicBoards.content);
-        setGroupName(data.data.groupName)
-        setGroupInfo(data.data.groupInfo)
-        setGroupCode(data.data.groupCode)
-        setGroupId(pam.id)
-        setIsAdmin(data.data.admin)
+        setGroupName(data.data.groupName);
+        setGroupInfo(data.data.groupInfo);
+        setGroupCode(data.data.groupCode);
+        setGroupId(pam.id);
+        setIsAdmin(data.data.admin);
         setCarouselList(data.data.deadlines);
       },
     }
@@ -361,38 +362,38 @@ const Party = () => {
     slidesToShow: 4, // 화면에 보이는 컨텐츠 수
     slidesToScroll: 1, // 스크롤 시 넘어가는 컨텐츠 수
     centerMode: false, // 현재 컨텐츠 가운데 정렬
-    centerPadding: '10px', // 중앙 컨텐츠 padding 값
+    centerPadding: "10px", // 중앙 컨텐츠 padding 값
     autoplay: false, // 자동 캐러셀
     autoplaySpeed: 2000, // 자동 캐러셀 속도
-    draggable: true, // 드래그      
+    draggable: true, // 드래그
     fade: false, // 사라졌다 나타나는 효과
     arrows: true, // 좌,우 버튼
     vertical: false, // 세로 캐러셀
-    initialSlide:0, // 첫 컨텐츠 번호
+    initialSlide: 0, // 첫 컨텐츠 번호
     pauseOnFocus: true, // focus시 정지
     pauseOnHover: true, // hover시 정지
   };
   if (partyRes.isLoading || partyRes.isError) {
-    return <>
-      <PageContainer>
-        <LeftContainer>
-          <PartyInfo
-          groupName = {groupName}
-          groupInfo = {groupInfo}
-          groupCode = {groupCode}
-          groupId = {pam.id}
-          isAdmin = {isAdmin}
-          />
-        </LeftContainer>
-        <RightTotalContainer>
-          <CarouselContainer>
-            <h1 className="title">오늘 마감</h1>
-          </CarouselContainer>
-        </RightTotalContainer>
-
-      </PageContainer>
-    
-     </>;
+    return (
+      <>
+        <PageContainer>
+          <LeftContainer>
+            <PartyInfo
+              groupName={groupName}
+              groupInfo={groupInfo}
+              groupCode={groupCode}
+              groupId={pam.id}
+              isAdmin={isAdmin}
+            />
+          </LeftContainer>
+          <RightTotalContainer>
+            <CarouselContainer>
+              <h1 className="title">오늘 마감</h1>
+            </CarouselContainer>
+          </RightTotalContainer>
+        </PageContainer>
+      </>
+    );
   }
 
   return (
@@ -400,31 +401,31 @@ const Party = () => {
       <PageContainer>
         <LeftContainer>
           <PartyInfo
-          groupName = {partyRes.data.data.data.groupName}
-          groupInfo = {partyRes.data.data.data.groupInfo}
-          groupCode = {partyRes.data.data.data.groupCode}
-          groupId = {pam.id}
-          isAdmin = {partyRes.data.data.data.admin}
+            groupName={partyRes.data.data.data.groupName}
+            groupInfo={partyRes.data.data.data.groupInfo}
+            groupCode={partyRes.data.data.data.groupCode}
+            groupId={pam.id}
+            isAdmin={partyRes.data.data.data.admin}
           />
         </LeftContainer>
         <RightTotalContainer>
           <CarouselContainer>
             <CarouselTitle>
-            <h1 className="title">오늘 마감</h1>
+              <h1 className="title">오늘 마감</h1>
             </CarouselTitle>
             <Slider {...settings}>
-            {carouselList?.map((item) => {
-              return (
-                <Carousel
-                  key={item.id}
-                  groupId={pam.id}
-                  id={item.id}
-                  expirationDate={item.expirationDate}
-                  nickName={item.nickname}
-                  title={item.title}
-                />
-              );
-            })}
+              {carouselList?.map((item) => {
+                return (
+                  <Carousel
+                    key={item.id}
+                    groupId={pam.id}
+                    id={item.id}
+                    expirationDate={item.expirationDate}
+                    nickName={item.nickname}
+                    title={item.title}
+                  />
+                );
+              })}
             </Slider>
           </CarouselContainer>
           <RadioBox>
@@ -485,19 +486,20 @@ const CarouselContainer = styled.div`
 `;
 
 const CarouselTitle = styled.div`
-.title {
-  font-weight: 500;
-  font-size: 2.2rem;
-  color: #ffffff;
-}
-`
+  .title {
+    font-weight: 500;
+    font-size: 2.2rem;
+    color: #ffffff;
+  }
+`;
 
 const PageContainer = styled.div`
   display: flex;
+  position: relative;
   flex-direction: row;
-  justify-content: space-between;
   align-items: flex-start;
-  width: 80vw;
+  width: 100vw;
+  max-width: 128rem;
   margin: 0 auto;
   gap: 1rem;
   padding: 2rem 0 3rem 0;

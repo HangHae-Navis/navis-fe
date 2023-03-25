@@ -4,25 +4,34 @@ import styled from "styled-components";
 import Button from "../../element/Button";
 
 const PartyInfo = (props) => {
-  const navi = useNavigate()
+  const navi = useNavigate();
   return (
     <PartyInfoWrapper>
       <h1>{props?.groupName}</h1>
       <p>{props?.groupInfo}</p>
       <p>초대 코드: {props?.groupCode}</p>
       <ButtonWrapper>
-        <Button onClick={()=> navi(`/party/${props.groupId}/edit`)} br={false}>글쓰기</Button>
-        {props.isAdmin == true ? <>
-        <Button br={false}>그룹미팅</Button>
-        <Button onClick={()=> navi(`/party/${props.groupId}/admin`)} br={false}>Admin</Button></>
-        : null}
+        <Button onClick={() => navi(`/party/${props.groupId}/edit`)} br={false}>
+          글쓰기
+        </Button>
+        {props.isAdmin == true ? (
+          <>
+            <Button br={false}>그룹미팅</Button>
+            <Button
+              onClick={() => navi(`/party/${props.groupId}/admin`)}
+              br={false}
+            >
+              Admin
+            </Button>
+          </>
+        ) : null}
       </ButtonWrapper>
     </PartyInfoWrapper>
   );
 };
 
 const PartyInfoWrapper = styled.section`
-width: 30rem;
+  width: 30rem;
   display: flex;
   flex-direction: column;
   position: fixed;
