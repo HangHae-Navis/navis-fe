@@ -108,8 +108,8 @@ export const postVote = async (id, data) => {
 /*-----------------------어드민 페이지 기능------------------------------*/
 
 export const getDetailPageForAdmin = async (payload) => {
-  console.log("호출")
-  console.log(payload)
+  console.log("호출");
+  console.log(payload);
   const res = await axios.get(`api/groups/${payload}/admin`);
   return res;
 };
