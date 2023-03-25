@@ -171,33 +171,35 @@ const PartyRegist = () => {
                   onChange={ImageHandler}
                   style={{ display: "none" }}
                 ></input>
+                <div>
                 <h1 className="infocontent">그룹을 표현할 이미지를 등록해주세요.</h1>
+                </div>
           </ImageInputBox>
 
 
               <RegistInputContainer>
                 <InputWrapper>
                 <h1 className="infotitle">그룹 이름</h1>
-                <input
+                <Input
                   placeholder="그룹명을 입력하세요."
                   register={register}
                   name="groupname"
                   type="text"
-                  label="그룹명"
-                  isput={isPut}
+                  isput = {isPut}
                   defaultValue= {titleState}
+                  width = {'46rem'}
                 />
                 </InputWrapper>
                 <InputWrapper>
                 <h1 className="infotitle">그룹 설명</h1>
-                <input
+                <Input
                   placeholder="그룹설명을 입력하세요."
                   register={register}
                   name="groupinfo"
                   type="text"
-                  label="그룹설명"
-                  isput={isPut}
+                  isput = {isPut}
                   defaultValue= {infoState}
+                  width = {'46rem'}
                 />
                 </InputWrapper>
               </RegistInputContainer>
@@ -217,12 +219,11 @@ const PartyRegist = () => {
             <form onSubmit={handleSubmit(onParticipation)}>
             <InputWrapper>
                 <h2>NAVIS GROUP은 초대 코드가 있어야 입장이 가능합니다.</h2>
-              <input
+              <Input
                 placeholder="초대 코드를 입력하세요."
                 register={register}
                 name="code"
                 type="text"
-                label="code"
               />
             </InputWrapper>
               <Button>그룹 참여하기</Button>
