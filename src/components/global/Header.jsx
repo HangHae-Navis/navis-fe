@@ -10,6 +10,9 @@ import { path } from "../../constants/path";
 import { removeLocalStorage } from "../../utils/infos/localStorage";
 import Button from "../../element/Button";
 import Logo from "../../assets/logo.svg";
+import alarm from "../../assets/ic24/notification.svg";
+import chat from "../../assets/ic24/chat.svg";
+import profile from "../../assets/ic54/profile.svg";
 
 const Header = () => {
   const setLoginModal = useSetRecoilState(loginModalState);
@@ -53,9 +56,11 @@ const Header = () => {
           Login
         </Button>
       ) : (
-        <Button transparent={true} onClick={onLogout}>
-          Logout
-        </Button>
+        <div className="icons">
+          <img src={alarm} alt="알림" />
+          <img src={chat} alt="채팅" />
+          <img src={profile} alt="프로필" />
+        </div>
       )}
     </HeaderWrapper>
   );
@@ -73,8 +78,18 @@ const HeaderWrapper = styled.header`
   height: 10rem;
   padding: 1rem;
   background: ${(props) => props.theme.color.zeroOne};
+  .icons {
+    display: flex;
+    gap: 1.8rem;
+    align-items: center;
+
+    img {
+      cursor: pointer;
+      width: 3.5rem;
+    }
+  }
   .logo {
-    width: 10.5rem;
+    width: 12rem;
   }
 `;
 
