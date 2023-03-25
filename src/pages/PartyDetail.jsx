@@ -77,14 +77,12 @@ const CommentBox = styled.div`
   width: 70rem;
   border: 0.3rem solid white;
   border-radius: 1.5rem;
-
   padding: 1rem;
   p {
     display: flex;
     align-items: center;
     gap: 0.5rem;
     font-size: 1.1rem;
-
     span {
       cursor: pointer;
       text-decoration: underline;

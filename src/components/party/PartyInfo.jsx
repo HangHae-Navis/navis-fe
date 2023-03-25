@@ -22,11 +22,11 @@ const PartyInfo = (props) => {
 };
 
 const PartyInfoWrapper = styled.section`
+width: 30rem;
   display: flex;
   flex-direction: column;
   position: fixed;
   top: 17rem;
-
   h1 {
     font-size: 2.1rem;
     margin-bottom: 2rem;
