@@ -87,6 +87,13 @@ const PartyInfoWrapper = styled.section`
   p {
     color: ${(props) => props.theme.color.grey80};
     font-size: 1.35rem;
+    overflow: hidden;
+    white-space: normal;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    word-break: keep-all;
   }
 
   .button {
