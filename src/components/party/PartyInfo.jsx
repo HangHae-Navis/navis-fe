@@ -1,18 +1,27 @@
 import React from "react";
+import CopyToClipboard from "react-copy-to-clipboard";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 import styled from "styled-components";
 import copy from "../../assets/ic14/copy.svg";
 import write from "../../assets/ic24/write.svg";
-import admin from "../../assets/ic24/admin.svg";
 
 const PartyInfo = (props) => {
+  const codeCopy = () => {
+    document.execCommand(props?.groupCode);
+  };
   const navi = useNavigate();
   return (
     <PartyInfoWrapper>
-      <span className="code">
-        초대코드
-        <img src={copy} alt="copy" />
-      </span>
+      <CopyToClipboard
+        text={props?.groupCode}
+        onCopy={() => toast.success("코드가 복사되었습니다.")}
+      >
+        <span className="code" onClick={codeCopy}>
+          초대코드
+          <img src={copy} alt="copy" />
+        </span>
+      </CopyToClipboard>
       <h1>{props?.groupName}</h1>
       <p>{props?.groupInfo}</p>
       <ButtonWrapper>
