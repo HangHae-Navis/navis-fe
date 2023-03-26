@@ -40,11 +40,11 @@ const NavList = styled.ul`
   }
 
   .active {
-    color: #121619;
+    color: ${(props) => props.theme.color.zeroFour};
   }
 
   .inActive {
-    color: #a2a9b0;
+    color: ${(props) => props.theme.color.zeroThree};
   }
 `;
 

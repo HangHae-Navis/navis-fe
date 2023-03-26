@@ -1,20 +1,10 @@
 import { useMutation, useQuery } from "react-query";
 import styled from "styled-components";
-import PartyRegist from "../components/modal/PartyRegist";
-import Button from "../element/Button";
-import {
-  deletePageMembers,
-  getDetailPage,
-  getPartyBoard,
-  getPartyPage,
-} from "../utils/api/api";
-import Skeleton from "react-loading-skeleton";
+import { deletePageMembers, getDetailPage } from "../utils/api/api";
 import "react-loading-skeleton/dist/skeleton.css";
-import Test from "../assets/d65d5952-d801-4225-ab16-8720733b499a.png";
-import Pagination from "react-js-pagination";
 import { useNavigate, useParams } from "react-router-dom";
-import { useEffect, useRef, useState } from "react";
-import DateCheck, { FullDateCheck, HourCheck } from "../element/DateCheck";
+import { useEffect, useState } from "react";
+import { FullDateCheck } from "../element/DateCheck";
 import PartyInfo from "../components/party/PartyInfo";
 import { getCookie } from "../utils/infos/cookie";
 import { toast } from "react-toastify";
@@ -202,10 +192,9 @@ const RadioButtonStyled = styled.button`
   width: 5rem;
   height: 4rem;
   border: none;
-  border-radius: 1rem;
-  font-size: 1.6rem;
-  background-color: ${({ selected }) => (selected ? "#ccc" : "transparent")};
-  opacity: ${({ selected }) => (selected ? 1 : 0.5)};
+  font-size: 1.75rem;
+  background-color: transparent;
+  color: ${({ selected }) => (selected ? "#585585" : "#585585")};
 `;
 const RadioBox = styled.div``;
 

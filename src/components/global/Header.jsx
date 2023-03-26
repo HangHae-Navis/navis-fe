@@ -48,9 +48,17 @@ const Header = () => {
     navi("/");
   };
 
+  const onShift = () => {
+    const token = getCookie("token");
+    if (token) {
+      navi("/main");
+    } else {
+      navi("/");
+    }
+  };
   return (
     <HeaderWrapper>
-      <img src={Logo} className="logo" alt="logo" />
+      <img src={Logo} className="logo" alt="logo" onClick={onShift} />
       {token === undefined ? (
         <Button transparent={true} onClick={() => setLoginModal(true)}>
           Login
@@ -89,6 +97,7 @@ const HeaderWrapper = styled.header`
     }
   }
   .logo {
+    cursor: pointer;
     width: 12rem;
   }
 `;
