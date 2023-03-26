@@ -293,6 +293,17 @@ border-radius: 2rem;
   height: 18rem;
 `
 
+
+const RightTotalContainer = styled.div`
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  width: 60vw;
+> * {
+  margin-bottom: 2rem;
+}
+`;
+
 const GroupInfoTextBox = styled.div`
   display: flex;
   flex-direction: column;
@@ -300,12 +311,25 @@ const GroupInfoTextBox = styled.div`
   gap: 3rem;
 `
 
+
+const RightContainer = styled.div`
+  padding-top: 2rem;
+  padding-bottom: 2rem;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  align-items: center;
+  justify-items: flex-start;
+  width: 60vw;
+  gap: 2rem;
+  color: black;
+  font-size: 1.45rem;
+`;
 const GroupInfoText = styled.div`
 display: flex;
 flex-direction: row;
 align-items: center;
 gap : 2rem
-`
+`;
 
 const LeftContainer = styled.div`
   flex-direction: column;
@@ -338,27 +362,4 @@ padding-bottom: 3rem;
   font-size: 2.4rem;
   color: #9795B5
 }
-`;
-
-const RightTotalContainer = styled.div`
-  flex-direction: column;
-  justify-content: flex-start;
-  align-items: center;
-  width: 60vw;
-> * {
-  margin-bottom: 2rem;
-}
-`;
-
-const RightContainer = styled.div`
-  padding-top: 2rem;
-  padding-bottom: 2rem;
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  align-items: center;
-  justify-items: flex-start;
-  width: 60vw;
-  gap: 2rem;
-  color: black;
-  font-size: 1.45rem;
 `;
