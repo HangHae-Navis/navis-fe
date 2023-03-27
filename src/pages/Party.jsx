@@ -12,6 +12,7 @@ import { flexCenter } from "../utils/style/mixins";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
+import alram from "../assets/ic32/alarm.svg";
 
 function Board(props) {
   const navi = useNavigate();
@@ -377,6 +378,7 @@ const Party = () => {
           </LeftContainer>
           <RightTotalContainer>
             <CarouselContainer>
+              <img src={alram} alt="alram" />
               <h1 className="title">오늘 마감</h1>
             </CarouselContainer>
           </RightTotalContainer>
