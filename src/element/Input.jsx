@@ -3,8 +3,16 @@ import styled from "styled-components";
 import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai";
 import { InputStyle } from "../utils/style/mixins";
 
-const Input = ({ register, placeholder, type, name, error, label, defaultValue, width }) => {
-  console.log(width)
+const Input = ({
+  register,
+  placeholder,
+  type,
+  name,
+  error,
+  label,
+  defaultValue,
+  width,
+}) => {
   const [passwordVisible, setPasswordVisible] = useState(false);
   const onVisible = (e) => {
     e.stopPropagation();
@@ -15,14 +23,14 @@ const Input = ({ register, placeholder, type, name, error, label, defaultValue, 
       {type !== "password" ? (
         <InputLayout>
           <Label>{label}</Label>
-          <InputWrapper width = {width}>
+          <InputWrapper width={width}>
             <InputCustom
               placeholder={placeholder}
               type={type}
               {...register(name, {
                 required: "값을 입력해주세요.",
               })}
-              defaultValue = {defaultValue}
+              defaultValue={defaultValue}
             />
             {error && <ErrorMessage>{error}</ErrorMessage>}
           </InputWrapper>
@@ -30,14 +38,14 @@ const Input = ({ register, placeholder, type, name, error, label, defaultValue, 
       ) : (
         <InputLayout>
           <Label>{label}</Label>
-          <InputWrapper width = {width}>
+          <InputWrapper width={width}>
             <InputCustom
               placeholder={placeholder}
               type={passwordVisible ? "text" : type}
               {...register(name, {
                 required: "값을 입력해주세요.",
               })}
-              defaultValue = {defaultValue}
+              defaultValue={defaultValue}
             />
             <IconsWrapper onClick={onVisible}>
               {passwordVisible === true ? (
