@@ -30,4 +30,21 @@ export const InputStyle = css`
   }
 `;
 
+export const tagStyle = css`
+  display: flex;
+  width: fit-content;
+  align-items: center;
+  padding: 0.4rem 1rem 0.4rem 0.8rem;
+  border-radius: 3.6rem;
+  border: 0.1rem solid ${(props) => props.theme.color.zeroFour};
+  img {
+    width: 1.45rem;
+  }
+  span {
+    padding-left: 0.5rem;
+    color: ${(props) => props.theme.color.zeroFour};
+    font-size: 1.15rem;
+  }
+`;
+
 export const linearText = css``;
