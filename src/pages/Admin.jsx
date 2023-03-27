@@ -117,7 +117,7 @@ const Admin = () => {
   const setPartyInfo = useSetRecoilState(partyInfoState);
 
   const setIsOpen = useSetRecoilState(partyRegistModalState);
-  const getDetailPage = useQuery(["admin"], () => getDetailPageForAdmin(pam.id), {
+  const getDetailPage = useQuery(["admin", pam.id], () => getDetailPageForAdmin(pam.id), {
     onSuccess: ({data}) => {
       console.log(data.data);
       setUserList(data.data.groupMembers);
