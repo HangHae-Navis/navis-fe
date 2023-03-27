@@ -1,14 +1,12 @@
-import { useMutation, useQuery } from "react-query";
+import { useQuery } from "react-query";
 import styled from "styled-components";
-import { deletePageMembers, getDetailPage } from "../utils/api/api";
+import { getDetailPage } from "../utils/api/api";
 import "react-loading-skeleton/dist/skeleton.css";
 import { useNavigate, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { FullDateCheck } from "../element/DateCheck";
 import PartyInfo from "../components/party/PartyInfo";
 import { getCookie } from "../utils/infos/cookie";
 import { toast } from "react-toastify";
-import { flexCenter } from "../utils/style/mixins";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
@@ -62,18 +60,6 @@ const Party = () => {
       toast.error("로그인 정보가 만료되었습니다.");
     }
   }, []);
-
-  const deletePartyMember = useMutation(deletePageMembers, {
-    onSuccess: (data) => {
-      console.log("해당 멤버가 퇴출되었습니다.");
-      window.alert("해당 멤버가 퇴출되었습니다");
-      navi("/");
-    },
-  });
-
-  const doDelete = (data) => {
-    const res = deletePartyMember.mutateAsync(data);
-  };
 
   const settings = {
     dots: false, // 개수 표시 점
