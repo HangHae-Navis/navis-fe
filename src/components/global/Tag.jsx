@@ -1,6 +1,6 @@
 import React from "react";
 
-const Tag = () => {
+const Tag = ({ title, implement }) => {
   return <div>Tag</div>;
 };
 

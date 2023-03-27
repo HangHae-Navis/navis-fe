@@ -7,9 +7,6 @@ import copy from "../../assets/ic14/copy.svg";
 import write from "../../assets/ic24/write.svg";
 
 const PartyInfo = (props) => {
-  const codeCopy = () => {
-    document.execCommand(props?.groupCode);
-  };
   const navi = useNavigate();
   return (
     <PartyInfoWrapper>
@@ -17,7 +14,7 @@ const PartyInfo = (props) => {
         text={props?.groupCode}
         onCopy={() => toast.success("코드가 복사되었습니다.")}
       >
-        <span className="code" onClick={codeCopy}>
+        <span className="code">
           초대코드
           <img src={copy} alt="copy" />
         </span>
