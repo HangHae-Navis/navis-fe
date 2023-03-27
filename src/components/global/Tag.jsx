@@ -6,26 +6,26 @@ import task from "../../assets/ic20/task.svg";
 
 const Tag = ({ dtype }) => {
   return (
-    <TagWrapper>
+    <>
       {dtype === "homework" && (
-        <>
+        <TagWrapper>
           <img src={task} alt="과제" />
           <span>과제</span>
-        </>
+        </TagWrapper>
       )}
       {dtype === "notice" && (
-        <>
+        <TagWrapper>
           <img src={impo} alt="공지" />
           <span>공지</span>
-        </>
+        </TagWrapper>
       )}
       {dtype === "vote" && (
-        <>
+        <TagWrapper>
           <img src={vote} alt="투표" />
           <span>투표</span>
-        </>
+        </TagWrapper>
       )}
-    </TagWrapper>
+    </>
   );
 };
 

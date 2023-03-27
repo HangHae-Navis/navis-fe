@@ -5,16 +5,16 @@ import { tagStyle } from "../../utils/style/mixins";
 const StarTag = ({ important }) => {
   const arr = new Array(important).fill(0);
   return (
-    <TagWrapper>
+    <>
       {important !== 0 && (
-        <>
+        <TagWrapper>
           {arr.map((_, i) => (
             <img src={star} alt="과제" />
           ))}
           <span>중요도</span>
-        </>
+        </TagWrapper>
       )}
-    </TagWrapper>
+    </>
   );
 };
 
