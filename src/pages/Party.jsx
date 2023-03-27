@@ -125,18 +125,21 @@ const HashTagBox = styled.div`
 const BoardBox = styled.div`
   width: 30vw;
   max-width: 47rem;
-  min-width: 25rem;
   height: 24.7rem;
   flex-direction: column;
   display: flex;
   justify-content: space-between;
   border: 0.1rem solid #dde1e6;
   border-radius: 1.6rem;
-  background-color: #ffffff;
+
+  @media (max-width: 800px) {
+    max-width: none;
+    width: 100%;
+  }
 
   .title {
     width: 80%;
-    font-size: 1.9rem;
+    font-size: 1.85rem;
   }
 `;
 
@@ -457,6 +460,7 @@ const Party = () => {
     </>
   );
 };
+
 const CarouselContainer = styled.div`
   width: 60vw;
   height: 30.2rem;
@@ -492,7 +496,6 @@ const PageContainer = styled.div`
   width: 100vw;
   max-width: 128rem;
   margin: 0 auto;
-  gap: 1rem;
   padding: 2rem 0 3rem 0;
 `;
 
@@ -506,22 +509,20 @@ const LeftContainer = styled.div`
 `;
 
 const RightTotalContainer = styled.div`
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
+  @media (max-width: 860px) {
+    margin-left: -8rem;
+  }
 `;
 
 const RightContainer = styled.div`
-  padding-top: 2rem;
-  padding-bottom: 2rem;
+  margin: 3rem 0;
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  align-items: center;
-  justify-items: center;
-  width: 60vw;
+
+  @media (max-width: 800px) {
+    grid-template-columns: repeat(1, 1fr);
+  }
   gap: 1rem;
-  color: black;
-  font-size: 1.45rem;
 `;
 
 export default Party;
