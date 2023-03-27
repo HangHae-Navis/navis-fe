@@ -1,4 +1,4 @@
-import { Tag } from "@lezer/highlight";
+import Tag from "../global/Tag";
 import { useState } from "react";
 import { useEffect } from "react";
 import { useNavigate } from "react-router";
@@ -26,7 +26,7 @@ const Board = (props) => {
       >
         <BoardBoxTitleBox>
           <BigTagWrapper>
-            {/* <Tag dtype={props?.dtype} /> */}
+            <Tag dtype={props?.dtype} />
             <StarTag important={props?.important} />
           </BigTagWrapper>
           <h1 className="title">{props.title}</h1>
@@ -55,7 +55,6 @@ const BoardBoxTitleBox = styled.div`
   width: 100%;
   font-size: 2.45rem;
   display: flex;
-  gap: 0.8rem;
   .title {
     overflow: hidden;
     text-overflow: ellipsis;

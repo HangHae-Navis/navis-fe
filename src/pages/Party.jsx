@@ -59,7 +59,9 @@ const Party = () => {
     const isUserCookie = getCookie("token");
     if (isUserCookie === undefined) {
       navi("/");
-      toast.error("로그인 정보가 만료되었습니다.");
+      toast.error("로그인 정보가 만료되었습니다.", {
+        toastId: "loginError",
+      });
     }
   }, []);
 
