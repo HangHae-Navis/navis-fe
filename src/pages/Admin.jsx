@@ -109,7 +109,7 @@ const Admin = () => {
   const pam = useParams();
   const navi = useNavigate()
   const [userList, setUserList] = useState([]);
-  const [Admin, setAdmin] = useState();
+  const [admin, setAdmin] = useState();
   const [Support, setSupport] = useState();
   const [Member, setMember] = useState();
   const [bannedList, setBannedList] = useState([]);
@@ -117,7 +117,7 @@ const Admin = () => {
   const setPartyInfo = useSetRecoilState(partyInfoState);
 
   const setIsOpen = useSetRecoilState(partyRegistModalState);
-  const getDetailPage = useQuery(["admin", pam.id], () => getDetailPageForAdmin(pam.id), {
+  const getDetailPage = useQuery(["adminget", pam.id], () => getDetailPageForAdmin(pam.id), {
     onSuccess: ({data}) => {
       console.log(data.data);
       setUserList(data.data.groupMembers);
@@ -152,7 +152,7 @@ const Admin = () => {
   if (getDetailPage.isLoading || getDetailPage.isError) {
     return (<></>);
   }
-  console.log(Admin)
+  console.log(admin)
   return (
     <>
       <PageContainer>
@@ -186,10 +186,10 @@ const Admin = () => {
           <BottomContentContainer>
             <h1 className="infotitle">관리자</h1>
             <Board 
-              groupMemberRoleEnum={Admin[0]?.groupMemberRoleEnum}
-              joinedAt={Admin[0]?.joinedAt}
-              nickName={Admin[0]?.nickname}
-              id={Admin[0]?.id}
+              groupMemberRoleEnum={admin[0]?.groupMemberRoleEnum}
+              joinedAt={admin[0]?.joinedAt}
+              nickName={admin[0]?.nickname}
+              id={admin[0]?.id}
               pam={pam.id}
               MakeGroupHandler = {MakeGroupHandler}
               doDeletePage = {doDeletePage}/>

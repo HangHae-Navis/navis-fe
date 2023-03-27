@@ -54,6 +54,7 @@ function PartyDetail() {
     () => getBoardDetailPage({ groupId, detailId, dtype }),
     {
       onSuccess: ({ data }) => {
+        console.log(data.data)
         setPostInfo(data.data);
         if (data.data.role === "ADMIN") {
           setIsAdmin(true);
