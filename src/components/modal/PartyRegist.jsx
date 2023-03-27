@@ -10,7 +10,7 @@ import Input from "../../element/Input";
 import Button from "../../element/Button";
 import Test from "../../assets/d65d5952-d801-4225-ab16-8720733b499a.png";
 import { useNavigate, useParams } from "react-router";
-import { useRecoilState } from "recoil";
+import { useRecoilState, useResetRecoilState } from "recoil";
 import { partyInfoState, partyRegistModalState } from "../../store/atom";
 import { InputStyle } from "../../utils/style/mixins";
 
@@ -26,10 +26,16 @@ const PartyRegist = () => {
   const [currentPage, setCurrentPage] = useState();
   const [isOpen, setIsOpen] = useRecoilState(partyRegistModalState);
   const [partyInfos, setPartyInfos] = useRecoilState(partyInfoState);
+  
+  const resetRecoInfo = useResetRecoilState(partyInfoState)
+  const resetRecoModal = useResetRecoilState(partyRegistModalState)
   const postgroup = useMutation(postGroup, {
     onSuccess: ({ data }) => {
       console.log(data);
       window.alert("등록 성공!");
+      setIsOpen(false);
+      resetRecoInfo();
+      resetRecoModal()
       navi(`/party/${data.data}`);
     },
   });
@@ -37,6 +43,9 @@ const PartyRegist = () => {
     onSuccess: ({ data }) => {
       console.log(data);
       window.alert("등록 성공!");
+      setIsOpen(false);
+      resetRecoInfo();
+      resetRecoModal()
       navi(`/main`);
     },
   });
@@ -64,6 +73,8 @@ const PartyRegist = () => {
   const ModalClose = (event) => {
     if (event.target === event.currentTarget) {
       setIsOpen(false);
+      resetRecoInfo();
+      resetRecoModal()
     }
   };
 
@@ -105,7 +116,8 @@ const PartyRegist = () => {
       const res = await postgroup.mutateAsync(postRequest);
     }
     else {
-      const url = "/party/44/admin";
+      //const url = "/party/44/admin";
+      const url = currentPage;
       const regex = /\/party\/(\d+)\/admin/; // 정규식
 
       const match = url.match(regex); // 문자열과 정규식을 비교하여 매치되는 부분 추출
@@ -144,7 +156,6 @@ const PartyRegist = () => {
             ?<h1 className="buttontitle" onClick={() => setModalChange(false)}>그룹 가입하기</h1>
             :<h1 className="buttontitleoff" onClick={() => setModalChange(false)}>그룹 가입하기</h1>
             }
-            
           </> : null}
 
       </TopButtonBox>
