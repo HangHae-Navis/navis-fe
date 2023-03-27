@@ -102,6 +102,8 @@ function PartyDetail() {
   if (res.isError && getComment.isError) {
     return <></>;
   }
+
+  console.log(commentList);
   return (
     <PageContainer>
       <PartyInfo
