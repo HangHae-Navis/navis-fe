@@ -14,6 +14,7 @@ import alram from "../assets/ic32/alarm.svg";
 import Board from "../components/party/Board";
 import RadioButtons from "../components/party/RadioButtons";
 import Carousel from "../components/party/Carousel";
+import { settings } from "../constants/carousel";
 
 const Party = () => {
   const navi = useNavigate();
@@ -61,24 +62,6 @@ const Party = () => {
     }
   }, []);
 
-  const settings = {
-    dots: false, // 개수 표시 점
-    infinite: false, // 무한 캐러셀
-    speed: 100, // 다음 컨텐츠 까지의 속도
-    slidesToShow: 4, // 화면에 보이는 컨텐츠 수
-    slidesToScroll: 1, // 스크롤 시 넘어가는 컨텐츠 수
-    centerMode: false, // 현재 컨텐츠 가운데 정렬
-    centerPadding: "10px", // 중앙 컨텐츠 padding 값
-    autoplay: false, // 자동 캐러셀
-    autoplaySpeed: 2000, // 자동 캐러셀 속도
-    draggable: true, // 드래그
-    fade: false, // 사라졌다 나타나는 효과
-    arrows: true, // 좌,우 버튼
-    vertical: false, // 세로 캐러셀
-    initialSlide: 0, // 첫 컨텐츠 번호
-    pauseOnFocus: true, // focus시 정지
-    pauseOnHover: true, // hover시 정지
-  };
   if (partyRes.isLoading || partyRes.isError) {
     return (
       <>
@@ -94,7 +77,22 @@ const Party = () => {
           </LeftContainer>
           <RightTotalContainer>
             <CarouselContainer>
-              <img src={alram} alt="alram" />
+              <svg
+                width="22"
+                height="26"
+                viewBox="0 0 22 26"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M11 10.3333V15.6667H13.6667M1 15C1 16.9778 1.58649 18.9112 2.6853 20.5557C3.78412 22.2002 5.3459 23.4819 7.17317 24.2388C9.00043 24.9957 11.0111 25.1937 12.9509 24.8079C14.8907 24.422 16.6725 23.4696 18.0711 22.0711C19.4696 20.6725 20.422 18.8907 20.8079 16.9509C21.1937 15.0111 20.9957 13.0004 20.2388 11.1732C19.4819 9.3459 18.2002 7.78412 16.5557 6.6853C14.9112 5.58649 12.9778 5 11 5C8.34784 5 5.8043 6.05357 3.92893 7.92893C2.05357 9.8043 1 12.3478 1 15V15ZM11 5V1V5ZM7 1H15H7Z"
+                  stroke="white"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+              </svg>
+
               <h1 className="title">오늘 마감</h1>
             </CarouselContainer>
           </RightTotalContainer>
@@ -118,6 +116,22 @@ const Party = () => {
         <RightTotalContainer>
           <CarouselContainer>
             <CarouselTitle>
+              <svg
+                width="22"
+                height="26"
+                viewBox="0 0 22 26"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M11 10.3333V15.6667H13.6667M1 15C1 16.9778 1.58649 18.9112 2.6853 20.5557C3.78412 22.2002 5.3459 23.4819 7.17317 24.2388C9.00043 24.9957 11.0111 25.1937 12.9509 24.8079C14.8907 24.422 16.6725 23.4696 18.0711 22.0711C19.4696 20.6725 20.422 18.8907 20.8079 16.9509C21.1937 15.0111 20.9957 13.0004 20.2388 11.1732C19.4819 9.3459 18.2002 7.78412 16.5557 6.6853C14.9112 5.58649 12.9778 5 11 5C8.34784 5 5.8043 6.05357 3.92893 7.92893C2.05357 9.8043 1 12.3478 1 15V15ZM11 5V1V5ZM7 1H15H7Z"
+                  stroke="white"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+              </svg>
+
               <h1 className="title">오늘 마감</h1>
             </CarouselTitle>
             <Slider {...settings}>
@@ -196,6 +210,8 @@ const CarouselContainer = styled.div`
 `;
 
 const CarouselTitle = styled.div`
+  display: flex;
+  gap: 1rem;
   .title {
     font-weight: 500;
     font-size: 2.2rem;
