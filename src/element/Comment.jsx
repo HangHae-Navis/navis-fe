@@ -61,7 +61,7 @@ function Comment(props) {
       {/* {props.isAdmin === true ? (
         <Button onClick={() => setIsPut(!isPut)}>수정하기</Button>
       ) : null} */}
-      {props.isAdmin === true || props.owned == true ? (
+      {props.isAdmin === true || props.owned === true ? (
         <section onClick={doDeletComment}>X</section>
       ) : null}
       {isPut === false ? null : (
