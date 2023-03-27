@@ -1,287 +1,21 @@
-import { useMutation, useQuery } from "react-query";
+import { useQuery } from "react-query";
 import styled from "styled-components";
-import { deletePageMembers, getDetailPage } from "../utils/api/api";
+import { getDetailPage } from "../utils/api/api";
 import "react-loading-skeleton/dist/skeleton.css";
 import { useNavigate, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { FullDateCheck } from "../element/DateCheck";
 import PartyInfo from "../components/party/PartyInfo";
 import { getCookie } from "../utils/infos/cookie";
 import { toast } from "react-toastify";
-import { flexCenter } from "../utils/style/mixins";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import alram from "../assets/ic32/alarm.svg";
-
-function Board(props) {
-  const navi = useNavigate();
-  const [dtypeText, setDtypeText] = useState("");
-  const [hashtagText, setHashtagText] = useState();
-  //console.log(props.hashtagList)
-  useEffect(() => {
-    switch (props.dtype) {
-      case "vote":
-        setDtypeText("투표");
-        break;
-      case "board":
-        setDtypeText("게시글");
-        break;
-      case "homework":
-        setDtypeText("과제");
-        break;
-      case "notice":
-        setDtypeText("공지");
-        break;
-      default:
-        break;
-    }
-    if (props.hashtagList[0] !== "") {
-      setHashtagText(props.hashtagList);
-    }
-  }, []);
-
-  return (
-    <>
-      <BoardBox
-        onClick={() =>
-          navi(
-            `/party/detail?groupId=${props.groupId}&detailId=${props.id}&dtype=${props.dtype}&groupName=${props.groupName}&groupInfo=${props.groupInfo}&groupCode=${props.groupCode}`
-          )
-        }
-      >
-        <BoardBoxTitleBox>
-          <BigTagWrapper>
-            <BigTag>{dtypeText}</BigTag>
-            {props.important !== 0 && <BigTag>중요도 {props.important}</BigTag>}
-          </BigTagWrapper>
-          <h1 className="title">{props.title}</h1>
-          <p className="subtitle">{props.subtitle}</p>
-          <TagWrapper>
-            {hashtagText?.map((item, index) => {
-              return <HashTagBox key={index}># {item}</HashTagBox>;
-            })}
-          </TagWrapper>
-          <BoardBottom>
-            <p>{props.nickName}</p>
-            <p>|</p>
-            <p>{FullDateCheck(props.createdAt)}</p>
-            {/* {props.expirationDate !== null && (
-              <>
-                <p>|</p>
-                <p>{FullDateCheck(props.expirationDate)}</p>
-              </>
-            )} */}
-          </BoardBottom>
-        </BoardBoxTitleBox>
-      </BoardBox>
-    </>
-  );
-}
-
-const BoardBottom = styled.section`
-  display: flex;
-  gap: 0.3rem;
-  align-items: center;
-
-  p {
-    font-size: 1.2rem;
-    color: ${(props) => props.theme.color.grey40};
-  }
-`;
-
-const BigTagWrapper = styled.ul`
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-`;
-
-const BigTag = styled.li`
-  width: fit-content;
-  height: 2.4rem;
-  border-radius: 0.6rem;
-  padding: 0.4rem 0.8rem;
-  background-color: ${(props) => props.theme.color.zeroOne};
-  ${flexCenter}
-  font-size: 1.2rem;
-`;
-
-const TagWrapper = styled.ul`
-  display: flex;
-  gap: 0.4rem;
-  align-items: center;
-  height: 3.2rem;
-`;
-
-const HashTagBox = styled.div`
-  width: fit-content;
-  height: 2.4rem;
-  border-radius: 999px;
-  padding: 0.4rem 0.8rem;
-
-  border: 0.1rem solid ${(props) => props.theme.color.grey40};
-`;
-
-const BoardBox = styled.div`
-  width: 30vw;
-  max-width: 47rem;
-  min-width: 25rem;
-  height: 24.7rem;
-  flex-direction: column;
-  display: flex;
-  justify-content: space-between;
-  border: 0.1rem solid #dde1e6;
-  border-radius: 1.6rem;
-  background-color: #ffffff;
-
-  .title {
-    width: 80%;
-    font-size: 1.9rem;
-  }
-`;
-
-function RadioButtons({
-  options,
-  categoryValue,
-  partyRes,
-  selected,
-  setSelected,
-}) {
-  useEffect(() => {
-    switch (selected) {
-      case 0:
-        categoryValue("all");
-        partyRes.refetch();
-        break;
-      case 1:
-        categoryValue("notice");
-        partyRes.refetch();
-        break;
-      case 2:
-        categoryValue("vote");
-        partyRes.refetch();
-        break;
-      case 3:
-        categoryValue("homework");
-        partyRes.refetch();
-        break;
-      case 4:
-        categoryValue("board");
-        partyRes.refetch();
-        break;
-      default:
-        break;
-    }
-  }, [selected]);
-
-  return (
-    <RadioBox>
-      {options.map((option, index) => (
-        <RadioButtonStyled
-          key={index}
-          style={{ opacity: selected === index ? 1 : 0.5 }}
-          onClick={() => setSelected(index)}
-        >
-          {option}
-        </RadioButtonStyled>
-      ))}
-    </RadioBox>
-  );
-}
-
-const RadioButtonStyled = styled.button`
-  width: 5rem;
-  height: 4rem;
-  border: none;
-  font-size: 1.75rem;
-  background-color: transparent;
-  color: ${({ selected }) => (selected ? "#585585" : "#585585")};
-`;
-const RadioBox = styled.div``;
-
-const Carousel = (props) => {
-  const currentTime = new Date();
-  const targetTime = new Date(props.expirationDate);
-  const timeDiffInMs = targetTime - currentTime;
-  const hoursDiff = Math.floor(timeDiffInMs / (1000 * 60 * 60));
-
-  const navi = useNavigate();
-
-  return (
-    <CarouselItem
-      onClick={() =>
-        navi(
-          `/party/detail?groupId=${props.groupId}&detailId=${props.id}&dtype=homework`
-        )
-      }
-    >
-      <BoardBoxTitleBox>
-        <TopInfoWrapper>
-          {hoursDiff >= 0 ? (
-            <span className="plus">마감 {hoursDiff}시간 전</span>
-          ) : (
-            <span className="minus">마감 {-hoursDiff}시간 지남</span>
-          )}
-          <h1>{props.title}</h1>
-        </TopInfoWrapper>
-        <BottomInfoWrapper>
-          <p>
-            {props.nickName} | {FullDateCheck(props.expirationDate)}
-          </p>
-        </BottomInfoWrapper>
-      </BoardBoxTitleBox>
-    </CarouselItem>
-  );
-};
-
-const TopInfoWrapper = styled.section`
-  display: flex;
-  flex-direction: column;
-  gap: 0.8rem;
-`;
-
-const BottomInfoWrapper = styled.section`
-  p {
-    color: ${(props) => props.theme.color.grey40};
-    font-size: 1.1rem;
-  }
-`;
-
-const CarouselItem = styled.div`
-  width: 25rem;
-  height: 15rem;
-  border-radius: 1rem;
-  background-color: #ffffff;
-`;
-
-const BoardBoxTitleBox = styled.div`
-  padding: 2rem;
-  height: 100%;
-  flex-direction: column;
-  justify-content: space-around;
-  width: 100%;
-  font-size: 2.45rem;
-  display: flex;
-  gap: 0.8rem;
-  .title {
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    font-size: 1.8rem;
-    font-weight: 600;
-  }
-  .subtitle {
-    font-size: 1.3rem;
-    color: ${(props) => props.theme.color.grey80};
-  }
-  span {
-    background: rgba(220, 53, 69, 0.2);
-    border-radius: 0.8rem;
-    font-size: 1.2rem;
-    width: fit-content;
-    padding: 0.8rem;
-  }
-`;
+import Board from "../components/party/Board";
+import RadioButtons from "../components/party/RadioButtons";
+import Carousel from "../components/party/Carousel";
+import { settings } from "../constants/carousel";
+import Chat from "../components/global/Chat";
 
 const Party = () => {
   const navi = useNavigate();
@@ -289,13 +23,9 @@ const Party = () => {
   const [selected, setSelected] = useState(0);
   const [categoryValue, setCategoryValue] = useState("all");
   const options = ["전체", "공지", "투표", "과제", "게시글"];
-
   const [carouselList, setCarouselList] = useState([]);
-
   const [groupList, setGroupList] = useState([]);
-  const [totalNum, setTotalNum] = useState(0);
   const [pageNum, setPageNum] = useState(1);
-
   const [groupName, setGroupName] = useState();
   const [groupInfo, setGroupInfo] = useState();
   const [groupCode, setGroupCode] = useState();
@@ -329,40 +59,12 @@ const Party = () => {
     const isUserCookie = getCookie("token");
     if (isUserCookie === undefined) {
       navi("/");
-      toast.error("로그인 정보가 만료되었습니다.");
+      toast.error("로그인 정보가 만료되었습니다.", {
+        toastId: "loginError",
+      });
     }
   }, []);
 
-  const deletePartyMember = useMutation(deletePageMembers, {
-    onSuccess: (data) => {
-      console.log("해당 멤버가 퇴출되었습니다.");
-      window.alert("해당 멤버가 퇴출되었습니다");
-      navi("/");
-    },
-  });
-
-  const doDelete = (data) => {
-    const res = deletePartyMember.mutateAsync(data);
-  };
-
-  const settings = {
-    dots: false, // 개수 표시 점
-    infinite: false, // 무한 캐러셀
-    speed: 100, // 다음 컨텐츠 까지의 속도
-    slidesToShow: 4, // 화면에 보이는 컨텐츠 수
-    slidesToScroll: 1, // 스크롤 시 넘어가는 컨텐츠 수
-    centerMode: false, // 현재 컨텐츠 가운데 정렬
-    centerPadding: "10px", // 중앙 컨텐츠 padding 값
-    autoplay: false, // 자동 캐러셀
-    autoplaySpeed: 2000, // 자동 캐러셀 속도
-    draggable: true, // 드래그
-    fade: false, // 사라졌다 나타나는 효과
-    arrows: true, // 좌,우 버튼
-    vertical: false, // 세로 캐러셀
-    initialSlide: 0, // 첫 컨텐츠 번호
-    pauseOnFocus: true, // focus시 정지
-    pauseOnHover: true, // hover시 정지
-  };
   if (partyRes.isLoading || partyRes.isError) {
     return (
       <>
@@ -377,10 +79,25 @@ const Party = () => {
             />
           </LeftContainer>
           <RightTotalContainer>
-            <CarouselContainer>
-              <img src={alram} alt="alram" />
+            <CarouselTitle>
+              <svg
+                width="22"
+                height="26"
+                viewBox="0 0 22 26"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M11 10.3333V15.6667H13.6667M1 15C1 16.9778 1.58649 18.9112 2.6853 20.5557C3.78412 22.2002 5.3459 23.4819 7.17317 24.2388C9.00043 24.9957 11.0111 25.1937 12.9509 24.8079C14.8907 24.422 16.6725 23.4696 18.0711 22.0711C19.4696 20.6725 20.422 18.8907 20.8079 16.9509C21.1937 15.0111 20.9957 13.0004 20.2388 11.1732C19.4819 9.3459 18.2002 7.78412 16.5557 6.6853C14.9112 5.58649 12.9778 5 11 5C8.34784 5 5.8043 6.05357 3.92893 7.92893C2.05357 9.8043 1 12.3478 1 15V15ZM11 5V1V5ZM7 1H15H7Z"
+                  stroke="white"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
+
               <h1 className="title">오늘 마감</h1>
-            </CarouselContainer>
+            </CarouselTitle>
           </RightTotalContainer>
         </PageContainer>
       </>
@@ -402,6 +119,22 @@ const Party = () => {
         <RightTotalContainer>
           <CarouselContainer>
             <CarouselTitle>
+              <svg
+                width="22"
+                height="26"
+                viewBox="0 0 22 26"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M11 10.3333V15.6667H13.6667M1 15C1 16.9778 1.58649 18.9112 2.6853 20.5557C3.78412 22.2002 5.3459 23.4819 7.17317 24.2388C9.00043 24.9957 11.0111 25.1937 12.9509 24.8079C14.8907 24.422 16.6725 23.4696 18.0711 22.0711C19.4696 20.6725 20.422 18.8907 20.8079 16.9509C21.1937 15.0111 20.9957 13.0004 20.2388 11.1732C19.4819 9.3459 18.2002 7.78412 16.5557 6.6853C14.9112 5.58649 12.9778 5 11 5C8.34784 5 5.8043 6.05357 3.92893 7.92893C2.05357 9.8043 1 12.3478 1 15V15ZM11 5V1V5ZM7 1H15H7Z"
+                  stroke="white"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
+
               <h1 className="title">오늘 마감</h1>
             </CarouselTitle>
             <Slider {...settings}>
@@ -453,10 +186,14 @@ const Party = () => {
             })}
           </RightContainer>
         </RightTotalContainer>
+        <Chat />
       </PageContainer>
     </>
   );
 };
+
+const RadioBox = styled.div``;
+
 const CarouselContainer = styled.div`
   width: 60vw;
   height: 30.2rem;
@@ -477,6 +214,8 @@ const CarouselContainer = styled.div`
 `;
 
 const CarouselTitle = styled.div`
+  display: flex;
+  gap: 1rem;
   .title {
     font-weight: 500;
     font-size: 2.2rem;
@@ -492,7 +231,6 @@ const PageContainer = styled.div`
   width: 100vw;
   max-width: 128rem;
   margin: 0 auto;
-  gap: 1rem;
   padding: 2rem 0 3rem 0;
 `;
 
@@ -506,22 +244,20 @@ const LeftContainer = styled.div`
 `;
 
 const RightTotalContainer = styled.div`
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
+  @media (max-width: 860px) {
+    margin-left: -8rem;
+  }
 `;
 
 const RightContainer = styled.div`
-  padding-top: 2rem;
-  padding-bottom: 2rem;
+  margin: 3rem 0;
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  align-items: center;
-  justify-items: center;
-  width: 60vw;
+
+  @media (max-width: 800px) {
+    grid-template-columns: repeat(1, 1fr);
+  }
   gap: 1rem;
-  color: black;
-  font-size: 1.45rem;
 `;
 
 export default Party;

@@ -66,7 +66,6 @@ const Header = () => {
       ) : (
         <div className="icons">
           <img src={alarm} alt="알림" />
-          <img src={chat} alt="채팅" />
           <img src={profile} alt="프로필" />
         </div>
       )}
