@@ -49,11 +49,6 @@ function Board(props) {
     const res = roleChangeMember.mutateAsync(data)
   }
 
-  useEffect(() => {
-  }, [])
-//(
- // <Button onClick={() => doDeleteMember({ "pam": props.pam, "memberid": props.id })}>회원으로 변경</Button>
- // )
   return (
     <>
       <BoardBox>
@@ -118,18 +113,25 @@ const Admin = () => {
   const [Support, setSupport] = useState();
   const [Member, setMember] = useState();
   const [bannedList, setBannedList] = useState([]);
+
+  const setPartyInfo = useSetRecoilState(partyInfoState);
+
+  const setIsOpen = useSetRecoilState(partyRegistModalState);
   const getDetailPage = useQuery(["admin"], () => getDetailPageForAdmin(pam.id), {
-    onSuccess: (data) => {
-      console.log(data.data.data);
-      setUserList(data.data.data.groupMembers);
-      setBannedList(data.data.data.bannedMembers)
-      setPartyInfo({ groupName: data.data.data.groupName, groupId: pam.id, groupInfo: data.data.data.groupInfo })
+    onSuccess: ({data}) => {
+      console.log(data.data);
+      setUserList(data.data.groupMembers);
+      setBannedList(data.data.bannedMembers)
+      setPartyInfo({ groupName: data.data.groupName, groupId: pam.id, groupInfo: data.data.groupInfo })
       
-      setAdmin(data.data.data.groupMembers.filter(item => item.groupMemberRoleEnum == "ADMIN"))
-      setSupport(data.data.data.groupMembers.filter(item => item.groupMemberRoleEnum == "SUPPORT"))
-      setMember(data.data.data.groupMembers.filter(item => item.groupMemberRoleEnum == "USER"))
+      setAdmin(data.data.groupMembers.filter(item => item.groupMemberRoleEnum == "ADMIN"))
+      setSupport(data.data.groupMembers.filter(item => item.groupMemberRoleEnum == "SUPPORT"))
+      setMember(data.data.groupMembers.filter(item => item.groupMemberRoleEnum == "USER"))
     },
   });
+
+  useEffect(() => {
+  }, [])
 
   const doDeletePage = () => {
     const res = deletePageForAdmin.mutateAsync(pam.id)
@@ -142,24 +144,13 @@ const Admin = () => {
     }
   })
 
-  const setPartyInfo = useSetRecoilState(partyInfoState);
-
-  const setIsOpen = useSetRecoilState(partyRegistModalState);
-
   const MakeGroupHandler = () => {
     console.log()
     setIsOpen(true);
   };
   
   if (getDetailPage.isLoading || getDetailPage.isError) {
-    return <>
-      <PageContainer>
-        <RightTotalContainer>
-        </RightTotalContainer>
-
-      </PageContainer>
-    
-     </>;
+    return (<></>);
   }
   console.log(Admin)
   return (
@@ -173,18 +164,18 @@ const Admin = () => {
           </GroupTitleBox>
           <TopContentContainer>
             <GroupInfoBox>
-              <GroupInfoImage src = {getDetailPage.data.data.data.groupImage}>
+              <GroupInfoImage src = {getDetailPage?.data.data.data.groupImage != null ?getDetailPage?.data.data.data.groupImage :Test}>
               </GroupInfoImage>
 
               <GroupInfoTextBox>
                 <GroupInfoText>
-                  <h1 className="infotitle">그룹 이름</h1><p className="infocontent">{getDetailPage.data.data.data.groupName}</p>
+                  <h1 className="infotitle">그룹 이름</h1><p className="infocontent">{getDetailPage?.data.data.data.groupName}</p>
                 </GroupInfoText>
                 <GroupInfoText>
-                  <h1 className="infotitle">그룹 설명</h1><p className="infocontent">{getDetailPage.data.data.data.groupInfo}</p>
+                  <h1 className="infotitle">그룹 설명</h1><p className="infocontent">{getDetailPage?.data.data.data.groupInfo}</p>
                 </GroupInfoText>
                 <GroupInfoText>
-                  <h1 className="infotitle">초대 코드</h1><p className="infocontent">{getDetailPage.data.data.data.groupCode}</p>
+                  <h1 className="infotitle">초대 코드</h1><p className="infocontent">{getDetailPage?.data.data.data.groupCode}</p>
                 </GroupInfoText>
               </GroupInfoTextBox>
             </GroupInfoBox>
@@ -195,15 +186,15 @@ const Admin = () => {
           <BottomContentContainer>
             <h1 className="infotitle">관리자</h1>
             <Board 
-              groupMemberRoleEnum={Admin[0].groupMemberRoleEnum}
-              joinedAt={Admin[0].joinedAt}
-              nickName={Admin[0].nickname}
-              id={Admin[0].id}
+              groupMemberRoleEnum={Admin[0]?.groupMemberRoleEnum}
+              joinedAt={Admin[0]?.joinedAt}
+              nickName={Admin[0]?.nickname}
+              id={Admin[0]?.id}
               pam={pam.id}
               MakeGroupHandler = {MakeGroupHandler}
               doDeletePage = {doDeletePage}/>
             <h1 className="infotitle">서포터</h1>
-        {Support.map((item) => {
+        {Support?.map((item) => {
           return (
             <Board
               key={item.joinedAt}
@@ -218,7 +209,7 @@ const Admin = () => {
           );
         })}
             <h1 className="infotitle">회원 목록</h1>
-        {Member.map((item) => {
+        {Member?.map((item) => {
           return (
             <Board
               key={item.joinedAt}
@@ -233,7 +224,7 @@ const Admin = () => {
           );
         })}
         <h1 className="infotitle">추방한 회원</h1>
-        {bannedList.map((item) => {
+        {bannedList?.map((item) => {
           return (
             <Board
             key={item.bannedAt}
@@ -293,6 +284,17 @@ border-radius: 2rem;
   height: 18rem;
 `
 
+
+const RightTotalContainer = styled.div`
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  width: 60vw;
+> * {
+  margin-bottom: 2rem;
+}
+`;
+
 const GroupInfoTextBox = styled.div`
   display: flex;
   flex-direction: column;
@@ -300,12 +302,25 @@ const GroupInfoTextBox = styled.div`
   gap: 3rem;
 `
 
+
+const RightContainer = styled.div`
+  padding-top: 2rem;
+  padding-bottom: 2rem;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  align-items: center;
+  justify-items: flex-start;
+  width: 60vw;
+  gap: 2rem;
+  color: black;
+  font-size: 1.45rem;
+`;
 const GroupInfoText = styled.div`
 display: flex;
 flex-direction: row;
 align-items: center;
 gap : 2rem
-`
+`;
 
 const LeftContainer = styled.div`
   flex-direction: column;
@@ -338,27 +353,4 @@ padding-bottom: 3rem;
   font-size: 2.4rem;
   color: #9795B5
 }
-`;
-
-const RightTotalContainer = styled.div`
-  flex-direction: column;
-  justify-content: flex-start;
-  align-items: center;
-  width: 60vw;
-> * {
-  margin-bottom: 2rem;
-}
-`;
-
-const RightContainer = styled.div`
-  padding-top: 2rem;
-  padding-bottom: 2rem;
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  align-items: center;
-  justify-items: flex-start;
-  width: 60vw;
-  gap: 2rem;
-  color: black;
-  font-size: 1.45rem;
 `;

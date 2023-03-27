@@ -1,3 +1,4 @@
+import { async } from "q";
 import { setCookie } from "../infos/cookie";
 import { setLocalStorage } from "../infos/localStorage";
 import Axios from "./axios";
@@ -107,6 +108,8 @@ export const postVote = async (id, data) => {
 /*-----------------------어드민 페이지 기능------------------------------*/
 
 export const getDetailPageForAdmin = async (payload) => {
+  console.log("호출")
+  console.log(payload)
   const res = await axios.get(`api/groups/${payload}/admin`);
   return res;
 };
@@ -134,7 +137,7 @@ export const PutGroup = async (payload) => {
   const res = axios.put(`api/groups/${payload.ID}/admin`, payload.form);
   return res;
 };
-}
+
 
 export const PutMemberRole = async (payload) => {
   const res = axios.put(`api/groups/${payload.pam}/admin/updaterole?memberId=${payload.memberId}`);
@@ -190,3 +193,18 @@ export const putCommentPage = async (payload) => {
   return res;
 };
 /*-----------------------상세 페이지 기능------------------------------*/
+
+/*-----------------------마이 페이지 기능------------------------------*/
+
+export const GetProfile = async () =>{
+  const res = await axios.get(
+    '/api/user'
+  )
+  return res
+}
+
+export const PutProfile = async (payload) =>{
+  const res = await axios.put('api/user/profile', payload)
+    return res;
+}
+/*-----------------------마이 페이지 기능------------------------------*/
