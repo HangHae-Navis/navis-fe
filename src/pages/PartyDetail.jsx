@@ -197,6 +197,7 @@ const Commentcontainer = styled.div`
   background-color: ${(props) => props.theme.color.zeroOne};
   padding: 3.2rem;
   margin-left: 5rem;
+  border-radius: 0.8rem;
 `;
 
 const PageContainer = styled.div`

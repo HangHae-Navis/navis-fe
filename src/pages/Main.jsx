@@ -52,7 +52,12 @@ const GroupBoxComp = (props) => {
                 </li>
               </>
             ) : (
-              <li>24시간 내 제출해야 할 과제가 존재하지 않습니다.</li>
+              <>
+                <li className="unable">24시간 내 제출해야 할 과제</li>
+                <div className="wrapper unable">
+                  <span className="homework">과제가 존재하지 않습니다.</span>
+                </div>
+              </>
             )}
           </GroupDeadline>
         </GroupDeadlineContainer>
@@ -276,6 +281,10 @@ const GroupDeadline = styled.div`
   padding: 1.2rem 1.6rem;
   background-color: #ffffff;
   gap: 0.4rem;
+
+  .unable {
+    color: ${(props) => props.theme.color.zeroThree};
+  }
 
   li {
     width: 100%;

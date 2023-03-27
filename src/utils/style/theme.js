@@ -14,7 +14,7 @@ const color = {
   zeroOne: "#F9F9FF",
   zeroTwo: "#D4D2E3",
   zeroThree: "#9795B5",
-  zeroFour: "#5D5A88",
+  zeroFour: "#585585",
   coolGrey90: "#21272a",
   coolGrey80: "#343A3F",
 };
