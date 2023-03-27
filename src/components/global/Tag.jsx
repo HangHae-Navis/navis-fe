@@ -5,6 +5,7 @@ import vote from "../../assets/ic20/vote.svg";
 import task from "../../assets/ic20/task.svg";
 
 const Tag = ({ dtype }) => {
+  console.log(dtype);
   return (
     <>
       {dtype === "homework" && (
@@ -20,10 +21,10 @@ const Tag = ({ dtype }) => {
         </TagWrapper>
       )}
       {dtype === "vote" && (
-        <TagWrapper>
+        <Tag>
           <img src={vote} alt="투표" />
           <span>투표</span>
-        </TagWrapper>
+        </Tag>
       )}
     </>
   );

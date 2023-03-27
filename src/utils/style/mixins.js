@@ -36,7 +36,8 @@ export const tagStyle = css`
   align-items: center;
   padding: 0.4rem 1rem 0.4rem 0.8rem;
   border-radius: 3.6rem;
-  border: 0.1rem solid ${(props) => props.theme.color.zeroFour};
+  border: 0.05rem solid ${(props) => props.theme.color.zeroFour};
+  background-color: white;
   img {
     width: 1.45rem;
   }

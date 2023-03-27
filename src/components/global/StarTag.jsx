@@ -9,7 +9,7 @@ const StarTag = ({ important }) => {
       {important !== 0 && (
         <TagWrapper>
           {arr.map((_, i) => (
-            <img src={star} alt="과제" />
+            <img src={star} alt="과제" key={i} />
           ))}
           <span>중요도</span>
         </TagWrapper>

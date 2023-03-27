@@ -51,7 +51,6 @@ const PartyInfo = (props) => {
                   strokeLinejoin="round"
                 />
               </svg>
-
               <span>Admin</span>
             </div>
           </>
