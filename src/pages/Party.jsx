@@ -15,6 +15,7 @@ import Board from "../components/party/Board";
 import RadioButtons from "../components/party/RadioButtons";
 import Carousel from "../components/party/Carousel";
 import { settings } from "../constants/carousel";
+import Chat from "../components/global/Chat";
 
 const Party = () => {
   const navi = useNavigate();
@@ -76,7 +77,7 @@ const Party = () => {
             />
           </LeftContainer>
           <RightTotalContainer>
-            <CarouselContainer>
+            <CarouselTitle>
               <svg
                 width="22"
                 height="26"
@@ -94,7 +95,7 @@ const Party = () => {
               </svg>
 
               <h1 className="title">오늘 마감</h1>
-            </CarouselContainer>
+            </CarouselTitle>
           </RightTotalContainer>
         </PageContainer>
       </>
@@ -183,6 +184,7 @@ const Party = () => {
             })}
           </RightContainer>
         </RightTotalContainer>
+        <Chat />
       </PageContainer>
     </>
   );

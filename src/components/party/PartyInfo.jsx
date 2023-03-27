@@ -5,9 +5,15 @@ import { toast } from "react-toastify";
 import styled from "styled-components";
 import copy from "../../assets/ic14/copy.svg";
 import write from "../../assets/ic24/write.svg";
+import remove from "../../assets/ic24/delete.svg";
 
 const PartyInfo = (props) => {
   const navi = useNavigate();
+  const onWithdrawal = () => {
+    toast.error("그룹을 탈퇴했습니다.", {
+      toastId: "withdrawal",
+    });
+  };
   return (
     <PartyInfoWrapper>
       <CopyToClipboard
@@ -25,13 +31,17 @@ const PartyInfo = (props) => {
         <div
           className="button"
           onClick={() => navi(`/party/${props.groupId}/edit`)}
-          br={"false"}
         >
           <img src={write} alt="글쓰기" />
           <span>글쓰기</span>
         </div>
+
         {props.isAdmin === true ? (
           <>
+            <button className="button" disabled={true}>
+              <img src={remove} alt="탈퇴" />
+              <span>탈퇴하기</span>
+            </button>
             <div
               className="button admin"
               onClick={() => navi(`/party/${props.groupId}/admin`)}
@@ -54,7 +64,12 @@ const PartyInfo = (props) => {
               <span>Admin</span>
             </div>
           </>
-        ) : null}
+        ) : (
+          <button className="button" onClick={onWithdrawal}>
+            <img src={remove} alt="탈퇴" />
+            <span>탈퇴하기</span>
+          </button>
+        )}
       </ButtonWrapper>
     </PartyInfoWrapper>
   );
@@ -110,12 +125,15 @@ const PartyInfoWrapper = styled.section`
     align-items: center;
     width: fit-content;
     background: #ffffff;
-    border: 0.2rem solid ${(props) => props.theme.color.zeroFour};
+    border: 0.1rem solid ${(props) => props.theme.color.zeroFour};
     border-radius: 0.8rem;
     span {
       font-size: 1.6rem;
       font-weight: 500;
       color: ${(props) => props.theme.color.zeroFour};
+    }
+    &:disabled {
+      filter: brightness(175%);
     }
   }
 
