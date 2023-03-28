@@ -2,9 +2,11 @@ import { useMutation, useQuery, useQueryClient } from "react-query";
 import styled from "styled-components";
 import {
   deletePageMembers,
+  DeleteVoteDetail,
   getBoardDetailPage,
   getCommentPage,
   postComment,
+  PostVoteDetail,
 } from "../utils/api/api";
 import "react-loading-skeleton/dist/skeleton.css";
 import { useNavigate, useSearchParams } from "react-router-dom";
@@ -22,6 +24,48 @@ import conver from "../assets/ic24/conversation.svg";
 import profile from "../assets/ic54/profile.svg";
 import { getLocalStorage } from "../utils/infos/localStorage";
 import Comment from "../element/Comment";
+import Button from "../element/Button";
+import { FullDateCheck,DayCheck } from "../element/DateCheck";
+
+
+const SlideChart = (props) => {
+  return <ChartContainer>
+    <Bar width="10.5"><h1 className="votename">sddssd</h1></Bar>
+    
+    </ChartContainer>;
+};
+
+const ChartContainer = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  text-align: center;
+  height: 3rem;
+  width: 30rem;
+  max-width: 100%;
+  border: 0.1rem solid #D4D2E3;
+  border-radius: 1.7rem;
+  
+  .votename {
+  font-weight: 400;
+  font-size: 1.6rem;
+  color: black;
+  }
+`;
+
+const Bar = styled.div`
+display: flex;
+align-items: center;
+justify-content: flex-start;
+text-align: center;
+border-radius: 1.7rem;
+padding-left: 1rem;
+  width: ${props => props.width}rem;
+  height: 100%;
+  background-color: #D4D2E3;
+`;
+
+
 
 function PartyDetail() {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -31,7 +75,11 @@ function PartyDetail() {
   const [postInfo, setPostInfo] = useState({});
   const myUserName = getLocalStorage("userInfo");
   const [comment, setComment] = useState("");
-
+  const [expirationTime, setexpirationTime] = useState("");
+  const [voteMax, setVoteMax] = useState("");
+  const [whereToVoted, setWhereToVoted] = useState();
+  const [voteContent, setVoteContent] = useState([])
+  const [voteSelectedOption, setVoteSelectedOption] = useState();
   useEffect(() => {
     const isUserCookie = getCookie("token");
     if (isUserCookie === undefined) {
@@ -41,6 +89,7 @@ function PartyDetail() {
       });
     }
   }, []);
+
 
   const groupId = searchParams.get("groupId");
   const detailId = searchParams.get("detailId");
@@ -54,12 +103,31 @@ function PartyDetail() {
     () => getBoardDetailPage({ groupId, detailId, dtype }),
     {
       onSuccess: ({ data }) => {
-        console.log(data.data)
+        console.log(data.data);
+        console.log(FullDateCheck(data.data.expirationTime))
+        setexpirationTime(FullDateCheck(data.data.expirationTime))
         setPostInfo(data.data);
         if (data.data.role === "ADMIN") {
           setIsAdmin(true);
         }
-      },
+        switch (dtype) {
+          case "vote":
+            let maxVal = 0;
+            setVoteContent(data.data.optionList);
+            setWhereToVoted(data.data.myPick)
+            for(let i = 0 ; i < data.data.optionList.length; i++){
+              maxVal += data.data.optionList[i].count
+            };
+            setVoteMax(maxVal)
+            console.log(voteContent);
+            break;
+          case "homework":
+            // do something
+            break;
+          default:
+            break;
+        }
+      }
     }
   );
   const getComment = useQuery(
@@ -78,6 +146,19 @@ function PartyDetail() {
     },
   });
 
+  const postvote = useMutation(PostVoteDetail, {
+    onSuccess: ({data}) =>{
+      console.log('투표 성공')
+      toast.success("투표 성공.");
+    } 
+  })
+
+  const deleteVote = useMutation(DeleteVoteDetail, {
+    onSuccess: ({data}) =>{
+      console.log(data)
+      toast.success("투표를 취소했습니다.")
+    }
+  })
   const deletePartyMember = useMutation(deletePageMembers, {
     onSuccess: (data) => {
       window.alert("해당 멤버가 퇴출되었습니다");
@@ -94,6 +175,26 @@ function PartyDetail() {
     const res = await post.mutateAsync(payload);
   };
 
+  const OnVotePost = async () =>{
+    if(voteSelectedOption != null){
+      const payload = {
+        groupId,
+        voteId : detailId,
+        voteOption : voteSelectedOption
+      }
+      console.log(voteSelectedOption)
+      setWhereToVoted(voteSelectedOption)
+      const res = postvote.mutateAsync(payload)
+    }
+    else toast.success("선택지를 골라야 합니다.");
+  }
+
+  const doDeleteVote = (data) =>{
+    console.log(data)
+    setWhereToVoted(-1)
+    const res = deleteVote.mutateAsync(data)
+  }
+
   const doDelete = (data) => {
     const res = deletePartyMember.mutateAsync(data);
   };
@@ -103,8 +204,6 @@ function PartyDetail() {
   if (res.isError && getComment.isError) {
     return <></>;
   }
-
-  console.log(commentList);
   return (
     <PageContainer>
       <PartyInfo
@@ -139,6 +238,48 @@ function PartyDetail() {
             },
           }}
         />
+        {whereToVoted != null ? 
+          whereToVoted == -1
+          ?
+          <VoteContentContainer>
+            <h1 className="smallname">마감시간 : {expirationTime}</h1>
+            {voteContent?.map((item) => (
+          <label key={item.optionId}>
+          <VoteContainer>
+          <input
+            type="radio"
+            value={item.optionId}
+            checked={voteSelectedOption == item.optionId}
+            onChange={(event) => setVoteSelectedOption(event.target.value)}
+          />
+          <h1 className="name">{item.option}</h1>
+        </VoteContainer>
+          </label>
+      )
+            )}
+            <VoteButtonBox>
+            <Button onClick={OnVotePost}>투표하기</Button>
+            <Button transparent = {true} onClick={() => setWhereToVoted(-2)} >결과보기</Button>
+            </VoteButtonBox>
+          </VoteContentContainer>
+          :
+          <VoteContentContainer>
+            <h1 className="smallname">마감시간 : {expirationTime}</h1>
+            {voteContent?.map((item) => (
+              <SlideChart></SlideChart>
+      )
+            )}
+            <VoteButtonBox>
+              {whereToVoted == -2
+              ?<Button transparent = {true} onClick={() => setWhereToVoted(-1)} >투표하기</Button>
+              :<Button transparent = {true} onClick={() => doDeleteVote({groupId, voteId : res?.data?.data?.data?.id})} >다시하기</Button>
+              }
+            
+            <h1 className="smallname"> {voteMax}명 투표함</h1>
+            </VoteButtonBox>
+          </VoteContentContainer>
+        
+        :null}
       </ContentsWrapper>
       <Commentcontainer>
         <CommentTopWrapper>
@@ -190,6 +331,46 @@ function PartyDetail() {
     </PageContainer>
   );
 }
+const VoteButtonBox = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 1.5rem;
+`
+const VoteContainer = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 2rem;
+  text-align: center;
+`
+
+const VoteContentContainer = styled.div`
+width: fit-content;
+max-width: 50%;
+height: 100%;
+display: flex;
+flex-direction: column;
+border-radius: 4rem;
+border: 0.1rem solid #D4D2E3;
+padding: 5rem;
+gap: 2rem;
+  .name {
+  font-weight: 400;
+  font-size: 2.2rem;
+  color: #5D5A88;
+  }
+  .smallname {
+  font-weight: 400;
+  font-size: 1.8rem;
+  color: #9795B5;
+  }
+  .date {
+  font-weight: 400;
+  font-size: 2rem;
+  color: #9795B5;
+  }
+`
 
 const Commentcontainer = styled.div`
   display: flex;
@@ -300,6 +481,7 @@ const ContentsWrapper = styled.section`
   flex-direction: column;
   width: 60vw;
   margin-left: 6rem;
+  margin-bottom: 2rem;
 `;
 
 const CommentsWrapper = styled.section`

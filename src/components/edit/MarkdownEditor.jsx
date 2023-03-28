@@ -93,6 +93,10 @@ const MarkdownEditor = () => {
       const res = await homeWorkMutation.mutateAsync(requestDto);
     } else if (data.writing === "투표") {
       requestDto.append("optionList", data.votes);
+      requestDto.append(
+        "expirationDate",
+        new Date(data.datetime).getTime() / 1000
+      );
       const res = await voteMutation.mutateAsync(requestDto);
     }
   };
