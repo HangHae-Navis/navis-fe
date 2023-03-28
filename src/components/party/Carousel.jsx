@@ -40,6 +40,18 @@ const TopInfoWrapper = styled.section`
   display: flex;
   flex-direction: column;
   gap: 0.8rem;
+
+  h1 {
+    font-size: 1.4rem;
+  }
+
+  .plus {
+    color: #dc3545;
+  }
+
+  .minus {
+    color: #dc3545;
+  }
 `;
 
 const BottomInfoWrapper = styled.section`
@@ -66,6 +78,7 @@ const BoardBoxTitleBox = styled.div`
   display: flex;
   gap: 0.8rem;
   .title {
+    width: 95%;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -78,7 +91,7 @@ const BoardBoxTitleBox = styled.div`
   }
   span {
     background: rgba(220, 53, 69, 0.2);
-    border-radius: 0.8rem;
+    border-radius: 1.6rem;
     font-size: 1.2rem;
     width: fit-content;
     padding: 0.8rem;
