@@ -10,7 +10,6 @@ import { toast } from "react-toastify";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
-import alram from "../assets/ic32/alarm.svg";
 import Board from "../components/party/Board";
 import RadioButtons from "../components/party/RadioButtons";
 import Carousel from "../components/party/Carousel";

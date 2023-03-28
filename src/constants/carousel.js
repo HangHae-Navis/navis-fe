@@ -4,8 +4,7 @@ export const settings = {
   speed: 100, // 다음 컨텐츠 까지의 속도
   slidesToShow: 4, // 화면에 보이는 컨텐츠 수
   slidesToScroll: 1, // 스크롤 시 넘어가는 컨텐츠 수
-  centerMode: false, // 현재 컨텐츠 가운데 정렬
-  centerPadding: "10px", // 중앙 컨텐츠 padding 값
+  centerMode: true, // 현재 컨텐츠 가운데 정렬
   autoplay: false, // 자동 캐러셀
   autoplaySpeed: 2000, // 자동 캐러셀 속도
   draggable: true, // 드래그
