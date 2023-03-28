@@ -186,15 +186,28 @@ export const deleteCommentPage = async (payload) => {
   return res;
 };
 
+export const PostVoteDetail = async (payload) =>{
+  console.log(payload)
+  const data = { voteOption : payload.voteOption}
+  console.log(data)
+  const res = await axios.post(`api/${payload.groupId}/votes/${payload.voteId}/pick`, data)
+  return res
+}
+
+export const DeleteVoteDetail = async (payload) =>{
+  console.log(payload)
+  const res = await axios.delete(`api/${payload.groupId}/votes/${payload.voteId}/unpick`)
+  return res
+}
+
 export const putCommentPage = async (payload) => {
   console.log(payload);
-  const res = await axios.put(
-    `api/${payload.groupId}/${payload.detailId}/comments/${payload.commentId}`,
-    payload.value
+  const res = await axios.put(`api/${payload.groupId}/${payload.detailId}/comments/${payload.commentId}`,payload.value
   );
   return res;
 };
-/*-----------------------상세 페이지 기능------------------------------*/
+
+/*-----------------------마이 페이지 기능------------------------------*/
 
 export const GetProfile = async () =>{
   const res = await axios.get(
