@@ -319,6 +319,7 @@ function PartyDetail() {
       }
     }
     for(let i = 0; i < CurrentFileList.length; i++){
+      console.log(CurrentFileList[i])
       postData.append(`${i}`, CurrentFileList[i])
     }
 

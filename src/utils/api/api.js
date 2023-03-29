@@ -163,7 +163,9 @@ export const postHomeWorkData = async (data) =>{
     console.log(value);
   }
 
-  const res = await axios.post(`api/${data.groupId}/homeworks/${data.detailId}/homeworkSubmit`, payload)
+  const res = await axios.post(`api/${data.groupId}/homeworks/${data.detailId}/homeworkSubmit`, payload,  {
+    "Content-Type": "multipart/form-data",
+  })
   return res;
 }
 
