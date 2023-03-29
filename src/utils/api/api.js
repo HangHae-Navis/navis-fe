@@ -155,6 +155,18 @@ export const deletePage = async (payload) => {
 
 /*-----------------------상세 페이지 기능------------------------------*/
 
+export const postHomeWorkData = async (data) =>{
+  console.log(data)
+  const payload = { multipartFiles: data.data}
+  console.log(payload)
+  for (let value of payload.multipartFiles.values()) {
+    console.log(value);
+  }
+
+  const res = await axios.post(`api/${data.groupId}/homeworks/${data.detailId}/homeworkSubmit`, payload)
+  return res;
+}
+
 export const postComment = async (data) => {
   const payload = { content: data.comment };
   const res = await axios.post(
