@@ -6,6 +6,8 @@ import {
   getBoardDetailPage,
   getCommentPage,
   postComment,
+  postHomeWorkData,
+  postHomeworkDetail,
   PostVoteDetail,
 } from "../utils/api/api";
 import "react-loading-skeleton/dist/skeleton.css";
@@ -91,11 +93,21 @@ padding-left: 1rem;
 
 const InputComp = (props) =>{
   console.log(props)
-  return (<input
+  return (<InputContainer><input
     type="file"
     onChange={(e) => console.log(e.target.files[0])}>
-  </input>)
+  </input>
+  <section>X</section>
+  </InputContainer>)
 }
+
+const InputContainer =styled.div`
+  
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+`
 
 
 function PartyDetail() {
@@ -113,6 +125,7 @@ function PartyDetail() {
   const [voteContent, setVoteContent] = useState([])
   const [homeWorkInputLink, setHomeWorkInputLink] = useState([])
   const [homeWorkInputFile, setHomeWorkInputFile] = useState([])
+  const [homeWorkInputFileList, setHomeWorkInputFileList] = useState([])
   const [voteSelectedOption, setVoteSelectedOption] = useState();
   const { register, formState: errors, handleSubmit } = useForm();
   useEffect(() => {
@@ -139,7 +152,7 @@ function PartyDetail() {
     () => getBoardDetailPage({ groupId, detailId, dtype }),
     {
       onSuccess: ({ data }) => {
-        console.log(data.data);
+        console.log(data);
         console.log(FullDateCheck(data.data.expirationTime))
         setexpirationTime(FullDateCheck(data.data.expirationTime))
         setexpirationTimeOrigin(new Date(data.data.expirationTime).getTime())
@@ -190,6 +203,14 @@ function PartyDetail() {
       toast.success("투표 성공.");
       res.refetch()
     } 
+  })
+
+  const posthomework = useMutation(postHomeWorkData,{
+    onSuccess: ({data}) =>{
+      console.log("제출 성공")
+      toast.success("제출 성공.");
+      res.invalidateQueries()
+    }
   })
 
   const deleteVote = useMutation(DeleteVoteDetail, {
@@ -256,12 +277,65 @@ function PartyDetail() {
   }
 }
 
+  const FileHandler = (event) =>{
+    
+    const file = event.target.files[0];
+    setHomeWorkInputFileList(homeWorkInputFileList => [...homeWorkInputFileList, file])
+    console.log(file)
+    console.log(homeWorkInputFileList)
+    /*
+    let a = null;
+    console.log(file)
+    const reader = new FileReader();
+    if(file != null){
+      a= reader.readAsDataURL(file)
+    }
+    reader.onloadend = () =>{
+      setHomeWorkInputFileList(homeWorkInputFileList => [...homeWorkInputFileList, reader.result])
+    }
+    console.log(homeWorkInputFileList.length)
+    console.log(reader.result)*/
+  }
 
-
+  const deleteInput = (data) =>{
+    console.log(data)
+    console.log(homeWorkInputFile)
+    setHomeWorkInputFile(homeWorkInputFile.filter(item => item.id != data))
+    console.log(homeWorkInputFile)
+  
+      console.log(data)
+  }
+  
   const postHomeWork = async (data) =>{
     const postData = new FormData();
+    const CurrentFile = []
+    const CurrentFileList = []
+    for(let i =0; i < homeWorkInputFile.length; i++){
+      CurrentFile.push(homeWorkInputFile[i].id - 1)
+    }
+    for(let i = 0; i<CurrentFile.length; i++){
+      if(homeWorkInputFileList[CurrentFile[i]] != null){
+        CurrentFileList.push(homeWorkInputFileList[CurrentFile[i]])
+      }
+    }
+    for(let i = 0; i < CurrentFileList.length; i++){
+      postData.append(`${i}`, CurrentFileList[i])
+    }
 
-    console.log(data)
+    //console.log(CurrentFile)
+    //console.log(homeWorkInputFileList)
+    //console.log(CurrentFileList)
+    //console.log(data)
+    for (let [key, value] of postData.entries()) {
+      console.log(key, value);
+    }
+
+    const payload = {
+      groupId,
+      detailId,
+      data : postData
+    }
+    const res = posthomework.mutateAsync(payload)
   }
 
   const doDelete = (data) => {
@@ -357,19 +431,27 @@ function PartyDetail() {
         {dtype == 'homework'
         ?res.data.data.data.role == "USER"
         ?
-        <form onSubmit={handleSubmit(postHomeWork)}
-        className="form">
+        <form onSubmit={(e) => {
+          e.preventDefault();
+          handleSubmit(postHomeWork);
+      }}>
         <HomeWorkSubmitContainer>
         <HomeWorkSubmitButtonBox>
         <Button onClick={()=> addInput("file")}>파일 추가하기</Button>
         {/*<Button onClick={()=> addInput("link")}>링크 추가하기</Button>*/}
-        <Button  transparent={true}>과제 제출하기</Button>
+        <Button onClick={handleSubmit(postHomeWork)} transparent={true}>과제 제출하기</Button>
         </HomeWorkSubmitButtonBox>
         <HomeWorkSubmitButtonBox>
             
         <HomeworkContentContainer>
               <h1 className="name">제출할 파일</h1>
-              {homeWorkInputFile.map((item) => (<InputComp key = {item.id} type = {item.type}></InputComp>))}
+              {homeWorkInputFile.map((item) => (<InputContainer key = {item.id}><input
+    type="file"
+    onChange={FileHandler}
+    >
+  </input>
+  <section onClick={()=> deleteInput(item.id)}>X</section>
+  </InputContainer>))}
         </HomeworkContentContainer>
         {/*<HomeworkContentContainer>
               <h1 className="name">제출할 링크</h1>
@@ -378,6 +460,7 @@ function PartyDetail() {
         
         
         </HomeWorkSubmitButtonBox>
+
         </HomeWorkSubmitContainer>
         </form>
         :null
@@ -409,6 +492,10 @@ function PartyDetail() {
           <img src={profile} alt="프로필" />
           <form
             className="form"
+            onSubmit={(e) => {
+              e.preventDefault();
+              onPost(comment);
+            }}
           >
             <section className="center">
               <span>{myUserName}</span>
@@ -429,10 +516,10 @@ function PartyDetail() {
       </Commentcontainer>
     </PageContainer>
   );
-}
+          }
 
 const HomeworkContentContainer = styled.div`
-width: 37rem;
+width: 50rem;
 max-width: 100%;
 height: 100%;
 display: flex;
