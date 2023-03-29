@@ -29,9 +29,15 @@ import { FullDateCheck,DayCheck } from "../element/DateCheck";
 
 
 const SlideChart = (props) => {
+  const value = props.voteMax == 0 ? 0: props.count / props.voteMax 
+  console.log(value)
   return <ChartContainer>
-    <Bar width="10.5"><h1 className="votename">sddssd</h1></Bar>
-    
+    <Bar width= {value * 100}>
+      <BarText>
+  <p className="votename">{props.option}</p>
+  <p className="votename">{props.count}</p>
+      </BarText>
+    </Bar>
     </ChartContainer>;
 };
 
@@ -50,8 +56,19 @@ const ChartContainer = styled.div`
   font-weight: 400;
   font-size: 1.6rem;
   color: black;
+  white-space: nowrap;
   }
 `;
+
+const BarText = styled.div`
+position: absolute;
+width: 28rem;
+max-width: 100%;
+display: flex;
+align-items: center;
+justify-content: space-between;
+text-align: center;
+`
 
 const Bar = styled.div`
 display: flex;
@@ -60,9 +77,12 @@ justify-content: flex-start;
 text-align: center;
 border-radius: 1.7rem;
 padding-left: 1rem;
-  width: ${props => props.width}rem;
+  width: ${(props) => props.width}%;
   height: 100%;
   background-color: #D4D2E3;
+  ${props => props.width == '0' && `
+    background-color: rgba(212, 210, 227, 0);
+  `}
 `;
 
 
@@ -76,6 +96,7 @@ function PartyDetail() {
   const myUserName = getLocalStorage("userInfo");
   const [comment, setComment] = useState("");
   const [expirationTime, setexpirationTime] = useState("");
+  const [expirationTimeOrigin, setexpirationTimeOrigin] = useState("");
   const [voteMax, setVoteMax] = useState("");
   const [whereToVoted, setWhereToVoted] = useState();
   const [voteContent, setVoteContent] = useState([])
@@ -90,7 +111,8 @@ function PartyDetail() {
     }
   }, []);
 
-
+  const now = new Date().getTime()
+  
   const groupId = searchParams.get("groupId");
   const detailId = searchParams.get("detailId");
   const dtype = searchParams.get("dtype");
@@ -106,6 +128,7 @@ function PartyDetail() {
         console.log(data.data);
         console.log(FullDateCheck(data.data.expirationTime))
         setexpirationTime(FullDateCheck(data.data.expirationTime))
+        setexpirationTimeOrigin(new Date(data.data.expirationTime).getTime())
         setPostInfo(data.data);
         if (data.data.role === "ADMIN") {
           setIsAdmin(true);
@@ -130,6 +153,7 @@ function PartyDetail() {
       }
     }
   );
+  
   const getComment = useQuery(
     ["comment", { groupId, boardId: detailId, page: 1, size: 999 }],
     () => getCommentPage({ groupId, boardId: detailId, page: 1, size: 999 }),
@@ -150,12 +174,13 @@ function PartyDetail() {
     onSuccess: ({data}) =>{
       console.log('투표 성공')
       toast.success("투표 성공.");
+      res.refetch()
     } 
   })
 
   const deleteVote = useMutation(DeleteVoteDetail, {
     onSuccess: ({data}) =>{
-      console.log(data)
+      res.refetch()
       toast.success("투표를 취소했습니다.")
     }
   })
@@ -184,16 +209,20 @@ function PartyDetail() {
       }
       console.log(voteSelectedOption)
       setWhereToVoted(voteSelectedOption)
+      setVoteMax(voteMax+1)
       const res = postvote.mutateAsync(payload)
     }
     else toast.success("선택지를 골라야 합니다.");
   }
 
   const doDeleteVote = (data) =>{
+    console.log(voteContent.find(function(data){return data.optionId == whereToVoted}).optionId)
     console.log(data)
     setWhereToVoted(-1)
+    setVoteMax(voteMax-1)
     const res = deleteVote.mutateAsync(data)
   }
+    
 
   const doDelete = (data) => {
     const res = deletePartyMember.mutateAsync(data);
@@ -239,7 +268,7 @@ function PartyDetail() {
           }}
         />
         {whereToVoted != null ? 
-          whereToVoted == -1
+          whereToVoted == -1 && now < expirationTimeOrigin
           ?
           <VoteContentContainer>
             <h1 className="smallname">마감시간 : {expirationTime}</h1>
@@ -259,20 +288,24 @@ function PartyDetail() {
             )}
             <VoteButtonBox>
             <Button onClick={OnVotePost}>투표하기</Button>
-            <Button transparent = {true} onClick={() => setWhereToVoted(-2)} >결과보기</Button>
+            <Button transparent = {true} onClick={()=> setWhereToVoted(-2)} >결과보기</Button>
             </VoteButtonBox>
           </VoteContentContainer>
           :
           <VoteContentContainer>
             <h1 className="smallname">마감시간 : {expirationTime}</h1>
             {voteContent?.map((item) => (
-              <SlideChart></SlideChart>
+              <SlideChart key={item.optionId} option = {item.option} voteMax = {voteMax} count = {item.count}></SlideChart>
       )
             )}
             <VoteButtonBox>
-              {whereToVoted == -2
+              {whereToVoted == -2 
               ?<Button transparent = {true} onClick={() => setWhereToVoted(-1)} >투표하기</Button>
-              :<Button transparent = {true} onClick={() => doDeleteVote({groupId, voteId : res?.data?.data?.data?.id})} >다시하기</Button>
+              :
+              now < expirationTimeOrigin
+              ? <Button transparent = {true} onClick={() => doDeleteVote({groupId, voteId : res?.data?.data?.data?.id})} >다시하기</Button>
+              : null
+             
               }
             
             <h1 className="smallname"> {voteMax}명 투표함</h1>
