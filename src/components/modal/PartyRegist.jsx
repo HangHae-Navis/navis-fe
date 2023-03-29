@@ -59,7 +59,6 @@ const PartyRegist = () => {
   });
 
   useEffect(() => {
-    return () => {
       setCurrentPage(window.location.pathname)
       currentPage == '/main' ?setIsPut(false) : setIsPut(true)
       console.log(partyInfos)
@@ -67,7 +66,6 @@ const PartyRegist = () => {
       console.log(partyInfos.groupInfo)
       setTitleState(partyInfos.groupName)
       setInfoState(partyInfos.groupInfo)
-    };
   }, [])
 
   const ModalClose = (event) => {
@@ -391,7 +389,7 @@ const RegistModalWrapper = styled(motion.section)`
   flex-direction: column;
   padding: 7rem;
   border-radius: 2.5rem;
-  background-color: #F2F1FA;
+  background-color: #F2F1FA; 
   gap: 10rem;
 `;
 
