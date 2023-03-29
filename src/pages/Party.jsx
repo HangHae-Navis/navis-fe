@@ -94,7 +94,6 @@ const Party = () => {
                   strokeLinejoin="round"
                 />
               </svg>
-
               <h1 className="title">오늘 마감</h1>
             </CarouselTitle>
           </RightTotalContainer>
@@ -135,8 +134,8 @@ const Party = () => {
               </svg>
               <h1 className="title">오늘 마감</h1>
             </CarouselTitle>
-            <CarouselSlider {...settings}>
-              {carouselList?.map((item) => {
+            <Slider {...settings}>
+              {carouselList.map((item) => {
                 return (
                   <Carousel
                     key={item.id}
@@ -148,7 +147,7 @@ const Party = () => {
                   />
                 );
               })}
-            </CarouselSlider>
+            </Slider>
           </CarouselContainer>
           <RadioBox>
             <RadioButtons
@@ -191,8 +190,6 @@ const Party = () => {
 };
 
 const RadioBox = styled.div``;
-
-const CarouselSlider = styled(Slider)``;
 
 const CarouselContainer = styled.div`
   width: 60vw;
