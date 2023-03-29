@@ -135,7 +135,7 @@ const Party = () => {
               </svg>
               <h1 className="title">오늘 마감</h1>
             </CarouselTitle>
-            <Slider {...settings}>
+            <CarouselSlider {...settings}>
               {carouselList?.map((item) => {
                 return (
                   <Carousel
@@ -148,7 +148,7 @@ const Party = () => {
                   />
                 );
               })}
-            </Slider>
+            </CarouselSlider>
           </CarouselContainer>
           <RadioBox>
             <RadioButtons
@@ -191,6 +191,8 @@ const Party = () => {
 };
 
 const RadioBox = styled.div``;
+
+const CarouselSlider = styled(Slider)``;
 
 const CarouselContainer = styled.div`
   width: 60vw;

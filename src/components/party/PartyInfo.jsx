@@ -94,10 +94,6 @@ const PartyInfoWrapper = styled.section`
     font-size: 1.35rem;
   }
 
-  @media (max-width: 800px) {
-    left: 2rem;
-  }
-
   h1 {
     font-size: 2rem;
     margin-bottom: 2rem;

@@ -62,10 +62,14 @@ const BottomInfoWrapper = styled.section`
 `;
 
 const CarouselItem = styled.div`
-  width: 25rem;
+  width: 95%;
   height: 15rem;
   border-radius: 1rem;
   background-color: #ffffff;
+
+  @media (max-width: 600px) {
+    width: 100%;
+  }
 `;
 
 const BoardBoxTitleBox = styled.div`
@@ -77,18 +81,6 @@ const BoardBoxTitleBox = styled.div`
   font-size: 2.45rem;
   display: flex;
   gap: 0.8rem;
-  .title {
-    width: 95%;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    font-size: 1.8rem;
-    font-weight: 600;
-  }
-  .subtitle {
-    font-size: 1.3rem;
-    color: ${(props) => props.theme.color.grey80};
-  }
   span {
     background: rgba(220, 53, 69, 0.2);
     border-radius: 1.6rem;
