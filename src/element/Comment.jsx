@@ -1,17 +1,12 @@
-import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useMutation, useQueryClient } from "react-query";
 import { toast } from "react-toastify";
 import styled from "styled-components";
 import { deleteCommentPage, putCommentPage } from "../utils/api/api";
-import Button from "./Button";
-import Input from "./Input";
 import profile from "../assets/ic54/profile.svg";
 
 function Comment(props) {
-  const [isPut, setIsPut] = useState(false);
   const queryclient = useQueryClient();
-  const { register, formState: errors, handleSubmit } = useForm();
   const deleteComment = useMutation(deleteCommentPage, {
     onSuccess: (data) => {
       queryclient.invalidateQueries("comment");
@@ -47,9 +42,9 @@ function Comment(props) {
       commentId: props.id,
     });
   };
-  const doPutComment = () => {
-    //const res = putComment.mutateAsync({groupId: props.groupId, detailId: props.detailId, commentId: props.id, value : })
-  };
+  // const doPutComment = () => {
+  //   //const res = putComment.mutateAsync({groupId: props.groupId, detailId: props.detailId, commentId: props.id, value : })
+  // };
 
   return (
     <CommentBox>
@@ -64,7 +59,7 @@ function Comment(props) {
       {props.isAdmin === true || props.owned === true ? (
         <section onClick={doDeletComment}>X</section>
       ) : null}
-      {isPut === false ? null : (
+      {/* {isPut === false ? null : (
         <form onSubmit={handleSubmit(onPut)}>
           <Input
             placeholder="댓글을 수정하시오."
@@ -75,7 +70,7 @@ function Comment(props) {
           />
           <Button>수정 완료</Button>
         </form>
-      )}
+      )} */}
     </CommentBox>
   );
 }

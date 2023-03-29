@@ -15,10 +15,9 @@ export const partyInfoState = atom({
   key: `state${v4()}`,
   default: {
     title: "",
-    ID: ""
+    ID: "",
   },
 });
-
 
 export const userInfoState = atom({
   key: `state${v4()}`,
@@ -35,4 +34,9 @@ export const markdownInfoState = atom({
   default: {
     title: "",
   },
+});
+
+export const chatModalState = atom({
+  key: `state${v4()}`,
+  default: false,
 });

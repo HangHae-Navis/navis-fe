@@ -94,10 +94,6 @@ const PartyInfoWrapper = styled.section`
     font-size: 1.35rem;
   }
 
-  @media (max-width: 800px) {
-    left: 2rem;
-  }
-
   h1 {
     font-size: 2rem;
     margin-bottom: 2rem;
@@ -133,7 +129,13 @@ const PartyInfoWrapper = styled.section`
       color: ${(props) => props.theme.color.zeroFour};
     }
     &:disabled {
-      filter: brightness(175%);
+      span {
+        color: ${(props) => props.theme.color.zeroThree};
+      }
+      img {
+        filter: brightness(170%);
+      }
+      border: 0.1rem solid ${(props) => props.theme.color.zeroThree};
     }
   }
 

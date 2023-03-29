@@ -40,6 +40,18 @@ const TopInfoWrapper = styled.section`
   display: flex;
   flex-direction: column;
   gap: 0.8rem;
+
+  h1 {
+    font-size: 1.4rem;
+  }
+
+  .plus {
+    color: #dc3545;
+  }
+
+  .minus {
+    color: #dc3545;
+  }
 `;
 
 const BottomInfoWrapper = styled.section`
@@ -50,10 +62,14 @@ const BottomInfoWrapper = styled.section`
 `;
 
 const CarouselItem = styled.div`
-  width: 25rem;
+  width: 95%;
   height: 15rem;
   border-radius: 1rem;
   background-color: #ffffff;
+
+  @media (max-width: 600px) {
+    width: 98%;
+  }
 `;
 
 const BoardBoxTitleBox = styled.div`
@@ -65,20 +81,9 @@ const BoardBoxTitleBox = styled.div`
   font-size: 2.45rem;
   display: flex;
   gap: 0.8rem;
-  .title {
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    font-size: 1.8rem;
-    font-weight: 600;
-  }
-  .subtitle {
-    font-size: 1.3rem;
-    color: ${(props) => props.theme.color.grey80};
-  }
   span {
     background: rgba(220, 53, 69, 0.2);
-    border-radius: 0.8rem;
+    border-radius: 1.6rem;
     font-size: 1.2rem;
     width: fit-content;
     padding: 0.8rem;
