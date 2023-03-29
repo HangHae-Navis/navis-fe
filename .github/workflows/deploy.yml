@@ -13,6 +13,12 @@ jobs:
       - name: Check Node v # Node v 확인
         run: node -v
 
+      - name: env setting
+        run: touch ./.env
+
+      - name: env value
+        run: echo "${{ secrets.SECRET_ENV }}" > ./.env
+
       - name: Install Dependencies # 의존 파일 설치
         run: yarn install --frozen-lockfile
 
