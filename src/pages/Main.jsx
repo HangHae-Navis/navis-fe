@@ -295,13 +295,13 @@ const GroupDeadline = styled.div`
       width: 28rem;
       align-items: center;
       .time {
-        width: 49%;
-        font-size: 1.5rem;
+        width: fit-content;
+        font-size: 1.3rem;
         color: #dc3545;
       }
       .homework {
-        width: 49%;
-        font-size: 1.45rem;
+        width: 15rem;
+        font-size: 1.25rem;
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
