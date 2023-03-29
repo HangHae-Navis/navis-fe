@@ -121,8 +121,9 @@ const Profile = () => {
 
   const PostProfile = async (data) =>{
     const postRequest = new FormData();
-    if(userImg != null){
-      postRequest.append("profileImage", userImg);
+    console.log(postImages)
+    if(postImages != null){
+      postRequest.append("profileImage", postImages);
     }
     if(data.nick != null){
       postRequest.append("nickname", data.nick);
@@ -196,7 +197,7 @@ const Profile = () => {
                   id="file-upload"
                   type="file"
                   accept="image/jpeg, image/png"
-                  style={{ display: "none" }}
+                  style={{ display: "none", maxWidth:"100%"}}
                   onChange={ImageHandler}
                 ></input>
               <GroupInfoText>
