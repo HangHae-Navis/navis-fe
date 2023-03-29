@@ -10,7 +10,6 @@ import { toast } from "react-toastify";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
-import alram from "../assets/ic32/alarm.svg";
 import Board from "../components/party/Board";
 import RadioButtons from "../components/party/RadioButtons";
 import Carousel from "../components/party/Carousel";
@@ -74,7 +73,7 @@ const Party = () => {
               groupName={groupName}
               groupInfo={groupInfo}
               groupCode={groupCode}
-              groupId={pam.id}
+              groupId={groupId}
               isAdmin={isAdmin}
             />
           </LeftContainer>
@@ -95,7 +94,6 @@ const Party = () => {
                   strokeLinejoin="round"
                 />
               </svg>
-
               <h1 className="title">오늘 마감</h1>
             </CarouselTitle>
           </RightTotalContainer>
@@ -134,11 +132,10 @@ const Party = () => {
                   strokeLinejoin="round"
                 />
               </svg>
-
               <h1 className="title">오늘 마감</h1>
             </CarouselTitle>
             <Slider {...settings}>
-              {carouselList?.map((item) => {
+              {carouselList.map((item) => {
                 return (
                   <Carousel
                     key={item.id}

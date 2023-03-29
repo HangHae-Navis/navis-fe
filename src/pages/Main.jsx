@@ -13,12 +13,11 @@ import { useSetRecoilState } from "recoil";
 import { partyRegistModalState } from "../store/atom";
 import NavBar from "../components/party/NavBar";
 import { getCookie } from "../utils/infos/cookie";
-import { FullDateCheck, HourCheck } from "../element/DateCheck";
+import { HourCheck } from "../element/DateCheck";
 
 const GroupBoxComp = (props) => {
   const navigate = useNavigate();
   const [onDeadLine, setOnDeadLine] = useState(false);
-  const [DeadLineTime, setDeadLineTime] = useState(false);
   useEffect(() => {
     if (
       props.expirationDate !== "1970년 1월 1일 오전 9:00" &&
@@ -81,7 +80,6 @@ const Main = () => {
       onSuccess: ({ data }) => {
         setGroupList(data.data.content);
         setTotalNum(data.data.totalElements);
-        console.log(data.data);
       },
     }
   );
@@ -152,14 +150,14 @@ const Main = () => {
             })
           ) : (
             <>
-              <Skeleton width={380} height={510} />
-              <Skeleton width={380} height={534} />
-              <Skeleton width={380} height={534} />
-              <Skeleton width={380} height={534} />
-              <Skeleton width={380} height={534} />
-              <Skeleton width={380} height={534} />
-              <Skeleton width={380} height={534} />
-              <Skeleton width={380} height={534} />
+              <Skeleton width={350} height={480} />
+              <Skeleton width={350} height={480} />
+              <Skeleton width={350} height={480} />
+              <Skeleton width={350} height={480} />
+              <Skeleton width={350} height={480} />
+              <Skeleton width={350} height={480} />
+              <Skeleton width={350} height={480} />
+              <Skeleton width={350} height={480} />
             </>
           )}
         </GroupContainer>
@@ -281,6 +279,11 @@ const GroupDeadline = styled.div`
 
   .unable {
     color: ${(props) => props.theme.color.zeroThree};
+    font-size: 1.5rem;
+
+    .homework {
+      font-size: 1.4rem;
+    }
   }
 
   li {
@@ -290,14 +293,15 @@ const GroupDeadline = styled.div`
       display: flex;
       gap: 0.5rem;
       width: 28rem;
+      align-items: center;
       .time {
-        width: 49%;
-        font-size: 1.5rem;
+        width: fit-content;
+        font-size: 1.3rem;
         color: #dc3545;
       }
       .homework {
-        width: 49%;
-        font-size: 1.5rem;
+        width: 15rem;
+        font-size: 1.25rem;
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
