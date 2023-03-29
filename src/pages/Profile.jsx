@@ -121,8 +121,9 @@ const Profile = () => {
 
   const PostProfile = async (data) =>{
     const postRequest = new FormData();
-    if(userImg != null){
-      postRequest.append("profileImage", userImg);
+    console.log(userImg)
+    if(postImages != null){
+      postRequest.append("profileImage", postImages);
     }
     if(data.nick != null){
       postRequest.append("nickname", data.nick);

@@ -6,6 +6,8 @@ import {
   getBoardDetailPage,
   getCommentPage,
   postComment,
+  postHomeWorkData,
+  postHomeworkDetail,
   PostVoteDetail,
 } from "../utils/api/api";
 import "react-loading-skeleton/dist/skeleton.css";
@@ -25,7 +27,11 @@ import profile from "../assets/ic54/profile.svg";
 import { getLocalStorage } from "../utils/infos/localStorage";
 import Comment from "../element/Comment";
 import Button from "../element/Button";
+import Input from "./../element/Input";
 import { FullDateCheck,DayCheck } from "../element/DateCheck";
+import { useForm } from "react-hook-form";
+import { async } from "q";
+
 
 
 const SlideChart = (props) => {
@@ -85,6 +91,23 @@ padding-left: 1rem;
   `}
 `;
 
+const InputComp = (props) =>{
+  console.log(props)
+  return (<InputContainer><input
+    type="file"
+    onChange={(e) => console.log(e.target.files[0])}>
+  </input>
+  <section>X</section>
+  </InputContainer>)
+}
+
+const InputContainer =styled.div`
+  
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+`
 
 
 function PartyDetail() {
@@ -100,7 +123,11 @@ function PartyDetail() {
   const [voteMax, setVoteMax] = useState("");
   const [whereToVoted, setWhereToVoted] = useState();
   const [voteContent, setVoteContent] = useState([])
+  const [homeWorkInputLink, setHomeWorkInputLink] = useState([])
+  const [homeWorkInputFile, setHomeWorkInputFile] = useState([])
+  const [homeWorkInputFileList, setHomeWorkInputFileList] = useState([])
   const [voteSelectedOption, setVoteSelectedOption] = useState();
+  const { register, formState: errors, handleSubmit } = useForm();
   useEffect(() => {
     const isUserCookie = getCookie("token");
     if (isUserCookie === undefined) {
@@ -125,7 +152,7 @@ function PartyDetail() {
     () => getBoardDetailPage({ groupId, detailId, dtype }),
     {
       onSuccess: ({ data }) => {
-        console.log(data.data);
+        console.log(data);
         console.log(FullDateCheck(data.data.expirationTime))
         setexpirationTime(FullDateCheck(data.data.expirationTime))
         setexpirationTimeOrigin(new Date(data.data.expirationTime).getTime())
@@ -178,6 +205,14 @@ function PartyDetail() {
     } 
   })
 
+  const posthomework = useMutation(postHomeWorkData,{
+    onSuccess: ({data}) =>{
+      console.log("제출 성공")
+      toast.success("제출 성공.");
+      res.invalidateQueries()
+    }
+  })
+
   const deleteVote = useMutation(DeleteVoteDetail, {
     onSuccess: ({data}) =>{
       res.refetch()
@@ -223,6 +258,85 @@ function PartyDetail() {
     const res = deleteVote.mutateAsync(data)
   }
     
+  const addInput = (data) =>{
+    if(data == "link"){
+      if(homeWorkInputLink.length < 5){
+        const lastVal = homeWorkInputLink.length > 0 ?homeWorkInputLink[homeWorkInputLink.length - 1].id : 0
+        setHomeWorkInputLink(homeWorkInputLink => [...homeWorkInputLink, {id : (lastVal + 1), type : data}])
+      }
+      else toast.success("최대 업로드 가능 갯수는 5개 입니다")
+      console.log(homeWorkInputLink)
+    }
+  else if(data == "file"){
+    if(homeWorkInputFile.length < 5){
+      const lastVal = homeWorkInputFile.length > 0 ?homeWorkInputFile[homeWorkInputFile.length - 1].id : 0
+      setHomeWorkInputFile(homeWorkInputFile => [...homeWorkInputFile, {id : (lastVal + 1), type : data}])
+    }
+    else toast.success("최대 업로드 가능 갯수는 5개 입니다")
+    console.log(homeWorkInputFile)
+  }
+}
+
+  const FileHandler = (event) =>{
+    
+    const file = event.target.files[0];
+    setHomeWorkInputFileList(homeWorkInputFileList => [...homeWorkInputFileList, file])
+    console.log(file)
+    console.log(homeWorkInputFileList)
+    /*
+    let a = null;
+    console.log(file)
+    const reader = new FileReader();
+    if(file != null){
+      a= reader.readAsDataURL(file)
+    }
+    reader.onloadend = () =>{
+      setHomeWorkInputFileList(homeWorkInputFileList => [...homeWorkInputFileList, reader.result])
+    }
+    console.log(homeWorkInputFileList.length)
+    console.log(reader.result)*/
+  }
+
+  const deleteInput = (data) =>{
+    console.log(data)
+    console.log(homeWorkInputFile)
+    setHomeWorkInputFile(homeWorkInputFile.filter(item => item.id != data))
+    console.log(homeWorkInputFile)
+  
+      console.log(data)
+  }
+  
+  const postHomeWork = async (data) =>{
+    const postData = new FormData();
+    const CurrentFile = []
+    const CurrentFileList = []
+    for(let i =0; i < homeWorkInputFile.length; i++){
+      CurrentFile.push(homeWorkInputFile[i].id - 1)
+    }
+    for(let i = 0; i<CurrentFile.length; i++){
+      if(homeWorkInputFileList[CurrentFile[i]] != null){
+        CurrentFileList.push(homeWorkInputFileList[CurrentFile[i]])
+      }
+    }
+    for(let i = 0; i < CurrentFileList.length; i++){
+      postData.append(`${i}`, CurrentFileList[i])
+    }
+
+    //console.log(CurrentFile)
+    //console.log(homeWorkInputFileList)
+    //console.log(CurrentFileList)
+    //console.log(data)
+    for (let [key, value] of postData.entries()) {
+      console.log(key, value);
+    }
+
+    const payload = {
+      groupId,
+      detailId,
+      data : postData
+    }
+    const res = posthomework.mutateAsync(payload)
+  }
 
   const doDelete = (data) => {
     const res = deletePartyMember.mutateAsync(data);
@@ -238,7 +352,7 @@ function PartyDetail() {
       <PartyInfo
         groupName={groupName}
         groupInfo={groupInfo}
-        groupCode={groupCode}
+        groupCode={groupCode}vote
         groupId={groupId}
         isAdmin={isAdmin}
       />
@@ -267,6 +381,7 @@ function PartyDetail() {
             },
           }}
         />
+        {/*투표 여부를 판단, 투표지가 있을 경우 투표 관련 컴포넌트 랜더링*/}
         {whereToVoted != null ? 
           whereToVoted == -1 && now < expirationTimeOrigin
           ?
@@ -311,6 +426,44 @@ function PartyDetail() {
             <h1 className="smallname"> {voteMax}명 투표함</h1>
             </VoteButtonBox>
           </VoteContentContainer>
+        
+        :null}
+        {dtype == 'homework'
+        ?res.data.data.data.role == "USER"
+        ?
+        <form onSubmit={(e) => {
+          e.preventDefault();
+          handleSubmit(postHomeWork);
+      }}>
+        <HomeWorkSubmitContainer>
+        <HomeWorkSubmitButtonBox>
+        <Button onClick={()=> addInput("file")}>파일 추가하기</Button>
+        {/*<Button onClick={()=> addInput("link")}>링크 추가하기</Button>*/}
+        <Button onClick={handleSubmit(postHomeWork)} transparent={true}>과제 제출하기</Button>
+        </HomeWorkSubmitButtonBox>
+        <HomeWorkSubmitButtonBox>
+            
+        <HomeworkContentContainer>
+              <h1 className="name">제출할 파일</h1>
+              {homeWorkInputFile.map((item) => (<InputContainer key = {item.id}><input
+    type="file"
+    onChange={FileHandler}
+    >
+  </input>
+  <section onClick={()=> deleteInput(item.id)}>X</section>
+  </InputContainer>))}
+        </HomeworkContentContainer>
+        {/*<HomeworkContentContainer>
+              <h1 className="name">제출할 링크</h1>
+              {homeWorkInputLink.map((item) => (<InputComp key = {item.id} type = {item.type}></InputComp>))}
+        </HomeworkContentContainer>*/}
+        
+        
+        </HomeWorkSubmitButtonBox>
+
+        </HomeWorkSubmitContainer>
+        </form>
+        :null
         
         :null}
       </ContentsWrapper>
@@ -363,7 +516,49 @@ function PartyDetail() {
       </Commentcontainer>
     </PageContainer>
   );
-}
+          }
+
+const HomeworkContentContainer = styled.div`
+width: 50rem;
+max-width: 100%;
+height: 100%;
+display: flex;
+flex-direction: column;
+border-radius: 4rem;
+border: 0.1rem solid #D4D2E3;
+padding: 5rem;
+gap: 2rem;
+  .name {
+  font-weight: 400;
+  font-size: 2.2rem;
+  color: #5D5A88;
+  }
+  .smallname {
+  font-weight: 400;
+  font-size: 1.8rem;
+  color: #9795B5;
+  }
+  .date {
+  font-weight: 400;
+  font-size: 2rem;
+  color: #9795B5;
+  }
+`
+const HomeWorkSubmitContainer = styled.div`
+display: flex;
+flex-direction: column;
+align-items: flex-start;
+gap: 1.5rem;
+`
+
+const HomeWorkSubmitButtonBox = styled.div`
+display: flex;
+max-width: 100%;
+flex-direction: row;
+align-items: flex-start;
+gap: 1.5rem;
+`
+
 const VoteButtonBox = styled.div`
   display: flex;
   flex-direction: row;

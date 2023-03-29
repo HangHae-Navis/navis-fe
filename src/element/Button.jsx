@@ -1,7 +1,7 @@
 import React from "react";
 import styled, { css } from "styled-components";
 
-const Button = ({ onClick, br, children, transparent, disabled, full }) => {
+const Button = ({ onClick, br, children, transparent, disabled, full, type }) => {
   return (
     <CustomButton
       disabled={disabled}
@@ -9,6 +9,7 @@ const Button = ({ onClick, br, children, transparent, disabled, full }) => {
       br={br}
       onClick={onClick}
       full={full}
+      type={type}
     >
       {children}
     </CustomButton>
@@ -16,6 +17,7 @@ const Button = ({ onClick, br, children, transparent, disabled, full }) => {
 };
 
 const CustomButton = styled.button`
+  type : ${(props) => props.type};
   padding: 0 2rem;
   width: fit-content;
   height: 4rem;
