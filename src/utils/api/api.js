@@ -1,3 +1,4 @@
+import { async } from "q";
 import { setCookie } from "../infos/cookie";
 import { setLocalStorage } from "../infos/localStorage";
 import Axios from "./axios";
@@ -58,13 +59,6 @@ export const getDetailPage = async (payload) => {
   return res;
 };
 
-export const getBoardDetailPage = async (payload) => {
-  const res = await axios.get(
-    `api/${payload.groupId}/${payload.dtype}s/${payload.DetailId}`
-  );
-  return res;
-};
-
 export const getPartyBoard = async (payload) => {
   const res = await axios.get(`api/${payload}/boards/`);
   return res;
@@ -114,6 +108,8 @@ export const postVote = async (id, data) => {
 /*-----------------------어드민 페이지 기능------------------------------*/
 
 export const getDetailPageForAdmin = async (payload) => {
+  console.log("호출");
+  console.log(payload);
   const res = await axios.get(`api/groups/${payload}/admin`);
   return res;
 };
@@ -128,7 +124,26 @@ export const deletePageMembers = async (payload) => {
     const res = await axios.delete(`api/groups/${payload}`);
     return res;
   }
-  //
+};
+
+export const undoDeletePagemembers = async (payload) => {
+  const res = await axios.delete(
+    `api/groups/${payload.pam}/admin/unban?bannedMemberId=${payload.bannedMemberId}`
+  );
+  return res;
+};
+
+export const PutGroup = async (payload) => {
+  const res = axios.put(`api/groups/${payload.ID}/admin`, payload.form);
+  return res;
+};
+
+
+export const PutMemberRole = async (payload) => {
+  const res = axios.put(
+    `api/groups/${payload.pam}/admin/updaterole?memberId=${payload.memberId}`
+  );
+  return res;
 };
 
 export const deletePage = async (payload) => {
@@ -137,3 +152,84 @@ export const deletePage = async (payload) => {
 };
 
 /*-----------------------어드민 페이지 기능------------------------------*/
+
+/*-----------------------상세 페이지 기능------------------------------*/
+
+export const postHomeWorkData = async (data) =>{
+  console.log(data)
+  const payload = { multipartFiles: data.data}
+  console.log(payload)
+  for (let value of payload.multipartFiles.values()) {
+    console.log(value);
+  }
+
+  const res = await axios.post(`api/${data.groupId}/homeworks/${data.detailId}/homeworkSubmit`, payload)
+  return res;
+}
+
+export const postComment = async (data) => {
+  const payload = { content: data.comment };
+  const res = await axios.post(
+    `api/${data.groupId}/${data.detailId}/comments`,
+    payload
+  );
+  return res;
+};
+
+export const getBoardDetailPage = async (payload) => {
+  const res = await axios.get(
+    `api/${payload.groupId}/${payload.dtype}s/${payload.detailId}`
+  );
+  return res;
+};
+
+export const getCommentPage = async (payload) => {
+  const res = await axios.get(
+    `api/${payload.groupId}/${payload.boardId}/comments?page=${payload.page}&size=${payload.size}`
+  );
+  return res;
+};
+
+export const deleteCommentPage = async (payload) => {
+  console.log(payload);
+  const res = await axios.delete(
+    `api/${payload.groupId}/${payload.detailId}/comments/${payload.commentId}`
+  );
+  return res;
+};
+
+export const PostVoteDetail = async (payload) =>{
+  console.log(payload)
+  const data = { voteOption : payload.voteOption}
+  console.log(data)
+  const res = await axios.post(`api/${payload.groupId}/votes/${payload.voteId}/pick`, data)
+  return res
+}
+
+export const DeleteVoteDetail = async (payload) =>{
+  console.log(payload)
+  const res = await axios.delete(`api/${payload.groupId}/votes/${payload.voteId}/unpick`)
+  return res
+}
+
+export const putCommentPage = async (payload) => {
+  console.log(payload);
+  const res = await axios.put(`api/${payload.groupId}/${payload.detailId}/comments/${payload.commentId}`,payload.value
+  );
+  return res;
+};
+
+/*-----------------------마이 페이지 기능------------------------------*/
+
+export const GetProfile = async () =>{
+  const res = await axios.get(
+    '/api/user'
+  )
+  return res
+}
+
+export const PutProfile = async (payload) =>{
+  const res = await axios.put('api/user/profile', payload)
+    return res;
+}
+/*-----------------------마이 페이지 기능------------------------------*/

@@ -1,289 +1,162 @@
-import { useMutation, useQuery } from "react-query";
+import { useQuery } from "react-query";
 import styled from "styled-components";
-import PartyRegist from "../components/modal/PartyRegist";
-import Button from "../element/Button";
-import { deletePageMembers, getDetailPage, getPartyBoard, getPartyPage } from "../utils/api/api";
-import Skeleton from "react-loading-skeleton";
+import { getDetailPage } from "../utils/api/api";
 import "react-loading-skeleton/dist/skeleton.css";
-import Test from "../assets/d65d5952-d801-4225-ab16-8720733b499a.png";
-import Pagination from "react-js-pagination";
 import { useNavigate, useParams } from "react-router-dom";
-import { useEffect, useRef, useState } from "react";
-import DateCheck from "../element/DateCheck";
-
-function Board(props) {
-  const navi = useNavigate();
-  const [dtypeText, setDtypeText] = useState("")
-  const [hashtagText, setHashtagText] = useState()
-  //console.log(props.hashtagList)
-
-  console.log(props)
-
-  useEffect(() => {
-    switch (props.dtype) {
-      case "vote":
-        setDtypeText("투표")
-        break;
-      case "board":
-        setDtypeText("게시글")
-        break;
-      case "homework":
-        setDtypeText("과제")
-        break;
-      case "notice":
-        setDtypeText("공지")
-        break;
-      default:
-        break;
-    }
-    if(props.hashtagList[0] !== ''){
-      setHashtagText(props.hashtagList)
-    }
-  }, [])
-
-  return (
-    <>
-      <BoardBox
-        onClick={() =>
-          navi(`/party/detail?groupId=${props.groupId}&detailId=${props.id}&dtype=${(props.dtype)}&groupName=${(props.groupName)}&groupInfo=${props.groupInfo}&groupCode=${props.groupCode}&admin=${props.isAdmin}
-          `)
-        }
-      >
-        <BoardBoxTitleBox>
-          <h1>제목 : {props.title}</h1>
-          <p>부제 : {props.subtitle}</p>
-          <p>작성일 : {DateCheck(props.createdAt)}</p>
-          {props.expirationDate !== null && (<p>마감일 : {DateCheck(props.expirationDate)}</p>)}
-          <p>작성자 : {props.nickName}</p>
-          <p>분류 : {dtypeText}</p>
-          <p>중요도 : {props.important}</p>
-          <div>
-            {hashtagText?.map((item) => {
-              return (
-                <HashTagBox key={item}># {item}</HashTagBox>
-              )
-            })
-            }
-          </div>
-        </BoardBoxTitleBox>
-      </BoardBox>
-    </>
-  );
-}
-
-const HashTagBox = styled.div`
-display: inline-block;
-border: 0.1rem solid #ccc;
-border-radius: 0.5rem;
-padding: 0.5rem;
-margin-right: 1rem;
-font-size: 1.5rem;
-opacity: 0.8;
-width: fit-content;
-`;
-
-const BoardBox = styled.div`
-  width: 41rem;
-  height: 25rem;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  background-color: aliceblue;
-  border-radius: 2rem;
-`;
-const BoardBoxTitleBox = styled.div`
-  padding: 1rem;
-  flex-direction: column;
-  justify-content: flex-start;
-  width: 30rem;
-  height: 10rem;
-  padding-top: 1rem;
-  padding-left: 1rem;
-  font-size: 2.45rem;
-  h1 {
-    font-size: 2.3rem;
-    font-weight: 600;
-  }
-  p {
-    font-size: 1.4rem;
-  }
-`;
-
-
-function RadioButtons({ options, categoryValue, partyRes, selected, setSelected }) {
-
-  useEffect(() => {
-    switch (selected) {
-      case 0:
-        categoryValue("all")
-        partyRes.refetch()
-        break;
-      case 1:
-        //categoryValue("notice")
-        break;
-      case 2:
-        categoryValue("vote")
-        partyRes.refetch()
-        break;
-      case 3:
-        categoryValue("homework")
-        partyRes.refetch()
-        break;
-      case 4:
-        categoryValue("board")
-        partyRes.refetch()
-        break;
-      default:
-        break
-    }
-  }, [selected]);
-
-
-  return (
-    <RadioBox>
-      {options.map((option, index) => (
-        <RadioButtonStyled
-          key={index}
-          style={{ opacity: selected === index ? 1 : 0.5 }}
-          onClick={() => setSelected(index)}
-        >
-          {option}
-        </RadioButtonStyled>
-      ))}
-    </RadioBox>
-  );
-}
-
-const RadioButtonStyled = styled.button`
-margin-right: 1rem;
-  width: 6rem;
-  height: 4rem;
-  border: none;
-  border-radius: 1rem;
-  font-size: 2rem;
-  background-color: ${({ selected }) => (selected ? "#ccc" : "transparent")};
-  opacity: ${({ selected }) => (selected ? 1 : 0.5)};
-`;
-const RadioBox = styled.div`
-`
-
-const Carousel = (props) =>{
-  const currentTime = new Date()
-  const targetTime = new Date(props.expirationDate)
-  const timeDiffInMs = targetTime - currentTime;
-  const hoursDiff = Math.floor(timeDiffInMs / (1000 * 60 * 60));
-  //console.log(hoursDiff)
-
-  const navi = useNavigate() 
-return (<CarouselItem onClick={() => navi(`/party/detail?groupId=${props.groupId}&detailId=${props.id}&dtype=homework`)}>
-<BoardBoxTitleBox>
-  {hoursDiff >= 0 ? <p>마감까지 {hoursDiff}시간 남음</p> : <p>마감시간 {-hoursDiff}시간 지남</p>}
-  
-  <h1>{props.title}</h1>
-  <p>작성자 : {props.nickName}</p>
-  <p>마감일 : {DateCheck(props.expirationDate)}</p>
-</BoardBoxTitleBox>
-</CarouselItem>)
-}
-
-const CarouselItem = styled.div`
-flex-shrink: 0;
-width: 25rem;
-height: 15rem;
-  background-color: aliceblue;
-border-radius: 1rem;
-padding-right: 1rem;
-overflow: hidden;
-`;
-
+import { useEffect, useState } from "react";
+import PartyInfo from "../components/party/PartyInfo";
+import { getCookie } from "../utils/infos/cookie";
+import { toast } from "react-toastify";
+import Slider from "react-slick";
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
+import Board from "../components/party/Board";
+import RadioButtons from "../components/party/RadioButtons";
+import Carousel from "../components/party/Carousel";
+import { settings } from "../constants/carousel";
+import Chat from "../components/global/Chat";
 
 const Party = () => {
   const navi = useNavigate();
   const pam = useParams();
   const [selected, setSelected] = useState(0);
   const [categoryValue, setCategoryValue] = useState("all");
-  const options = ['전체', '공지', '투표', '과제', '게시글'];
-
-  
+  const options = ["전체", "공지", "투표", "과제", "게시글"];
   const [carouselList, setCarouselList] = useState([]);
-
   const [groupList, setGroupList] = useState([]);
-  const [totalNum, setTotalNum] = useState(0);
   const [pageNum, setPageNum] = useState(1);
+  const [groupName, setGroupName] = useState();
+  const [groupInfo, setGroupInfo] = useState();
+  const [groupCode, setGroupCode] = useState();
+  const [groupId, setGroupId] = useState(pam.id);
+  const [isAdmin, setIsAdmin] = useState(false);
+
   const partyRes = useQuery(
     ["party", { id: pam.id, page: pageNum, size: 99, category: categoryValue }],
     () =>
-      getDetailPage({ id: pam.id, page: pageNum, size: 99, category: categoryValue }),
+      getDetailPage({
+        id: pam.id,
+        page: pageNum,
+        size: 99,
+        category: categoryValue,
+      }),
     {
       onSuccess: ({ data }) => {
+        console.log(data);
         setGroupList(data.data.basicBoards.content);
-        setCarouselList(data.data.deadlines)
-        console.log(data.data)
+        setGroupName(data.data.groupName);
+        setGroupInfo(data.data.groupInfo);
+        setGroupCode(data.data.groupCode);
+        setGroupId(pam.id);
+        setIsAdmin(data.data.admin);
+        setCarouselList(data.data.deadlines);
       },
     }
   );
 
-
-  
-  const MakeBoards = () => {
-    return <></>;
-  };
-
-  const deletePartyMember = useMutation(deletePageMembers, {
-    onSuccess: (data) => {
-      console.log('해당 멤버가 퇴출되었습니다.')
-      window.alert('해당 멤버가 퇴출되었습니다')
-      navi('/')
+  useEffect(() => {
+    const isUserCookie = getCookie("token");
+    if (isUserCookie === undefined) {
+      navi("/");
+      toast.error("로그인 정보가 만료되었습니다.", {
+        toastId: "loginError",
+      });
     }
-  })
+  }, []);
 
-  const doDelete = (data) => {
-    const res = deletePartyMember.mutateAsync(data)
+  if (partyRes.isLoading || partyRes.isError) {
+    return (
+      <>
+        <PageContainer>
+          <LeftContainer>
+            <PartyInfo
+              groupName={groupName}
+              groupInfo={groupInfo}
+              groupCode={groupCode}
+              groupId={groupId}
+              isAdmin={isAdmin}
+            />
+          </LeftContainer>
+          <RightTotalContainer>
+            <CarouselTitle>
+              <svg
+                width="22"
+                height="26"
+                viewBox="0 0 22 26"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M11 10.3333V15.6667H13.6667M1 15C1 16.9778 1.58649 18.9112 2.6853 20.5557C3.78412 22.2002 5.3459 23.4819 7.17317 24.2388C9.00043 24.9957 11.0111 25.1937 12.9509 24.8079C14.8907 24.422 16.6725 23.4696 18.0711 22.0711C19.4696 20.6725 20.422 18.8907 20.8079 16.9509C21.1937 15.0111 20.9957 13.0004 20.2388 11.1732C19.4819 9.3459 18.2002 7.78412 16.5557 6.6853C14.9112 5.58649 12.9778 5 11 5C8.34784 5 5.8043 6.05357 3.92893 7.92893C2.05357 9.8043 1 12.3478 1 15V15ZM11 5V1V5ZM7 1H15H7Z"
+                  stroke="white"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
+              <h1 className="title">오늘 마감</h1>
+            </CarouselTitle>
+          </RightTotalContainer>
+        </PageContainer>
+      </>
+    );
   }
 
-
-  if (partyRes.isLoading || partyRes.isError) {return (
-    <>
-    </>
-  );
-  }
   return (
     <>
       <PageContainer>
         <LeftContainer>
-          <LeftTitleBox>
-            <h1>{partyRes.data.data.data.groupName}</h1>
-            <p>{partyRes.data.data.data.groupInfo}</p>
-            <p>초대 코드 : {partyRes.data.data.data.groupCode}</p>
-            <Button onClick={() => navi(`/party/${pam.id}/edit`,)}>글쓰기</Button>
-            {partyRes.data.data.data.admin === true ? (
-              <Button onClick={() => navi(`/party/${pam.id}/admin`)}>
-                어드민 페이지
-              </Button>
-            ) : (
-              <Button onClick={() => doDelete(pam.id)}>그룹 탈퇴하기</Button>
-            )}
-          </LeftTitleBox>
+          <PartyInfo
+            groupName={partyRes.data.data.data.groupName}
+            groupInfo={partyRes.data.data.data.groupInfo}
+            groupCode={partyRes.data.data.data.groupCode}
+            groupId={pam.id}
+            isAdmin={partyRes.data.data.data.admin}
+          />
         </LeftContainer>
         <RightTotalContainer>
-    <CarouselContainer>
-      {carouselList?.map((item) => {
-        return(<Carousel 
-        key = {item.id}
-        groupId={pam.id}
-        id = {item.id}
-        expirationDate={item.expirationDate}
-        nickName={item.nickname}
-        title={item.title}
-        />)
-      })
-
-      }
-    </CarouselContainer>
+          <CarouselContainer>
+            <CarouselTitle>
+              <svg
+                width="22"
+                height="26"
+                viewBox="0 0 22 26"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M11 10.3333V15.6667H13.6667M1 15C1 16.9778 1.58649 18.9112 2.6853 20.5557C3.78412 22.2002 5.3459 23.4819 7.17317 24.2388C9.00043 24.9957 11.0111 25.1937 12.9509 24.8079C14.8907 24.422 16.6725 23.4696 18.0711 22.0711C19.4696 20.6725 20.422 18.8907 20.8079 16.9509C21.1937 15.0111 20.9957 13.0004 20.2388 11.1732C19.4819 9.3459 18.2002 7.78412 16.5557 6.6853C14.9112 5.58649 12.9778 5 11 5C8.34784 5 5.8043 6.05357 3.92893 7.92893C2.05357 9.8043 1 12.3478 1 15V15ZM11 5V1V5ZM7 1H15H7Z"
+                  stroke="white"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
+              <h1 className="title">오늘 마감</h1>
+            </CarouselTitle>
+            <Slider {...settings}>
+              {carouselList.map((item) => {
+                return (
+                  <Carousel
+                    key={item.id}
+                    groupId={pam.id}
+                    id={item.id}
+                    expirationDate={item.expirationDate}
+                    nickName={item.nickname}
+                    title={item.title}
+                  />
+                );
+              })}
+            </Slider>
+          </CarouselContainer>
           <RadioBox>
             <RadioButtons
-            options={options} categoryValue={setCategoryValue}
-            partyRes={partyRes} selected={selected} setSelected={setSelected}/>
+              options={options}
+              categoryValue={setCategoryValue}
+              partyRes={partyRes}
+              selected={selected}
+              setSelected={setSelected}
+            />
           </RadioBox>
           <RightContainer>
             {groupList?.map((item) => {
@@ -300,48 +173,62 @@ const Party = () => {
                   dtype={item.dtype}
                   important={item.important}
                   hashtagList={item.hashtagList}
-                  expirationDate = {item.expirationDate}
-                  groupName = {partyRes.data.data.data.groupName}
-                  groupInfo = {partyRes.data.data.data.groupInfo}
-                  groupCode = {partyRes.data.data.data.groupCode}
-                  isAdmin = {partyRes.data.data.data.admin}
+                  expirationDate={item.expirationDate}
+                  groupName={partyRes.data.data.data.groupName}
+                  groupInfo={partyRes.data.data.data.groupInfo}
+                  groupCode={partyRes.data.data.data.groupCode}
+                  isAdmin={partyRes.data.data.data.admin}
                 />
               );
             })}
           </RightContainer>
         </RightTotalContainer>
+        <Chat />
       </PageContainer>
     </>
   );
 };
-const CarouselContainer = styled.div`
-width: 60vw;
-height: 20rem;
-overflow-x: scroll;
-gap: 1rem;
-display: flex;
-flex-direction: row;
-background-color: violet;
-align-items: center;
-`;
 
-const TextWrapper = styled.section`
+const RadioBox = styled.div``;
+
+const CarouselContainer = styled.div`
+  width: 60vw;
+  height: 30.2rem;
+  overflow-x: hidden;
+  margin-bottom: 5.6rem;
+  gap: 3rem;
+  padding: 3.2rem;
   display: flex;
   flex-direction: column;
-  gap: 0.6rem;
+  background-color: ${(props) => props.theme.color.zeroThree};
+  border-radius: 3.2rem;
+
+  .title {
+    font-weight: 500;
+    font-size: 2.2rem;
+    color: #ffffff;
+  }
+`;
+
+const CarouselTitle = styled.div`
+  display: flex;
+  gap: 1rem;
+  .title {
+    font-weight: 500;
+    font-size: 2.2rem;
+    color: #ffffff;
+  }
 `;
 
 const PageContainer = styled.div`
   display: flex;
+  position: relative;
   flex-direction: row;
-  justify-content: space-between;
   align-items: flex-start;
-  width: 80vw;
+  width: 100vw;
+  max-width: 128rem;
   margin: 0 auto;
-  gap: 1rem;
-  background-color: wheat;
-  padding-left: 3rem;
-  padding-right: 3rem;
+  padding: 2rem 0 3rem 0;
 `;
 
 const LeftContainer = styled.div`
@@ -350,59 +237,24 @@ const LeftContainer = styled.div`
   align-items: center;
   width: 30rem;
   gap: 1rem;
-  background-color: blanchedalmond;
-  color: black;
   font-size: 1.45rem;
 `;
 
 const RightTotalContainer = styled.div`
-flex-direction: column;
-justify-content: center;
-align-items: center;
-`
+  @media (max-width: 860px) {
+    margin-left: -8rem;
+  }
+`;
 
 const RightContainer = styled.div`
-  padding-top: 2rem;
-  padding-bottom: 2rem;
+  margin: 3rem 0;
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  align-items: center;
-  justify-items: center;
-  width: 60vw;
+
+  @media (max-width: 800px) {
+    grid-template-columns: repeat(1, 1fr);
+  }
   gap: 1rem;
-  background-color: violet;
-  color: black;
-  font-size: 1.45rem;
-`;
-const LeftTitleBox = styled.div`
-  padding: 3rem;
-  flex-direction: column;
-  justify-content: flex-start;
-  width: 30rem;
-  height: 20rem;
-  background-color: gainsboro;
-  font-size: 2.45rem;
-  h1 {
-    font-size: 2.3rem;
-    font-weight: 600;
-  }
-  p {
-    font-size: 1.6rem;
-  }
-`;
-
-const LeftRadioBox = styled.div`
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-`;
-
-const RadioButton = styled.button`
-  width: 2rem;
-  height: 2rem;
-  border: 0.1rem solid black;
-  color: white;
 `;
 
 export default Party;

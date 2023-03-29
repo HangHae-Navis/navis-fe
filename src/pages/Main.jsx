@@ -9,13 +9,23 @@ import Test from "../assets/d65d5952-d801-4225-ab16-8720733b499a.png";
 import Pagination from "react-js-pagination";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import { useRecoilState } from "recoil";
+import { useSetRecoilState } from "recoil";
 import { partyRegistModalState } from "../store/atom";
 import NavBar from "../components/party/NavBar";
 import { getCookie } from "../utils/infos/cookie";
+import { HourCheck } from "../element/DateCheck";
 
 const GroupBoxComp = (props) => {
   const navigate = useNavigate();
+  const [onDeadLine, setOnDeadLine] = useState(false);
+  useEffect(() => {
+    if (
+      props.expirationDate !== "1970년 1월 1일 오전 9:00" &&
+      props.expirationDate !== "1월 1일 오전 9:00"
+    ) {
+      setOnDeadLine(true);
+    }
+  }, []);
   return (
     <>
       <GroupBox onClick={() => navigate(`/party/${props.groupId}`)}>
@@ -30,13 +40,24 @@ const GroupBoxComp = (props) => {
         </TextWrapper>
         <GroupDeadlineContainer>
           <GroupDeadline>
-            <li>오늘까지 제출해야 할 파일</li>
-            <li>
-              <div className="wrapper">
-                <span className="time">08:25</span>
-                <span className="homework">{props.groupInfo}</span>
-              </div>
-            </li>
+            {onDeadLine === true ? (
+              <>
+                <li>24시간 내 제출해야 할 과제</li>
+                <li>
+                  <div className="wrapper">
+                    <span className="time">{props.expirationDate}</span>
+                    <span className="homework">{props.homeworkTitle}</span>
+                  </div>
+                </li>
+              </>
+            ) : (
+              <>
+                <li className="unable">24시간 내 제출해야 할 과제</li>
+                <div className="wrapper unable">
+                  <span className="homework">과제가 존재하지 않습니다.</span>
+                </div>
+              </>
+            )}
           </GroupDeadline>
         </GroupDeadlineContainer>
       </GroupBox>
@@ -49,6 +70,7 @@ const Main = () => {
   const [totalNum, setTotalNum] = useState(0);
   const [pageNum, setPageNum] = useState(1);
   const navigate = useNavigate();
+  const [activeState, setActiveState] = useState("전체그룹");
   //받아오는 데이터는 content(목록), totalElements(총 갯수), totalPages(총 페이지)를 받아옴
   //현재 받아오는 response 중 사용 중인 것은 content와 totalelements 둘 뿐, totalPages를 사용하려면 MakeButton의 로직 변경 필요
   const { isLoading } = useQuery(
@@ -61,7 +83,7 @@ const Main = () => {
       },
     }
   );
-  const [isOpen, setIsOpen] = useRecoilState(partyRegistModalState);
+  const setIsOpen = useSetRecoilState(partyRegistModalState);
 
   const MakeGroupHandler = () => {
     setIsOpen(true);
@@ -99,7 +121,7 @@ const Main = () => {
     <>
       <PageContainer>
         <GroupHeaderWrapper>
-          <NavBar />
+          <NavBar activeState={activeState} setActiveState={setActiveState} />
           <Button
             className="topBtn"
             transparent={false}
@@ -121,19 +143,21 @@ const Main = () => {
                   groupName={item.groupName}
                   memberNumber={item.memberNumber}
                   groupImage={item.groupImage}
+                  expirationDate={HourCheck(item.expirationDate)}
+                  homeworkTitle={item.homeworkTitle}
                 />
               );
             })
           ) : (
             <>
-              <Skeleton width={380} height={510} />
-              <Skeleton width={380} height={534} />
-              <Skeleton width={380} height={534} />
-              <Skeleton width={380} height={534} />
-              <Skeleton width={380} height={534} />
-              <Skeleton width={380} height={534} />
-              <Skeleton width={380} height={534} />
-              <Skeleton width={380} height={534} />
+              <Skeleton width={350} height={480} />
+              <Skeleton width={350} height={480} />
+              <Skeleton width={350} height={480} />
+              <Skeleton width={350} height={480} />
+              <Skeleton width={350} height={480} />
+              <Skeleton width={350} height={480} />
+              <Skeleton width={350} height={480} />
+              <Skeleton width={350} height={480} />
             </>
           )}
         </GroupContainer>
@@ -161,10 +185,7 @@ const GroupContainer = styled.div`
   max-width: 160rem;
   flex-direction: row;
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  @media (max-width: 1400px) {
-    grid-template-columns: repeat(3, 1fr);
-  }
+  grid-template-columns: repeat(3, 1fr);
   @media (max-width: 965px) {
     grid-template-columns: repeat(2, 1fr);
   }
@@ -256,19 +277,31 @@ const GroupDeadline = styled.div`
   background-color: #ffffff;
   gap: 0.4rem;
 
+  .unable {
+    color: ${(props) => props.theme.color.zeroThree};
+    font-size: 1.5rem;
+
+    .homework {
+      font-size: 1.4rem;
+    }
+  }
+
   li {
+    width: 100%;
     font-size: 1.6rem;
     .wrapper {
       display: flex;
       gap: 0.5rem;
       width: 28rem;
+      align-items: center;
       .time {
-        font-size: 1.5rem;
+        width: fit-content;
+        font-size: 1.3rem;
         color: #dc3545;
       }
       .homework {
-        width: 20rem;
-        font-size: 1.5rem;
+        width: 15rem;
+        font-size: 1.25rem;
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
@@ -290,11 +323,10 @@ const TextWrapper = styled.section`
 
 const PaginationBox = styled.div`
   .pagination {
+    padding: 10rem 0;
     display: flex;
-    position: absolute;
     bottom: 5rem;
     left: 50%;
-    transform: translateX(-50%);
   }
   ul {
     list-style: none;
