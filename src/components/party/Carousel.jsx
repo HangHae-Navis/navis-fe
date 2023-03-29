@@ -68,7 +68,7 @@ const CarouselItem = styled.div`
   background-color: #ffffff;
 
   @media (max-width: 600px) {
-    width: 100%;
+    width: 98%;
   }
 `;
 
