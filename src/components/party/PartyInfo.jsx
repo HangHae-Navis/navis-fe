@@ -133,7 +133,13 @@ const PartyInfoWrapper = styled.section`
       color: ${(props) => props.theme.color.zeroFour};
     }
     &:disabled {
-      filter: brightness(175%);
+      span {
+        color: ${(props) => props.theme.color.zeroThree};
+      }
+      img {
+        filter: brightness(170%);
+      }
+      border: 0.1rem solid ${(props) => props.theme.color.zeroThree};
     }
   }
 

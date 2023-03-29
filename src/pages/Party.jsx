@@ -73,7 +73,7 @@ const Party = () => {
               groupName={groupName}
               groupInfo={groupInfo}
               groupCode={groupCode}
-              groupId={pam.id}
+              groupId={groupId}
               isAdmin={isAdmin}
             />
           </LeftContainer>
@@ -133,7 +133,6 @@ const Party = () => {
                   strokeLinejoin="round"
                 />
               </svg>
-
               <h1 className="title">오늘 마감</h1>
             </CarouselTitle>
             <Slider {...settings}>
