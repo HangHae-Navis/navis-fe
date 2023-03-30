@@ -209,7 +209,7 @@ function PartyDetail() {
     onSuccess: ({data}) =>{
       console.log("제출 성공")
       toast.success("제출 성공.");
-      res.invalidateQueries()
+      res.refetch()
     }
   })
 
@@ -318,10 +318,21 @@ function PartyDetail() {
         CurrentFileList.push(homeWorkInputFileList[CurrentFile[i]])
       }
     }
+    /*
     for(let i = 0; i < CurrentFileList.length; i++){
       console.log(CurrentFileList[i])
       postData.append(`${i}`, CurrentFileList[i])
+    }*/
+    for(let i = 0; i < CurrentFileList.length; i++){
+      console.log(CurrentFileList[i])
+      postData.append('multipartFiles',CurrentFileList[i])
     }
+    /*    formData.append("file", data.file);
+    formData.append(
+      "key",
+      new Blob([JSON.stringify(data.info)], { type: "application/json" })
+    );
+     */
 
     //console.log(CurrentFile)
     //console.log(homeWorkInputFileList)
