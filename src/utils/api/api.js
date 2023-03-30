@@ -241,3 +241,8 @@ export const getChat = async () => {
   const res = await axios.get("api/chats/lists");
   return res;
 };
+
+export const postChat = async (to) => {
+  const res = await axios.get("api/chats/room");
+  return res;
+};
