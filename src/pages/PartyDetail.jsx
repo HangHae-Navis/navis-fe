@@ -126,6 +126,7 @@ function PartyDetail() {
   const [homeWorkInputLink, setHomeWorkInputLink] = useState([])
   const [homeWorkInputFile, setHomeWorkInputFile] = useState([])
   const [homeWorkInputFileList, setHomeWorkInputFileList] = useState([])
+  const [homeWorkPostedFileList, setHomeWorkPostedFileList] = useState([])
   const [voteSelectedOption, setVoteSelectedOption] = useState();
   const { register, formState: errors, handleSubmit } = useForm();
   useEffect(() => {
@@ -152,7 +153,7 @@ function PartyDetail() {
     () => getBoardDetailPage({ groupId, detailId, dtype }),
     {
       onSuccess: ({ data }) => {
-        console.log(data);
+        console.log(data.data);
         console.log(FullDateCheck(data.data.expirationTime))
         setexpirationTime(FullDateCheck(data.data.expirationTime))
         setexpirationTimeOrigin(new Date(data.data.expirationTime).getTime())
@@ -172,6 +173,11 @@ function PartyDetail() {
             console.log(voteContent);
             break;
           case "homework":
+            if(data.data.submitResponseDto != null){
+              console.log("와! 샌즈!")
+              console.log(data.data.submitResponseDto)
+              setHomeWorkPostedFileList(data.data.submitResponseDto.fileList)
+            }
             // do something
             break;
           default:
@@ -428,8 +434,10 @@ function PartyDetail() {
           </VoteContentContainer>
         
         :null}
+        
+        {/*과제 여부를 판단, 제출한 과제가 없을 경우 과제 관련 컴포넌트 랜더링*/}
         {dtype == 'homework'
-        ?res.data.data.data.role == "USER"
+        ?res?.data?.data?.data?.role == "USER" && res?.data?.data?.data?.submitResponseDto == null
         ?
         <form onSubmit={(e) => {
           e.preventDefault();
@@ -457,13 +465,23 @@ function PartyDetail() {
               <h1 className="name">제출할 링크</h1>
               {homeWorkInputLink.map((item) => (<InputComp key = {item.id} type = {item.type}></InputComp>))}
         </HomeworkContentContainer>*/}
-        
-        
         </HomeWorkSubmitButtonBox>
-
         </HomeWorkSubmitContainer>
         </form>
-        :null
+        : res?.data?.data?.data?.role == "USER" && res?.data?.data?.data?.submitResponseDto != null
+        ? <>
+        {/*과제 여부를 판단, 제출한 과제가 있을 경우 과제 관련 컴포넌트 랜더링*/}
+        <HomeWorkSubmitContainer>
+        <HomeWorkSubmitButtonBox>
+        <Button transparent={true} onClick={()=> addInput("file")}>제출 취소하기</Button>
+        </HomeWorkSubmitButtonBox>
+        <HomeworkContentContainer>
+            <h1 className="name">제출한 파일</h1>
+        {homeWorkPostedFileList?.map((item) => (<h1 className="name"> {item.fileUrl}</h1>))}
+        </HomeworkContentContainer>
+        </HomeWorkSubmitContainer>
+        </>
+        : null
         
         :null}
       </ContentsWrapper>
@@ -526,22 +544,34 @@ display: flex;
 flex-direction: column;
 border-radius: 4rem;
 border: 0.1rem solid #D4D2E3;
+text-overflow: ellipsis;
+overflow: hidden;
+white-space: normal;
 padding: 5rem;
 gap: 2rem;
   .name {
   font-weight: 400;
   font-size: 2.2rem;
   color: #5D5A88;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
   }
   .smallname {
   font-weight: 400;
   font-size: 1.8rem;
   color: #9795B5;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
   }
   .date {
   font-weight: 400;
   font-size: 2rem;
   color: #9795B5;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
   }
 `
 const HomeWorkSubmitContainer = styled.div`
