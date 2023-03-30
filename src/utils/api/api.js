@@ -242,8 +242,8 @@ export const getChat = async () => {
   return res;
 };
 
-export const postChat = async (to) => {
+export const postChat = async ({ to }) => {
   console.log(to);
-  const res = await axios.post("api/chats/room", to);
+  const res = await axios.post(`api/chats/room?to=${to}`);
   return res;
 };
