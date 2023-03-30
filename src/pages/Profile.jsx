@@ -47,7 +47,6 @@ padding-right: 2rem;
 flex-direction: row;
 align-items: center;
   justify-content: space-between;
-background-color: aliceblue;
 border-radius: 2rem;
 width: 100%;
 `;
