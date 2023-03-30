@@ -5,9 +5,8 @@ import { useRecoilState } from "recoil";
 import styled from "styled-components";
 import { chatModalState } from "../../store/atom";
 
-const ChatHeader = () => {
-  const [ChatModal, setChatModal] = useRecoilState(chatModalState);
-
+const ChatHeader = ({ setchatAddVisible, chatAddVisible }) => {
+  const [chatModal, setChatModal] = useRecoilState(chatModalState);
   const onClose = () => {
     setChatModal(false);
   };
@@ -15,7 +14,11 @@ const ChatHeader = () => {
     <ChatHeaderWrapper>
       <h1>채팅목록</h1>
       <IconsFlex>
-        <FiPlus size={18} color={"585585"} />
+        <FiPlus
+          size={18}
+          color={"585585"}
+          onClick={() => setchatAddVisible(!chatAddVisible)}
+        />
         <IoMdClose size={18} color={"585585"} onClick={onClose} />
       </IconsFlex>
     </ChatHeaderWrapper>
