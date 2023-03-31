@@ -14,7 +14,6 @@ const PartyInfo = (props) => {
       toastId: "withdrawal",
     });
   };
-  console.log(props)
   return (
     <PartyInfoWrapper>
       <CopyToClipboard

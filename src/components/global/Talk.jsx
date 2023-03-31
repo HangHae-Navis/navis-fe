@@ -28,6 +28,7 @@ const Talk = () => {
       exit="exit"
     >
       <ChatHeader
+        refetch={getChatList.refetch}
         chatDetailVisible={chatDetailVisible}
         setchatAddVisible={setchatAddVisible}
         chatAddVisible={chatAddVisible}

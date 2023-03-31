@@ -10,6 +10,7 @@ const ChatHeader = ({
   setchatAddVisible,
   chatAddVisible,
   setChatDetailVisible,
+  refetch,
 }) => {
   const chatDetailInfo = useRecoilValue(chatInfoState);
   const setChatModal = useSetRecoilState(chatModalState);
@@ -17,6 +18,7 @@ const ChatHeader = ({
     setChatModal(false);
   };
   const onBack = () => {
+    refetch();
     setChatDetailVisible(false);
   };
   return (
