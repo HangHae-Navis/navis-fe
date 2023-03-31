@@ -20,7 +20,6 @@ const Talk = () => {
       setChats(data.data);
     },
   });
-  console.log(chats);
   return (
     <ChatMenu
       variants={modalVariants}

@@ -1,15 +1,17 @@
 import React from "react";
 import { FiPlus } from "react-icons/fi";
 import { IoMdClose } from "react-icons/io";
-import { useRecoilState } from "recoil";
+import { useRecoilValue, useSetRecoilState } from "recoil";
 import styled from "styled-components";
-import { chatModalState } from "../../store/atom";
+import { chatInfoState, chatModalState } from "../../store/atom";
 
 const ChatHeader = ({ setchatAddVisible, chatAddVisible }) => {
-  const [chatModal, setChatModal] = useRecoilState(chatModalState);
+  const chatDetailInfo = useRecoilValue(chatInfoState);
+  const setChatModal = useSetRecoilState(chatModalState);
   const onClose = () => {
     setChatModal(false);
   };
+  console.log(chatDetailInfo);
   return (
     <ChatHeaderWrapper>
       <h1>채팅목록</h1>
@@ -36,6 +38,10 @@ const ChatHeaderWrapper = styled.div`
     font-weight: 200;
     font-size: 1.6rem;
     color: ${(props) => props.theme.color.zeroFour};
+  }
+
+  svg {
+    cursor: pointer;
   }
 `;
 
