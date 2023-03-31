@@ -18,7 +18,7 @@ import { ShortCheck } from "../../element/DateCheck";
 const ShowSubmitFile = (props) =>{
 
     const [fileContainer, setFileContainer] = useState([])
-    
+    console.log(props.courrentModalContent)
   const ModalClose = (event) => {
     if (event.target === event.currentTarget) {
         props.setShowModal(false)
@@ -37,7 +37,8 @@ const ShowSubmitFile = (props) =>{
             <SubmitFileContainer>
                 <SubmitTitle>
                 <h1 className="buttontitle">{props.courrentModalContent.nickname}</h1>
-                <h1 className="infocontent">{ShortCheck(props.courrentModalContent.createdAt)} 제출함</h1>
+                <h1 className="infocontent">{ShortCheck(props.courrentModalContent.createdAt)} 제출함{props.courrentModalContent.late == true ? <span> (지각)</span> :null} </h1>
+                
                 </SubmitTitle>
                 <h1 className="buttontitleoff">제출 파일 목록</h1>
                 {fileContainer.map((item) => (<a key = {item.file} href={`${item.file}?download=true`} className="filetext">&middot; {item.name}</a>))}

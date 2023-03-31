@@ -136,7 +136,6 @@ function PartyDetail() {
   const [courrentModalContent, setCourrentModalContent] = useState();
   const { register, formState: errors, handleSubmit } = useForm();
   useEffect(() => {
-    console.log("aaaa")
     const isUserCookie = getCookie("token");
     if (isUserCookie === undefined) {
       navi("/");
@@ -186,8 +185,7 @@ function PartyDetail() {
               console.log(data.data.submitResponseDto)
               setHomeWorkPostedFileList(data.data.submitResponseDto.fileList)
             }
-            if(data.data.role == 'ADMIN' || data.data.role == 'SUPPORTER'){
-              console.log("어드민 서포터 와우!")
+            if(data.data.role == 'ADMIN' || data.data.role == 'SUPPORT'){
               setHomeWorkSubmmiter(data.data.submitMember)
               setHomeWorkUnSubmmiter(data.data.notSubmitMember)
             }
@@ -646,7 +644,7 @@ align-items: flex-start;
 display: flex;
 flex-direction: column;
 border-radius: 4rem;
-border: 0.1rem solid ${({ borderColor }) => borderColor || '#D4D2E3'};;
+border: 0.2rem solid ${({ borderColor }) => borderColor || '#D4D2E3'};;
 text-overflow: ellipsis;
 overflow: hidden;
 white-space: normal;
