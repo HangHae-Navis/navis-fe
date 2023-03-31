@@ -31,11 +31,14 @@ const ChatHeader = ({
       )}
 
       <IconsFlex>
-        <FiPlus
-          size={18}
-          color={"585585"}
-          onClick={() => setchatAddVisible(!chatAddVisible)}
-        />
+        {chatDetailInfo === null && (
+          <FiPlus
+            size={18}
+            color={"585585"}
+            onClick={() => setchatAddVisible(!chatAddVisible)}
+          />
+        )}
+
         <IoMdClose size={18} color={"585585"} onClick={onClose} />
       </IconsFlex>
     </ChatHeaderWrapper>

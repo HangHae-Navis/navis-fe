@@ -5,6 +5,7 @@ import profile from "../../assets/ic54/profile.svg";
 import { chatInfoState } from "../../store/atom";
 
 const ChatList = ({ data, setChatDetailVisible }) => {
+  console.log(data);
   const setChatInfo = useSetRecoilState(chatInfoState);
   const onChatDetail = () => {
     setChatDetailVisible(true);
@@ -12,6 +13,7 @@ const ChatList = ({ data, setChatDetailVisible }) => {
       nickname: data.nickname,
       toUser: data.toUser,
       id: data.id,
+      to: data.username,
     });
   };
   return (
