@@ -110,7 +110,7 @@ export const postVote = async (id, data) => {
 export const getDetailPageForAdmin = async (payload) => {
   console.log("호출");
   console.log(payload);
-  const res = await axios.get(`api/groups/${payload}/admin`);
+  const res = await axios.get(`api/groups/${payload.id}/admin`);
   return res;
 };
 
@@ -162,10 +162,17 @@ export const postHomeWorkData = async (data) => {
     console.log(value);
   }
 
-  const res = await axios.post(
-    `api/${data.groupId}/homeworks/${data.detailId}/homeworkSubmit`,
-    payload
-  );
+  const res = await axios.post(`api/${data.groupId}/homeworks/${data.detailId}/homeworkSubmit`, data.data,  {
+    headers: {
+      'Content-Type': 'multipart/form-data'
+    }
+  })
+  return res;
+}
+
+export const deleteHomeWorkData = async (data) =>{
+  const res = await axios.delete(`api/${data.groupId}/homeworks/${data.detailId}/cancel`)
+
   return res;
 };
 

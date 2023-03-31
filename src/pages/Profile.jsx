@@ -57,11 +57,15 @@ width: 75%;
   flex-direction: row;
   justify-content: flex-start;
   align-items: center;
-  gap: 1rem;
+  gap: 0.5rem;
   .name {
+  width: 35%;
   font-weight: 400;
   font-size: 2.2rem;
   color: #5D5A88;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
   }
   .date {
   font-weight: 400;

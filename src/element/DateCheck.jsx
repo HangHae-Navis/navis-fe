@@ -1,3 +1,5 @@
+import { func } from "prop-types";
+import React from "react";
 
 export function FullDateCheck(props) {
   const date = new Date(props);
@@ -32,4 +34,10 @@ export function DayCheck(props) {
   const [dateAt, timeAt] = formatter.format(date).split("-");
   const formattedDate = dateAt.replace(/\./g, "."); // "22.03.23"
   return formattedDate;
+}
+
+export function ShortCheck(props){
+const date = new Date(props);
+const formattedDate = `${date.getDate()}.${date.getMonth()+1}.${String(date.getFullYear()).slice(2)} ${date.getHours()}:${date.getMinutes()}`;
+return formattedDate
 }
