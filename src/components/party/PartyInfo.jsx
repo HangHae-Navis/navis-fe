@@ -124,7 +124,7 @@ const PartyInfoWrapper = styled.section`
     border: 0.1rem solid ${(props) => props.theme.color.zeroFour};
     border-radius: 0.8rem;
     span {
-      font-size: 1.6rem;
+      font-size: 1.45rem;
       font-weight: 500;
       color: ${(props) => props.theme.color.zeroFour};
     }

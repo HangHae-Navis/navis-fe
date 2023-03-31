@@ -37,8 +37,7 @@ const ChatDetail = () => {
           const newMessage = JSON.parse(frame.body);
           setMessages((prevMessages) => {
             if (!prevMessages) {
-              // messages가 null 또는 undefined인 경우
-              return [newMessage]; // 새로운 메시지를 포함하는 배열을 반환
+              return [newMessage];
             } else {
               return [...prevMessages, newMessage]; // 이전 메시지와 새로운 메시지를 합쳐서 반환
             }

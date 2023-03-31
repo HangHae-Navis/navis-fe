@@ -8,12 +8,16 @@ import { InputStyle } from "../../utils/style/mixins";
 import { toast } from "react-toastify";
 
 const ChatFormAdd = () => {
-  const { register, handleSubmit } = useForm();
+  const { register, handleSubmit, reset } = useForm();
   const queryClient = useQueryClient();
   const makeChatRoomMutate = useMutation((to) => postChat(to), {
     onSuccess: () => {
       toast.success("채팅방이 생성되었습니다.");
       queryClient.invalidateQueries("chats");
+    },
+    onError: () => {
+      toast.error("유저를 찾을 수 없습니다.");
+      reset();
     },
   });
   const onMakeChatRoom = async (data) => {

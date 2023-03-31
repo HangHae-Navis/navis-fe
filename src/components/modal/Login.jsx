@@ -50,8 +50,10 @@ const LoginModalBackGround = styled.div`
 `;
 
 const LoginModalWrapper = styled(motion.section)`
-  width: 80rem;
-  height: 70rem;
+  max-width: 80rem;
+  max-height: 70rem;
+  width: 90vw;
+  height: 80vw;
   display: flex;
   background-color: white;
 `;
@@ -59,7 +61,7 @@ const LoginModalWrapper = styled(motion.section)`
 const ContentWrapper = styled.section`
   width: 50%;
   height: 100%;
-  background-color: white;
+  background-color: ${(props) => props.theme.color.zeroTwo};
 `;
 
 export default Login;
