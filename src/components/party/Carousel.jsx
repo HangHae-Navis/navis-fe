@@ -13,7 +13,7 @@ const Carousel = (props) => {
     <CarouselItem
       onClick={() =>
         navi(
-          `/party/detail?groupId=${props.groupId}&detailId=${props.id}&dtype=homework`
+          `/party/detail?groupId=${props.groupId}&detailId=${props.id}&dtype=homework&groupName=${props.groupName}&groupInfo=${props.groupInfo}&groupCode=${props.groupCode}`
         )
       }
     >

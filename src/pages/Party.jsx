@@ -138,12 +138,22 @@ const Party = () => {
               {carouselList.map((item) => {
                 return (
                   <Carousel
-                    key={item.id}
-                    groupId={pam.id}
-                    id={item.id}
-                    expirationDate={item.expirationDate}
-                    nickName={item.nickname}
-                    title={item.title}
+                  key={item.id}
+                  groupId={pam.id}
+                  createdAt={item.createdAt}
+                  content={item.content}
+                  nickName={item.nickname}
+                  subtitle={item.subtitle}
+                  title={item.title}
+                  id={item.id}
+                  dtype={item.dtype}
+                  important={item.important}
+                  hashtagList={item.hashtagList}
+                  expirationDate={item.expirationDate}
+                  groupName={partyRes.data.data.data.groupName}
+                  groupInfo={partyRes.data.data.data.groupInfo}
+                  groupCode={partyRes.data.data.data.groupCode}
+                  isAdmin={partyRes.data.data.data.admin}
                   />
                 );
               })}
