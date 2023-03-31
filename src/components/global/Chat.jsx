@@ -3,6 +3,7 @@ import { useRecoilState } from "recoil";
 import styled from "styled-components";
 import { chatModalState } from "../../store/atom";
 import { flexCenter } from "../../utils/style/mixins";
+import Talk from "./Talk";
 
 const Chat = () => {
   const [chatModal, setChatModal] = useRecoilState(chatModalState);
@@ -12,7 +13,7 @@ const Chat = () => {
   return (
     <>
       {chatModal === true ? (
-        <></>
+        <Talk />
       ) : (
         <ChatIcons onClick={onToggleModal}>
           <svg
