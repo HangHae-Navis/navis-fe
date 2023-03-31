@@ -1,8 +1,8 @@
-import { useMutation, useQuery } from "react-query";
+import { useMutation, useQuery, useQueryClient } from "react-query";
 import styled from "styled-components";
 import PartyRegist from "../components/modal/PartyRegist";
 import Button from "../element/Button";
-import {deletePage,deletePageMembers,getBoardDetailPage,getDetailPage,getDetailPageForAdmin,getPartyBoard,getPartyPage,PutMemberRole,undoDeletePagemembers,
+import {deletePage,deletePageMembers,getBoardDetailPage,getDetailPageForAdmin,getPartyBoard,getPartyPage,PutMemberRole,undoDeletePagemembers,
 } from "../utils/api/api";
 import { partyRegistModalState, partyInfoState } from "../store/atom";
 import Skeleton from "react-loading-skeleton";
@@ -106,10 +106,11 @@ const BoardBoxTitleBox = styled.div`
 `;
 
 const Admin = () => {
+  const queryClient = useQueryClient();
   const pam = useParams();
   const navi = useNavigate()
   const [userList, setUserList] = useState([]);
-  const [admin, setAdmin] = useState();
+  const [admin, setAdmin] = useState([]);
   const [Support, setSupport] = useState();
   const [Member, setMember] = useState();
   const [bannedList, setBannedList] = useState([]);
@@ -117,7 +118,7 @@ const Admin = () => {
   const setPartyInfo = useSetRecoilState(partyInfoState);
 
   const setIsOpen = useSetRecoilState(partyRegistModalState);
-  const getDetailPage = useQuery(["adminget", pam.id], () => getDetailPageForAdmin(pam.id), {
+  const getDetailPage = useQuery(["adminget", {id : pam.id}], () => getDetailPageForAdmin({id : pam.id}), {
     onSuccess: ({data}) => {
       console.log(data.data);
       setUserList(data.data.groupMembers);
@@ -127,6 +128,7 @@ const Admin = () => {
       setAdmin(data.data.groupMembers.filter(item => item.groupMemberRoleEnum == "ADMIN"))
       setSupport(data.data.groupMembers.filter(item => item.groupMemberRoleEnum == "SUPPORT"))
       setMember(data.data.groupMembers.filter(item => item.groupMemberRoleEnum == "USER"))
+    
     },
   });
 
@@ -149,9 +151,12 @@ const Admin = () => {
     setIsOpen(true);
   };
   
+  console.log(getDetailPage?.data?.data?.data?.groupMembers[0])
   if (getDetailPage.isLoading || getDetailPage.isError) {
+    console.log("adaaa")
     return (<></>);
   }
+  //groupMemberRoleEnum={getDetailPage?data?.data?.data?.groupMembers[0].groupMemberRoleEnum}
   console.log(admin)
   return (
     <>
@@ -186,10 +191,10 @@ const Admin = () => {
           <BottomContentContainer>
             <h1 className="infotitle">관리자</h1>
             <Board 
-              groupMemberRoleEnum={admin[0]?.groupMemberRoleEnum}
-              joinedAt={admin[0]?.joinedAt}
-              nickName={admin[0]?.nickname}
-              id={admin[0]?.id}
+              groupMemberRoleEnum={getDetailPage?.data?.data?.data?.groupMembers[0].groupMemberRoleEnum}
+              joinedAt={getDetailPage?.data?.data?.data?.groupMembers[0].joinedAt}
+              nickName={getDetailPage?.data?.data?.data?.groupMembers[0].nickname}
+              id={getDetailPage?.data?.data?.data?.groupMembers[0].id}
               pam={pam.id}
               MakeGroupHandler = {MakeGroupHandler}
               doDeletePage = {doDeletePage}/>
