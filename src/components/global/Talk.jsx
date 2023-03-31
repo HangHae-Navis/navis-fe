@@ -8,15 +8,19 @@ import { useQuery } from "react-query";
 import { getChat } from "../../utils/api/api";
 import ChatFormAdd from "../chat/ChatFormAdd";
 import ChatList from "../chat/ChatList";
+import ChatDetail from "../chat/ChatDetail";
+import Skeleton from "react-loading-skeleton";
 
 const Talk = () => {
   const [chats, setChats] = useState([]);
+  const [chatDetailVisible, setChatDetailVisible] = useState(false);
   const [chatAddVisible, setchatAddVisible] = useState(false);
   const getChatList = useQuery("chats", getChat, {
     onSuccess: ({ data }) => {
-      console.log(data);
+      setChats(data.data);
     },
   });
+  console.log(chats);
   return (
     <ChatMenu
       variants={modalVariants}
@@ -25,16 +29,31 @@ const Talk = () => {
       exit="exit"
     >
       <ChatHeader
+        chatDetailVisible={chatDetailVisible}
         setchatAddVisible={setchatAddVisible}
         chatAddVisible={chatAddVisible}
       />
       {chatAddVisible === true && <ChatFormAdd />}
-      <ChatListWrapper>
-        <ChatList />
-        <ChatList />
-        <ChatList />
-        <ChatList />
-      </ChatListWrapper>
+      {chatDetailVisible === true ? (
+        <ChatDetail />
+      ) : getChatList.isLoading === true ? (
+        <ChatListWrapper>
+          <Skeleton width={"100%"} style={{ marginTop: "1rem" }} height={40} />
+          <Skeleton width={"100%"} height={47} />
+          <Skeleton width={"100%"} height={47} />
+        </ChatListWrapper>
+      ) : (
+        <ChatListWrapper>
+          {chats.map((chat, i) => (
+            <ChatList
+              key={i}
+              data={chat}
+              setChatDetailVisible={setChatDetailVisible}
+              chatDetailVisible={chatDetailVisible}
+            />
+          ))}
+        </ChatListWrapper>
+      )}
     </ChatMenu>
   );
 };

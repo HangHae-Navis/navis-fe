@@ -20,6 +20,7 @@ const Signup = ({ setIsSignIn }) => {
       nickname: data.nickname,
       username: data.username,
       password: data.password,
+      key: data.verify,
     };
     const signUp = await signupMutation.mutateAsync(signupRequest);
   };
@@ -37,7 +38,7 @@ const Signup = ({ setIsSignIn }) => {
     onSuccess: ({ data }) => {
       setVerify(true);
     },
-    onError: (error) => {
+    onError: ({ error }) => {
       console.log(error);
     },
   });

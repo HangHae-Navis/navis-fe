@@ -2,16 +2,13 @@ import React from "react";
 import styled from "styled-components";
 import profile from "../../assets/ic54/profile.svg";
 
-const ChatList = () => {
+const ChatList = ({ data }) => {
   return (
     <ChatListLayout>
       <img src={profile} alt="profile" />
       <ChatInfo>
-        <span>함보라</span>
-        <p>
-          안녕하세요. 요청하신 사항 확인
-          되셨나요?dㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇ
-        </p>
+        <span>{data.nickname}</span>
+        <p>{data.lastMessage}</p>
       </ChatInfo>
     </ChatListLayout>
   );

@@ -40,3 +40,8 @@ export const chatModalState = atom({
   key: `state${v4()}`,
   default: false,
 });
+
+export const chatInfoState = atom({
+  key: `state${v4()}`,
+  default: null,
+});
