@@ -1,6 +1,5 @@
 import React, { useCallback } from "react";
 import styled from "styled-components";
-import { flexCenter } from "../../utils/style/mixins";
 
 const ChattingForm = ({ onMessageSend, setMessage, message }) => {
   const onChange = useCallback((e) => {
