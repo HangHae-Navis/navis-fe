@@ -110,7 +110,7 @@ export const postVote = async (id, data) => {
 export const getDetailPageForAdmin = async (payload) => {
   console.log("호출");
   console.log(payload);
-  const res = await axios.get(`api/groups/${payload}/admin`);
+  const res = await axios.get(`api/groups/${payload.id}/admin`);
   return res;
 };
 

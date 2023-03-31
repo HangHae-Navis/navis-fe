@@ -32,6 +32,7 @@ import Input from "./../element/Input";
 import { FullDateCheck,DayCheck,ShortCheck } from "../element/DateCheck";
 import { useForm } from "react-hook-form";
 import { async } from "q";
+import ShowSubmitFile from "../components/modal/ShowSubmitFile";
 
 
 
@@ -131,8 +132,11 @@ function PartyDetail() {
   const [homeWorkInputFileList, setHomeWorkInputFileList] = useState([])
   const [homeWorkPostedFileList, setHomeWorkPostedFileList] = useState([])
   const [voteSelectedOption, setVoteSelectedOption] = useState();
+  const [showModal, setShowModal] = useState(false);
+  const [courrentModalContent, setCourrentModalContent] = useState();
   const { register, formState: errors, handleSubmit } = useForm();
   useEffect(() => {
+    console.log("aaaa")
     const isUserCookie = getCookie("token");
     if (isUserCookie === undefined) {
       navi("/");
@@ -380,6 +384,14 @@ function PartyDetail() {
   const doDelete = (data) => {
     const res = deletePartyMember.mutateAsync(data);
   };
+
+
+  const CheckUpModal = (props) =>{
+    setCourrentModalContent(props)
+    setShowModal(!showModal)
+    console.log(showModal)
+  }
+
   if (res.isLoading && getComment.isLoading) {
     return <></>;
   }
@@ -387,6 +399,8 @@ function PartyDetail() {
     return <></>;
   }
   return (
+    <>
+    {showModal == true ? <ShowSubmitFile setShowModal = {setShowModal} courrentModalContent = {courrentModalContent} ></ShowSubmitFile> : null}
     <PageContainer>
       <PartyInfo
         groupName={groupName}
@@ -519,8 +533,12 @@ function PartyDetail() {
         <HomeworkContentContainer width = '80rem'>
               <h1 className="name">제출완료</h1>
               {homeWorkSubmmiter.map((item) => (<SubmitterContainer key = {item.id}>
+
               <h1 className="smallname">{item.nickname}</h1>
+              <SubmitterBox>
               <h1 className="smallname">{ShortCheck(item.createdAt)} 제출</h1>
+              <SubmiterButton onClick={()=>CheckUpModal(item)} className="buttontext">제출 과제</SubmiterButton>
+                </SubmitterBox>
               </SubmitterContainer>))}
           
         </HomeworkContentContainer>
@@ -585,17 +603,32 @@ function PartyDetail() {
         </CommentInputWrapper>
       </Commentcontainer>
     </PageContainer>
+    </>
   );
           }
 
-const SubmitterContainer = styled.div`
+const SubmiterButton = styled.button`
+  width: 8rem;
+  height: 3rem;
+  background-color: transparent;
+  border-radius: 2.4rem;
+  border: 0.1rem solid #5D5A88;
+`
+
+const SubmitterBox = styled.div`
+gap: 1rem;
   display: flex;
 flex-direction : row;
-align-items: flex-start;
-justify-content: space-between;
+align-items: center;
+justify-content: flex-end;
 `
-const SubmitterBox = styled.div`
+
+const SubmitterContainer = styled.div`
+width: 100%;
   display: flex;
+flex-direction : row;
+align-items: center;
+justify-content: space-between;
 `
 
 const PostedHomeWorkFileBox = styled.div`
@@ -619,6 +652,11 @@ overflow: hidden;
 white-space: normal;
 padding: 5rem;
 gap: 2rem;
+  .buttontext{
+  font-weight: 400;
+  font-size: 1.4rem;
+  color: #5D5A88;
+  }
   .filename {
   font-weight: 400;
   font-size: 1.6rem;
