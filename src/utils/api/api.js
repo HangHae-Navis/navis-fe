@@ -162,16 +162,22 @@ export const postHomeWorkData = async (data) => {
     console.log(value);
   }
 
-  const res = await axios.post(`api/${data.groupId}/homeworks/${data.detailId}/homeworkSubmit`, data.data,  {
-    headers: {
-      'Content-Type': 'multipart/form-data'
+  const res = await axios.post(
+    `api/${data.groupId}/homeworks/${data.detailId}/homeworkSubmit`,
+    data.data,
+    {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
     }
-  })
+  );
   return res;
-}
+};
 
-export const deleteHomeWorkData = async (data) =>{
-  const res = await axios.delete(`api/${data.groupId}/homeworks/${data.detailId}/cancel`)
+export const deleteHomeWorkData = async (data) => {
+  const res = await axios.delete(
+    `api/${data.groupId}/homeworks/${data.detailId}/cancel`
+  );
 
   return res;
 };
@@ -251,6 +257,15 @@ export const getChat = async () => {
 
 export const postChat = async ({ to }) => {
   console.log(to);
-  const res = await axios.post(`api/chats/room?to=${to}`);
+  const res = await axios.post(`api/chats/room`, {
+    to: to,
+  });
+  return res;
+};
+
+export const postChatPrevious = async (dto) => {
+  const res = await axios.get(
+    `api/chats/room/${dto.roomId}?to=${dto.to}&page=${dto.page}&size=${dto.size}`
+  );
   return res;
 };

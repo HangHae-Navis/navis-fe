@@ -1,4 +1,3 @@
-import { useForm } from "react-hook-form";
 import { useMutation, useQueryClient } from "react-query";
 import { toast } from "react-toastify";
 import styled from "styled-components";
@@ -16,24 +15,24 @@ function Comment(props) {
     },
   });
 
-  const putComment = useMutation(putCommentPage, {
-    onSuccess: (data) => {
-      queryclient.invalidateQueries("comment");
-      toast.success("댓글이 수정되었습니다.", {
-        toastId: "commentDelete",
-      });
-    },
-  });
+  // const putComment = useMutation(putCommentPage, {
+  //   onSuccess: (data) => {
+  //     queryclient.invalidateQueries("comment");
+  //     toast.success("댓글이 수정되었습니다.", {
+  //       toastId: "commentDelete",
+  //     });
+  //   },
+  // });
 
-  const onPut = async (data) => {
-    const payload = {
-      groupId: props.groupId,
-      detailId: props.detailId,
-      commentId: props.id,
-      value: data,
-    };
-    const res = await putComment.mutateAsync(payload);
-  };
+  // const onPut = async (data) => {
+  //   const payload = {
+  //     groupId: props.groupId,
+  //     detailId: props.detailId,
+  //     commentId: props.id,
+  //     value: data,
+  //   };
+  //   const res = await putComment.mutateAsync(payload);
+  // };
 
   const doDeletComment = () => {
     const res = deleteComment.mutateAsync({

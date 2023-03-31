@@ -1,24 +1,46 @@
 import React from "react";
 import { FiPlus } from "react-icons/fi";
 import { IoMdClose } from "react-icons/io";
-import { useRecoilState } from "recoil";
+import { useRecoilValue, useSetRecoilState } from "recoil";
 import styled from "styled-components";
-import { chatModalState } from "../../store/atom";
+import { chatInfoState, chatModalState } from "../../store/atom";
+import { MdNavigateBefore } from "react-icons/md";
 
-const ChatHeader = ({ setchatAddVisible, chatAddVisible }) => {
-  const [chatModal, setChatModal] = useRecoilState(chatModalState);
+const ChatHeader = ({
+  setchatAddVisible,
+  chatAddVisible,
+  setChatDetailVisible,
+  refetch,
+}) => {
+  const chatDetailInfo = useRecoilValue(chatInfoState);
+  const setChatModal = useSetRecoilState(chatModalState);
   const onClose = () => {
     setChatModal(false);
   };
+  const onBack = () => {
+    refetch();
+    setChatDetailVisible(false);
+  };
   return (
     <ChatHeaderWrapper>
-      <h1>채팅목록</h1>
+      {chatDetailInfo === null ? (
+        <h1>채팅목록</h1>
+      ) : (
+        <LeftWrapper>
+          <MdNavigateBefore size={18} color={"585585"} onClick={onBack} />
+          <h1>{chatDetailInfo.nickname}</h1>
+        </LeftWrapper>
+      )}
+
       <IconsFlex>
-        <FiPlus
-          size={18}
-          color={"585585"}
-          onClick={() => setchatAddVisible(!chatAddVisible)}
-        />
+        {chatDetailInfo === null && (
+          <FiPlus
+            size={18}
+            color={"585585"}
+            onClick={() => setchatAddVisible(!chatAddVisible)}
+          />
+        )}
+
         <IoMdClose size={18} color={"585585"} onClick={onClose} />
       </IconsFlex>
     </ChatHeaderWrapper>
@@ -37,11 +59,21 @@ const ChatHeaderWrapper = styled.div`
     font-size: 1.6rem;
     color: ${(props) => props.theme.color.zeroFour};
   }
+
+  svg {
+    cursor: pointer;
+  }
 `;
 
 const IconsFlex = styled.div`
   display: flex;
   gap: 1rem;
+`;
+
+const LeftWrapper = styled.section`
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
 `;
 
 export default ChatHeader;

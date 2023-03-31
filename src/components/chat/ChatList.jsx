@@ -1,17 +1,26 @@
 import React from "react";
+import { useSetRecoilState } from "recoil";
 import styled from "styled-components";
 import profile from "../../assets/ic54/profile.svg";
+import { chatInfoState } from "../../store/atom";
 
-const ChatList = () => {
+const ChatList = ({ data, setChatDetailVisible }) => {
+  const setChatInfo = useSetRecoilState(chatInfoState);
+  const onChatDetail = () => {
+    setChatDetailVisible(true);
+    setChatInfo({
+      nickname: data.nickname,
+      toUser: data.toUser,
+      id: data.id,
+      to: data.username,
+    });
+  };
   return (
-    <ChatListLayout>
+    <ChatListLayout onClick={onChatDetail}>
       <img src={profile} alt="profile" />
       <ChatInfo>
-        <span>함보라</span>
-        <p>
-          안녕하세요. 요청하신 사항 확인
-          되셨나요?dㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇ
-        </p>
+        <span>{data.nickname}</span>
+        <p>{data.lastMessage}</p>
       </ChatInfo>
     </ChatListLayout>
   );

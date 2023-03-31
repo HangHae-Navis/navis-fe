@@ -42,7 +42,6 @@ const Party = () => {
       }),
     {
       onSuccess: ({ data }) => {
-        console.log(data);
         setGroupList(data.data.basicBoards.content);
         setGroupName(data.data.groupName);
         setGroupInfo(data.data.groupInfo);
