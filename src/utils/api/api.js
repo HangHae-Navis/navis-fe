@@ -171,6 +171,11 @@ export const postHomeWorkData = async (data) =>{
   return res;
 }
 
+export const deleteHomeWorkData = async (data) =>{
+  const res = await axios.delete(`api/${data.groupId}/homeworks/${data.detailId}/cancel`)
+  return res;
+}
+
 export const postComment = async (data) => {
   const payload = { content: data.comment };
   const res = await axios.post(

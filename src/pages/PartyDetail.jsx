@@ -1,6 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from "react-query";
 import styled from "styled-components";
 import {
+  deleteHomeWorkData,
   deletePageMembers,
   DeleteVoteDetail,
   getBoardDetailPage,
@@ -28,7 +29,7 @@ import { getLocalStorage } from "../utils/infos/localStorage";
 import Comment from "../element/Comment";
 import Button from "../element/Button";
 import Input from "./../element/Input";
-import { FullDateCheck,DayCheck } from "../element/DateCheck";
+import { FullDateCheck,DayCheck,ShortCheck } from "../element/DateCheck";
 import { useForm } from "react-hook-form";
 import { async } from "q";
 
@@ -125,6 +126,8 @@ function PartyDetail() {
   const [voteContent, setVoteContent] = useState([])
   const [homeWorkInputLink, setHomeWorkInputLink] = useState([])
   const [homeWorkInputFile, setHomeWorkInputFile] = useState([])
+  const [homeWorkSubmmiter, setHomeWorkSubmmiter] = useState([])
+  const [homeWorkUnSubmmiter, setHomeWorkUnSubmmiter] = useState([])
   const [homeWorkInputFileList, setHomeWorkInputFileList] = useState([])
   const [homeWorkPostedFileList, setHomeWorkPostedFileList] = useState([])
   const [voteSelectedOption, setVoteSelectedOption] = useState();
@@ -154,9 +157,11 @@ function PartyDetail() {
     {
       onSuccess: ({ data }) => {
         console.log(data.data);
-        console.log(FullDateCheck(data.data.expirationTime))
-        setexpirationTime(FullDateCheck(data.data.expirationTime))
-        setexpirationTimeOrigin(new Date(data.data.expirationTime).getTime())
+        if(data.data.expirationTime != null){
+          console.log(FullDateCheck(data.data.expirationTime))
+          setexpirationTime(FullDateCheck(data.data.expirationTime))
+          setexpirationTimeOrigin(new Date(data.data.expirationTime).getTime())
+        }
         setPostInfo(data.data);
         if (data.data.role === "ADMIN") {
           setIsAdmin(true);
@@ -174,9 +179,13 @@ function PartyDetail() {
             break;
           case "homework":
             if(data.data.submitResponseDto != null){
-              console.log("와! 샌즈!")
               console.log(data.data.submitResponseDto)
               setHomeWorkPostedFileList(data.data.submitResponseDto.fileList)
+            }
+            if(data.data.role == 'ADMIN' || data.data.role == 'SUPPORTER'){
+              console.log("어드민 서포터 와우!")
+              setHomeWorkSubmmiter(data.data.submitMember)
+              setHomeWorkUnSubmmiter(data.data.notSubmitMember)
             }
             // do something
             break;
@@ -219,6 +228,13 @@ function PartyDetail() {
     }
   })
 
+  const deleteHomework = useMutation(deleteHomeWorkData, {
+    onSuccess: ({data}) =>{
+      toast.success("제출을 취소했습니다.")
+      res.refetch()
+    }
+  })
+
   const deleteVote = useMutation(DeleteVoteDetail, {
     onSuccess: ({data}) =>{
       res.refetch()
@@ -254,6 +270,10 @@ function PartyDetail() {
       const res = postvote.mutateAsync(payload)
     }
     else toast.success("선택지를 골라야 합니다.");
+  }
+
+  const doDeleteHomework = (data) =>{
+    const res = deleteHomework.mutateAsync(data)
   }
 
   const doDeleteVote = (data) =>{
@@ -302,6 +322,7 @@ function PartyDetail() {
     console.log(homeWorkInputFileList.length)
     console.log(reader.result)*/
   }
+
 
   const deleteInput = (data) =>{
     console.log(data)
@@ -450,11 +471,7 @@ function PartyDetail() {
         {/*과제 여부를 판단, 제출한 과제가 없을 경우 과제 관련 컴포넌트 랜더링*/}
         {dtype == 'homework'
         ?res?.data?.data?.data?.role == "USER" && res?.data?.data?.data?.submitResponseDto == null
-        ?
-        <form onSubmit={(e) => {
-          e.preventDefault();
-          handleSubmit(postHomeWork);
-      }}>
+        ?<form onSubmit={(e) => {e.preventDefault(); handleSubmit(postHomeWork);}}>
         <HomeWorkSubmitContainer>
         <HomeWorkSubmitButtonBox>
         <Button onClick={()=> addInput("file")}>파일 추가하기</Button>
@@ -485,15 +502,38 @@ function PartyDetail() {
         {/*과제 여부를 판단, 제출한 과제가 있을 경우 과제 관련 컴포넌트 랜더링*/}
         <HomeWorkSubmitContainer>
         <HomeWorkSubmitButtonBox>
-        <Button transparent={true} onClick={()=> addInput("file")}>제출 취소하기</Button>
+        <Button transparent={true} onClick={()=> doDeleteHomework({groupId, detailId})}>제출 취소하기</Button>
         </HomeWorkSubmitButtonBox>
         <HomeworkContentContainer>
+          <PostedHomeWorkFileBox>
             <h1 className="name">제출한 파일</h1>
-        {homeWorkPostedFileList?.map((item) => (<h1 className="name"> {item.fileUrl}</h1>))}
+            <h1 className="smallname">{FullDateCheck(res?.data?.data?.data?.submitResponseDto.createdAt)} {res?.data?.data?.data?.submitResponseDto.late == true ? '제출(지각)' : '제출'} </h1>
+            
+          </PostedHomeWorkFileBox>
+        {homeWorkPostedFileList?.map((item) => (<a key = {item} href={`${item.fileUrl}?download=true`} className="filename"> {item.fileName}</a>))}
         </HomeworkContentContainer>
         </HomeWorkSubmitContainer>
         </>
-        : null
+        :<>
+        <PostedHomeWorkFileBox>
+        <HomeworkContentContainer width = '80rem'>
+              <h1 className="name">제출완료</h1>
+              {homeWorkSubmmiter.map((item) => (<SubmitterContainer key = {item.id}>
+              <h1 className="smallname">{item.nickname}</h1>
+              <h1 className="smallname">{ShortCheck(item.createdAt)} 제출</h1>
+              </SubmitterContainer>))}
+          
+        </HomeworkContentContainer>
+        <HomeworkContentContainer  borderColor = "#CF5C4C" >
+              <h1 className="name">미제출자</h1>
+              {homeWorkUnSubmmiter.map((item) => (<SubmitterContainer key = {item.id}>
+              <h1 className="smallname">{item.nickname}</h1>
+              </SubmitterContainer>))}
+          
+        </HomeworkContentContainer>
+        </PostedHomeWorkFileBox>
+        </>
+          
         
         :null}
       </ContentsWrapper>
@@ -548,25 +588,50 @@ function PartyDetail() {
   );
           }
 
+const SubmitterContainer = styled.div`
+  display: flex;
+flex-direction : row;
+align-items: flex-start;
+justify-content: space-between;
+`
+const SubmitterBox = styled.div`
+  display: flex;
+`
+
+const PostedHomeWorkFileBox = styled.div`
+display:flex;
+flex-direction : row;
+align-items: center;
+gap: 2rem;
+text-align: center;
+`
 const HomeworkContentContainer = styled.div`
-width: 50rem;
+width: ${({ width }) => width || '50rem'};
 max-width: 100%;
 height: 100%;
+align-items: flex-start;
 display: flex;
 flex-direction: column;
 border-radius: 4rem;
-border: 0.1rem solid #D4D2E3;
+border: 0.1rem solid ${({ borderColor }) => borderColor || '#D4D2E3'};;
 text-overflow: ellipsis;
 overflow: hidden;
 white-space: normal;
 padding: 5rem;
 gap: 2rem;
+  .filename {
+  font-weight: 400;
+  font-size: 1.6rem;
+  color: #9795B5;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+  }
   .name {
   font-weight: 400;
   font-size: 2.2rem;
   color: #5D5A88;
     text-overflow: ellipsis;
-    overflow: hidden;
     white-space: nowrap;
   }
   .smallname {
@@ -574,7 +639,6 @@ gap: 2rem;
   font-size: 1.8rem;
   color: #9795B5;
     text-overflow: ellipsis;
-    overflow: hidden;
     white-space: nowrap;
   }
   .date {
