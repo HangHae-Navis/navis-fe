@@ -3,6 +3,7 @@ import { useRecoilState } from "recoil";
 import styled from "styled-components";
 import { chatModalState } from "../../store/atom";
 import { flexCenter } from "../../utils/style/mixins";
+import Talk from "./Talk";
 
 const Chat = () => {
   const [chatModal, setChatModal] = useRecoilState(chatModalState);
@@ -12,12 +13,12 @@ const Chat = () => {
   return (
     <>
       {chatModal === true ? (
-        <></>
+        <Talk />
       ) : (
         <ChatIcons onClick={onToggleModal}>
           <svg
-            width="48"
-            height="48"
+            width="36"
+            height="36"
             viewBox="0 0 48 48"
             fill="none"
             xmlns="http://www.w3.org/2000/svg"
@@ -49,8 +50,8 @@ const ChatIcons = styled.section`
   position: fixed;
   bottom: 5%;
   right: 4%;
-  width: 8rem;
-  height: 8rem;
+  width: 7rem;
+  height: 7rem;
   ${flexCenter}
   background-color: ${(props) => props.theme.color.zeroFour};
   box-shadow: 0 0.2rem 0.4rem rgba(0, 0, 0, 0.25);

@@ -110,7 +110,7 @@ export const postVote = async (id, data) => {
 export const getDetailPageForAdmin = async (payload) => {
   console.log("호출");
   console.log(payload);
-  const res = await axios.get(`api/groups/${payload}/admin`);
+  const res = await axios.get(`api/groups/${payload.id}/admin`);
   return res;
 };
 
@@ -138,7 +138,6 @@ export const PutGroup = async (payload) => {
   return res;
 };
 
-
 export const PutMemberRole = async (payload) => {
   const res = axios.put(
     `api/groups/${payload.pam}/admin/updaterole?memberId=${payload.memberId}`
@@ -155,17 +154,33 @@ export const deletePage = async (payload) => {
 
 /*-----------------------상세 페이지 기능------------------------------*/
 
-export const postHomeWorkData = async (data) =>{
-  console.log(data)
-  const payload = { multipartFiles: data.data}
-  console.log(payload)
+export const postHomeWorkData = async (data) => {
+  console.log(data);
+  const payload = { multipartFiles: data.data };
+  console.log(payload);
   for (let value of payload.multipartFiles.values()) {
     console.log(value);
   }
 
-  const res = await axios.post(`api/${data.groupId}/homeworks/${data.detailId}/homeworkSubmit`, payload)
+  const res = await axios.post(
+    `api/${data.groupId}/homeworks/${data.detailId}/homeworkSubmit`,
+    data.data,
+    {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    }
+  );
   return res;
-}
+};
+
+export const deleteHomeWorkData = async (data) => {
+  const res = await axios.delete(
+    `api/${data.groupId}/homeworks/${data.detailId}/cancel`
+  );
+
+  return res;
+};
 
 export const postComment = async (data) => {
   const payload = { content: data.comment };
@@ -191,45 +206,66 @@ export const getCommentPage = async (payload) => {
 };
 
 export const deleteCommentPage = async (payload) => {
-  console.log(payload);
   const res = await axios.delete(
     `api/${payload.groupId}/${payload.detailId}/comments/${payload.commentId}`
   );
   return res;
 };
 
-export const PostVoteDetail = async (payload) =>{
-  console.log(payload)
-  const data = { voteOption : payload.voteOption}
-  console.log(data)
-  const res = await axios.post(`api/${payload.groupId}/votes/${payload.voteId}/pick`, data)
-  return res
-}
+export const PostVoteDetail = async (payload) => {
+  const data = { voteOption: payload.voteOption };
+  console.log(data);
+  const res = await axios.post(
+    `api/${payload.groupId}/votes/${payload.voteId}/pick`,
+    data
+  );
+  return res;
+};
 
-export const DeleteVoteDetail = async (payload) =>{
-  console.log(payload)
-  const res = await axios.delete(`api/${payload.groupId}/votes/${payload.voteId}/unpick`)
-  return res
-}
+export const DeleteVoteDetail = async (payload) => {
+  const res = await axios.delete(
+    `api/${payload.groupId}/votes/${payload.voteId}/unpick`
+  );
+  return res;
+};
 
 export const putCommentPage = async (payload) => {
-  console.log(payload);
-  const res = await axios.put(`api/${payload.groupId}/${payload.detailId}/comments/${payload.commentId}`,payload.value
+  const res = await axios.put(
+    `api/${payload.groupId}/${payload.detailId}/comments/${payload.commentId}`,
+    payload.value
   );
   return res;
 };
 
 /*-----------------------마이 페이지 기능------------------------------*/
 
-export const GetProfile = async () =>{
-  const res = await axios.get(
-    '/api/user'
-  )
-  return res
-}
+export const GetProfile = async () => {
+  const res = await axios.get("/api/user");
+  return res;
+};
 
-export const PutProfile = async (payload) =>{
-  const res = await axios.put('api/user/profile', payload)
-    return res;
-}
+export const PutProfile = async (payload) => {
+  const res = await axios.put("api/user/profile", payload);
+  return res;
+};
 /*-----------------------마이 페이지 기능------------------------------*/
+
+export const getChat = async () => {
+  const res = await axios.get("api/chats/lists");
+  return res;
+};
+
+export const postChat = async ({ to }) => {
+  console.log(to);
+  const res = await axios.post(`api/chats/room`, {
+    to: to,
+  });
+  return res;
+};
+
+export const postChatPrevious = async (dto) => {
+  const res = await axios.get(
+    `api/chats/room/${dto.roomId}?to=${dto.to}&page=${dto.page}&size=${dto.size}`
+  );
+  return res;
+};

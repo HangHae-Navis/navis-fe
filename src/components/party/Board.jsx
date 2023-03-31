@@ -107,6 +107,9 @@ const BoardBox = styled.div`
   display: flex;
   justify-content: space-between;
   border-radius: 1.6rem;
+  @media (max-width: 800px) {
+    width: 100%;
+  }
   background-color: ${(props) => props.theme.color.zeroOne};
   .title {
     width: 80%;
