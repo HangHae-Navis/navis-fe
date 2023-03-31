@@ -34,13 +34,19 @@ const ChatDetail = () => {
       },
       () => {
         ws.current.subscribe(`/chats/room/${chatDetailInfo.id}`, (frame) => {
-          console.log(JSON.parse(frame.body));
+          const newMessage = JSON.parse(frame.body);
+          setMessages((prevMessages) => {
+            if (!prevMessages) {
+              // messages가 null 또는 undefined인 경우
+              return [newMessage]; // 새로운 메시지를 포함하는 배열을 반환
+            } else {
+              return [...prevMessages, newMessage]; // 이전 메시지와 새로운 메시지를 합쳐서 반환
+            }
+          });
         });
       }
     );
   };
-
-  console.log(messages);
 
   const disconnect = () => {
     ws.current.disconnect();
@@ -85,7 +91,7 @@ const ChatDetail = () => {
   }, []);
   return (
     <ChatDetailWrapper>
-      <Chatting />
+      <Chatting messages={messages} />
       <ChattingForm
         onMessageSend={onMessageSend}
         setMessage={setMessage}
@@ -98,11 +104,11 @@ const ChatDetail = () => {
 const ChatDetailWrapper = styled.section`
   display: flex;
   width: 100%;
+  height: 85%;
   flex-direction: column;
   position: relative;
-  gap: 2rem;
+  gap: 1rem;
   padding: 0 0.8rem;
-  overflow-y: scroll;
 `;
 
 export default ChatDetail;

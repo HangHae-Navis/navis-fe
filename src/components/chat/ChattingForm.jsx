@@ -13,7 +13,7 @@ const ChattingForm = ({ onMessageSend, setMessage, message }) => {
         value={message}
         placeholder="내용을 입력해 주세요."
       />
-      <SubmitWrapper>
+      <SubmitWrapper type="submit">
         <svg
           xmlns="http://www.w3.org/2000/svg"
           width="18"
@@ -24,9 +24,9 @@ const ChattingForm = ({ onMessageSend, setMessage, message }) => {
           <path
             d="M23 1L15.3 23L10.9 13.1L1 8.7L23 1Z"
             stroke="#585585"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
           />
         </svg>
       </SubmitWrapper>
@@ -36,14 +36,13 @@ const ChattingForm = ({ onMessageSend, setMessage, message }) => {
 
 const FormWrapper = styled.form`
   width: 100%;
-  position: fixed;
-  bottom: 0%;
-  height: 4rem;
+  height: 4.5rem;
   background: transparent;
   display: flex;
   align-items: center;
   textarea {
     width: 84%;
+    height: 100%;
     resize: none;
     background: transparent;
     border: none;
@@ -51,6 +50,9 @@ const FormWrapper = styled.form`
     font-size: 1.1rem;
     overflow-y: auto;
     color: #222222;
+    &::-webkit-scrollbar {
+      display: none;
+    }
     &:focus {
       outline: none;
     }
@@ -66,9 +68,9 @@ const SubmitWrapper = styled.button`
   background-color: transparent;
   cursor: pointer;
   height: 100%;
-  justify-content: flex-start;
+  justify-content: center;
   align-items: flex-start;
-  width: 10%;
+  width: 15%;
   display: flex;
 `;
 

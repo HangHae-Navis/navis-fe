@@ -1,6 +1,6 @@
 import React from "react";
 import { useForm } from "react-hook-form";
-import { useMutation } from "react-query";
+import { useMutation, useQueryClient } from "react-query";
 import styled from "styled-components";
 import { postChat } from "../../utils/api/api";
 import Button from "../../element/Button";
@@ -9,9 +9,11 @@ import { toast } from "react-toastify";
 
 const ChatFormAdd = () => {
   const { register, handleSubmit } = useForm();
+  const queryClient = useQueryClient();
   const makeChatRoomMutate = useMutation((to) => postChat(to), {
     onSuccess: () => {
       toast.success("채팅방이 생성되었습니다.");
+      queryClient.invalidateQueries("chats");
     },
   });
   const onMakeChatRoom = async (data) => {
