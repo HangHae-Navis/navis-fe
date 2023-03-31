@@ -4,17 +4,32 @@ import { IoMdClose } from "react-icons/io";
 import { useRecoilValue, useSetRecoilState } from "recoil";
 import styled from "styled-components";
 import { chatInfoState, chatModalState } from "../../store/atom";
+import { MdNavigateBefore } from "react-icons/md";
 
-const ChatHeader = ({ setchatAddVisible, chatAddVisible }) => {
+const ChatHeader = ({
+  setchatAddVisible,
+  chatAddVisible,
+  setChatDetailVisible,
+}) => {
   const chatDetailInfo = useRecoilValue(chatInfoState);
   const setChatModal = useSetRecoilState(chatModalState);
   const onClose = () => {
     setChatModal(false);
   };
-  console.log(chatDetailInfo);
+  const onBack = () => {
+    setChatDetailVisible(false);
+  };
   return (
     <ChatHeaderWrapper>
-      <h1>채팅목록</h1>
+      {chatDetailInfo === null ? (
+        <h1>채팅목록</h1>
+      ) : (
+        <LeftWrapper>
+          <MdNavigateBefore size={18} color={"585585"} onClick={onBack} />
+          <h1>{chatDetailInfo.nickname}</h1>
+        </LeftWrapper>
+      )}
+
       <IconsFlex>
         <FiPlus
           size={18}
@@ -48,6 +63,12 @@ const ChatHeaderWrapper = styled.div`
 const IconsFlex = styled.div`
   display: flex;
   gap: 1rem;
+`;
+
+const LeftWrapper = styled.section`
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
 `;
 
 export default ChatHeader;

@@ -31,6 +31,7 @@ const Talk = () => {
         chatDetailVisible={chatDetailVisible}
         setchatAddVisible={setchatAddVisible}
         chatAddVisible={chatAddVisible}
+        setChatDetailVisible={setChatDetailVisible}
       />
       {chatAddVisible === true && <ChatFormAdd />}
       {chatDetailVisible === true ? (
