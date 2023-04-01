@@ -20,13 +20,14 @@ const Message = ({ message }) => {
 const MessageWrapper = styled.div`
   width: 100%;
   display: flex;
+  justify-content: flex-end;
 `;
 
 const OtherMessage = styled.div`
   padding: 1rem 0;
   height: auto;
   width: 100%;
-
+  justify-self: flex-start;
   p {
     border-radius: 0.8rem;
     background-color: #eeeeee;
@@ -40,8 +41,8 @@ const OtherMessage = styled.div`
 const OwnMessage = styled.div`
   padding: 1rem 0;
   height: auto;
-  justify-self: flex-end;
-
+  justify-self: flex-start;
+  padding-right: 1rem;
   p {
     border-radius: 0.8rem;
     background: #e4e2ee;

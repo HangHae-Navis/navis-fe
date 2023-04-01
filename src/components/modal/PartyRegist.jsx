@@ -13,6 +13,7 @@ import { useNavigate, useParams } from "react-router";
 import { useRecoilState, useResetRecoilState } from "recoil";
 import { partyInfoState, partyRegistModalState } from "../../store/atom";
 import { InputStyle } from "../../utils/style/mixins";
+import { toast } from "react-toastify";
 
 const PartyRegist = () => {
   const navi = useNavigate();
@@ -32,7 +33,7 @@ const PartyRegist = () => {
   const postgroup = useMutation(postGroup, {
     onSuccess: ({ data }) => {
       console.log(data);
-      window.alert("등록 성공!");
+      toast.success("등록 성공!")
       setIsOpen(false);
       resetRecoInfo();
       resetRecoModal()
@@ -41,8 +42,7 @@ const PartyRegist = () => {
   });
   const putgroup = useMutation(PutGroup, {
     onSuccess: ({ data }) => {
-      console.log(data);
-      window.alert("등록 성공!");
+      toast.success("수정 성공!")
       setIsOpen(false);
       resetRecoInfo();
       resetRecoModal()
@@ -52,8 +52,10 @@ const PartyRegist = () => {
 
   const postParticipation = useMutation(postGroupApply, {
     onSuccess: ({ data }) => {
-      console.log(data);
-      window.alert("참가 성공!");
+      toast.success("참가 성공!")
+      setIsOpen(false);
+      resetRecoInfo();
+      resetRecoModal()
       navi(`/party/${data.data}`);
     },
   });
