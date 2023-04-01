@@ -555,7 +555,7 @@ function PartyDetail() {
       </ContentsWrapper>
       <Commentcontainer>
         <CommentTopWrapper>
-          <span>댓글 2</span>
+          <span>{getComment?.data?.data?.data?.content.length}</span>
           <img src={conver} alt="댓글" />
         </CommentTopWrapper>
         <CommentsWrapper />

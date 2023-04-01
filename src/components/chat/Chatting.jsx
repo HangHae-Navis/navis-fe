@@ -15,7 +15,7 @@ const MessageWrapper = styled.section`
   display: flex;
   height: 80%;
   max-width: 100%;
-  gap: 2rem;
+  gap: 0.5rem;
   overflow-y: auto;
   flex-direction: column;
 `;
