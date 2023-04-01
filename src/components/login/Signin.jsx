@@ -30,7 +30,7 @@ const Signin = ({ setIsSignIn }) => {
     };
     const res = await signinMutation.mutateAsync(signinRequest);
   };
-  const Rediect_Url = "http://localhost:3000";
+  const Rediect_Url = "http://navis.kro.kr";
   //const Rediect_Url = "http://hanghae1teamwork.s3-website.ap-northeast-2.amazonaws.com"
   const responseKakao = () => {
     window.location.href = `https://kauth.kakao.com/oauth/authorize?client_id=${process.env.REACT_APP_REST_API_KEY}&redirect_uri=${Rediect_Url}&response_type=code`;
