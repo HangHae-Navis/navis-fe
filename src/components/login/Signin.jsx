@@ -11,16 +11,25 @@ import Input from "../../element/Input";
 import Button from "../../element/Button";
 import { flexCenter } from "../../utils/style/mixins";
 import Kakao from "../../assets/kakao.webp";
+import { setLocalStorage } from "../../utils/infos/localStorage";
 
 const Signin = ({ setIsSignIn }) => {
   const navigate = useNavigate();
   const setLoginModalState = useSetRecoilState(loginModalState);
-  const { register, formState: errors, handleSubmit } = useForm();
+  const { register, formState: errors, handleSubmit, reset } = useForm();
   const [disable, setDisable] = useState(false);
   const signinMutation = useMutation(postSignIn, {
     onSuccess: ({ data }) => {
+      reset();
       setLoginModalState(false);
       navigate(`/${path.MAIN}`);
+      setLocalStorage(
+        "userInfo",
+        JSON.stringify({
+          nickname: data.data.nickname,
+          username: data.data.username,
+        })
+      );
     },
   });
   const onLogin = async (data) => {

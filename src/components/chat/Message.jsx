@@ -1,10 +1,13 @@
 import React from "react";
 import styled from "styled-components";
+import { getLocalStorage } from "../../utils/infos/localStorage";
 
 const Message = ({ message }) => {
+  const USER_NAME = JSON.parse(getLocalStorage("userInfo")).username;
+  console.log(USER_NAME);
   return (
     <MessageWrapper>
-      {message.author === true ? (
+      {message.authorName === USER_NAME ? (
         <OwnMessage>
           <p>{message.message}</p>
         </OwnMessage>
