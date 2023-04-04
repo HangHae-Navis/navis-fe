@@ -7,9 +7,11 @@ import {
   getBoardDetailPage,
   getCommentPage,
   postComment,
+  postFeedback,
   postHomeWorkData,
   postHomeworkDetail,
   PostVoteDetail,
+  putHomeWorkData,
 } from "../utils/api/api";
 import "react-loading-skeleton/dist/skeleton.css";
 import { useNavigate, useSearchParams } from "react-router-dom";
@@ -132,9 +134,11 @@ function PartyDetail() {
   const [homeWorkInputFileList, setHomeWorkInputFileList] = useState([])
   const [homeWorkPostedFileList, setHomeWorkPostedFileList] = useState([])
   const [voteSelectedOption, setVoteSelectedOption] = useState();
+  const [submitAgain, setSubmitAgain] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [courrentModalContent, setCourrentModalContent] = useState();
   const { register, formState: errors, handleSubmit } = useForm();
+
   useEffect(() => {
     const isUserCookie = getCookie("token");
     if (isUserCookie === undefined) {
@@ -214,6 +218,14 @@ function PartyDetail() {
     },
   });
 
+  const putSubjects = useMutation(putHomeWorkData, {
+    onSuccess: ({ data }) => {
+      queryClient.invalidateQueries("comment");
+      toast.success("과제물이 수정되었습니다.");
+      setSubmitAgain(false)
+      res.refetch()
+    },
+  })
   const postvote = useMutation(PostVoteDetail, {
     onSuccess: ({data}) =>{
       console.log('투표 성공')
@@ -226,6 +238,7 @@ function PartyDetail() {
     onSuccess: ({data}) =>{
       console.log("제출 성공")
       toast.success("제출 성공.");
+      setSubmitAgain(false)
       res.refetch()
     }
   })
@@ -335,7 +348,7 @@ function PartyDetail() {
       console.log(data)
   }
   
-  const postHomeWork = async (data) =>{
+  const postOrPutHomeWork = async (data) =>{
     const postData = new FormData();
     const CurrentFile = []
     const CurrentFileList = []
@@ -347,26 +360,10 @@ function PartyDetail() {
         CurrentFileList.push(homeWorkInputFileList[CurrentFile[i]])
       }
     }
-    /*
-    for(let i = 0; i < CurrentFileList.length; i++){
-      console.log(CurrentFileList[i])
-      postData.append(`${i}`, CurrentFileList[i])
-    }*/
     for(let i = 0; i < CurrentFileList.length; i++){
       console.log(CurrentFileList[i])
       postData.append('multipartFiles',CurrentFileList[i])
     }
-    /*    formData.append("file", data.file);
-    formData.append(
-      "key",
-      new Blob([JSON.stringify(data.info)], { type: "application/json" })
-    );
-     */
-
-    //console.log(CurrentFile)
-    //console.log(homeWorkInputFileList)
-    //console.log(CurrentFileList)
-    //console.log(data)
     for (let [key, value] of postData.entries()) {
       console.log(key, value);
     }
@@ -376,7 +373,13 @@ function PartyDetail() {
       detailId,
       data : postData
     }
-    const res = posthomework.mutateAsync(payload)
+    if(submitAgain == false){
+      const res = posthomework.mutateAsync(payload)
+    }
+    else{
+      const res = putSubjects.mutateAsync(payload)
+    }
+    
   }
 
   const doDelete = (data) => {
@@ -398,7 +401,7 @@ function PartyDetail() {
   }
   return (
     <>
-    {showModal == true ? <ShowSubmitFile setShowModal = {setShowModal} courrentModalContent = {courrentModalContent} ></ShowSubmitFile> : null}
+    {showModal == true ? <ShowSubmitFile setShowModal = {setShowModal} courrentModalContent = {courrentModalContent} res = {res}></ShowSubmitFile> : null}
     <PageContainer>
       <PartyInfo
         groupName={groupName}
@@ -482,13 +485,13 @@ function PartyDetail() {
         
         {/*과제 여부를 판단, 제출한 과제가 없을 경우 과제 관련 컴포넌트 랜더링*/}
         {dtype == 'homework'
-        ?res?.data?.data?.data?.role == "USER" && res?.data?.data?.data?.submitResponseDto == null
-        ?<form onSubmit={(e) => {e.preventDefault(); handleSubmit(postHomeWork);}}>
+        ?res?.data?.data?.data?.role == "USER" && res?.data?.data?.data?.submitResponseDto == null || submitAgain == true
+        ?<form onSubmit={(e) => {e.preventDefault(); handleSubmit(postOrPutHomeWork);}}>
         <HomeWorkSubmitContainer>
         <HomeWorkSubmitButtonBox>
         <Button onClick={()=> addInput("file")}>파일 추가하기</Button>
         {/*<Button onClick={()=> addInput("link")}>링크 추가하기</Button>*/}
-        <Button onClick={handleSubmit(postHomeWork)} transparent={true}>과제 제출하기</Button>
+        <Button onClick={handleSubmit(postOrPutHomeWork)} transparent={true}>과제 제출하기</Button>
         </HomeWorkSubmitButtonBox>
         <HomeWorkSubmitButtonBox>
             
@@ -514,8 +517,16 @@ function PartyDetail() {
         {/*과제 여부를 판단, 제출한 과제가 있을 경우 과제 관련 컴포넌트 랜더링*/}
         <HomeWorkSubmitContainer>
         <HomeWorkSubmitButtonBox>
-        <Button transparent={true} onClick={()=> doDeleteHomework({groupId, detailId})}>제출 취소하기</Button>
+          {res?.data?.data?.data?.submitResponseDto.submitCheck == false
+           ?res?.data?.data?.data?.submitResponseDto.feedbackList?.length == 0
+           ? <Button transparent={true} onClick={()=> doDeleteHomework({groupId, detailId})}>제출 취소하기</Button>
+           :<Button transparent={true} onClick={()=> setSubmitAgain(true)}>다시 제출하기</Button>
+           
+           : null}
+           
+        
         </HomeWorkSubmitButtonBox>
+        <HomeWorkSubmitButtonBox>
         <HomeworkContentContainer>
           <PostedHomeWorkFileBox>
             <h1 className="name">제출한 파일</h1>
@@ -524,6 +535,27 @@ function PartyDetail() {
           </PostedHomeWorkFileBox>
         {homeWorkPostedFileList?.map((item) => (<a key = {item} href={`${item.fileUrl}?download=true`} className="filename"> {item.fileName}</a>))}
         </HomeworkContentContainer>
+        
+        {<HomeworkContentContainer>
+          {
+            res?.data?.data?.data?.submitResponseDto.feedbackList?.length != 0
+            ? res?.data?.data?.data?.submitResponseDto.submitCheck == true
+              ?<>
+              <h1 className="name">확정됨</h1>
+              {res?.data?.data?.data?.submitResponseDto.feedbackList.map((item, index) => (<h1 key = {item} className="name">{index+1}번째 피드백 : {item}</h1>))}
+              
+              </>
+              :<>
+              <h1 className="name">반려됨</h1>
+              {res?.data?.data?.data?.submitResponseDto.feedbackList.map((item, index) => (<h1 key = {item} className="name">{index+1}번째 사유 : {item}</h1>))}
+              </>
+            :<h1 className="name">피드백 대기 중</h1>
+            /*여기다 피드백 대기 중 혹은 반려됨 혹은 받은 피드백 적어놓기 */
+            }
+              
+              {homeWorkInputLink.map((item) => (<InputComp key = {item.id} type = {item.type}></InputComp>))}
+        </HomeworkContentContainer>}
+        </HomeWorkSubmitButtonBox>
         </HomeWorkSubmitContainer>
         </>
         :<>
