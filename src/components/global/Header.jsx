@@ -40,6 +40,7 @@ const Header = () => {
       setCurrentPam(code);
       setIsCallBool(true);
     }
+    console.log("hello");
   }, []);
 
   const onLogout = () => {
@@ -48,7 +49,7 @@ const Header = () => {
     navi("/");
     toast.success("정상적으로 로그아웃 되었습니다.");
     onModal();
-    window.location.reload()
+    window.location.reload();
   };
 
   const onShift = () => {

@@ -12,6 +12,7 @@ import Button from "../../element/Button";
 import { flexCenter } from "../../utils/style/mixins";
 import Kakao from "../../assets/kakao.webp";
 import { setLocalStorage } from "../../utils/infos/localStorage";
+import { toast } from "react-toastify";
 
 const Signin = ({ setIsSignIn }) => {
   const navigate = useNavigate();
@@ -30,6 +31,12 @@ const Signin = ({ setIsSignIn }) => {
           username: data.data.username,
         })
       );
+    },
+    onError: ({ response }) => {
+      if (response.data.data === "MEMBER_NOT_FOUND")
+        return toast.error("로그인 혹은 비밀번호가 틀렸습니다", {
+          toastId: "loginError",
+        });
     },
   });
   const onLogin = async (data) => {

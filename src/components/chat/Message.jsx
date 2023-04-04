@@ -4,7 +4,6 @@ import { getLocalStorage } from "../../utils/infos/localStorage";
 
 const Message = ({ message }) => {
   const USER_NAME = JSON.parse(getLocalStorage("userInfo")).username;
-  console.log(USER_NAME);
   return (
     <MessageWrapper>
       {message.authorName === USER_NAME ? (
