@@ -35,6 +35,7 @@ import { FullDateCheck,DayCheck,ShortCheck } from "../element/DateCheck";
 import { useForm } from "react-hook-form";
 import { async } from "q";
 import ShowSubmitFile from "../components/modal/ShowSubmitFile";
+import FloatingMenu from "../components/party/FloatingMenu";
 
 
 
@@ -104,6 +105,22 @@ const InputComp = (props) =>{
   <section>X</section>
   </InputContainer>)
 }
+
+const StyledInput = styled.input`
+  /* 스타일을 정의합니다. */
+  border: none;
+  padding: 10px;
+  background-color: transparent;
+  color: #333;
+  font-size: 16px;
+  border-radius: 4px;
+  cursor: pointer;
+
+  /* :hover 상태일 때 스타일을 정의합니다. */
+  &:hover {
+    background-color: #D4D2E3;
+  }
+`;
 
 const InputContainer =styled.div`
   
@@ -240,7 +257,10 @@ function PartyDetail() {
       toast.success("제출 성공.");
       setSubmitAgain(false)
       res.refetch()
-    }
+    },
+    onError: (error) => {
+      toast.error("오류 발생.");
+    },
   })
 
   const deleteHomework = useMutation(deleteHomeWorkData, {
@@ -373,13 +393,17 @@ function PartyDetail() {
       detailId,
       data : postData
     }
-    if(submitAgain == false){
-      const res = posthomework.mutateAsync(payload)
+    if(postData.length != 0){
+      if(submitAgain == false){
+        const res = posthomework.mutateAsync(payload)
+      }
+      else{
+        const res = putSubjects.mutateAsync(payload)
+      }
     }
     else{
-      const res = putSubjects.mutateAsync(payload)
+      toast.success("파일이 있어야 합니다.")
     }
-    
   }
 
   const doDelete = (data) => {
@@ -410,6 +434,7 @@ function PartyDetail() {
         groupId={groupId}
         isAdmin={isAdmin}
       />
+      <FloatingMenu></FloatingMenu>
       <ContentsWrapper>
         <MarkdownTitle postInfo={postInfo} dtype={dtype} />
         <ReactMarkdownWrapper
@@ -497,12 +522,12 @@ function PartyDetail() {
             
         <HomeworkContentContainer>
               <h1 className="name">제출할 파일</h1>
-              {homeWorkInputFile.map((item) => (<InputContainer key = {item.id}><input
+              {homeWorkInputFile.map((item) => (<InputContainer key = {item.id}><StyledInput
     type="file"
     onChange={FileHandler}
     >
-  </input>
-  <section onClick={()=> deleteInput(item.id)}>X</section>
+  </StyledInput>
+  <section className="name" onClick={()=> deleteInput(item.id)}>X</section>
   </InputContainer>))}
         </HomeworkContentContainer>
         {/*<HomeworkContentContainer>
