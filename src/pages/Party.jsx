@@ -49,6 +49,7 @@ const Party = () => {
         setGroupId(pam.id);
         setIsAdmin(data.data.admin);
         setCarouselList(data.data.deadlines);
+        console.log(data)
       },
     }
   );
