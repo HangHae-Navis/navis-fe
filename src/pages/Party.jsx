@@ -15,6 +15,7 @@ import RadioButtons from "../components/party/RadioButtons";
 import Carousel from "../components/party/Carousel";
 import { settings } from "../constants/carousel";
 import Chat from "../components/global/Chat";
+import FloatingMenu from "../components/party/FloatingMenu";
 
 const Party = () => {
   const navi = useNavigate();
@@ -113,6 +114,7 @@ const Party = () => {
             groupId={pam.id}
             isAdmin={partyRes.data.data.data.admin}
           />
+        <FloatingMenu></FloatingMenu>
         </LeftContainer>
         <RightTotalContainer>
           <CarouselContainer>
