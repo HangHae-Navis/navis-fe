@@ -7,8 +7,10 @@ const RadioButtons = ({
   partyRes,
   selected,
   setSelected,
+  type
 }) => {
   useEffect(() => {
+    if( type == 'first'){
     switch (selected) {
       case 0:
         categoryValue("all");
@@ -32,6 +34,21 @@ const RadioButtons = ({
         break;
       default:
         break;
+    }
+    }
+    else{
+      switch (selected) {
+        case 0:
+          categoryValue("new");
+          console.log("1번 작동")
+          break;
+        case 1:
+          categoryValue("important");
+          console.log("2번 작동")
+          break;
+        default:
+          break;
+      }
     }
   }, [selected]);
 
