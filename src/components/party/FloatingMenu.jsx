@@ -8,8 +8,6 @@ import StarTag from "../global/StarTag";
 
 const FloatingMenu = (props) =>{
 
-    console.log(props)
-
     return(<FloatingButtonsContainer>
         <FloatingButtonsList>
         <h1 className="title">최근 열람한 게시글</h1>

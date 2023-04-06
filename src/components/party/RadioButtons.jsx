@@ -39,7 +39,7 @@ const RadioButtons = ({
     else{
       switch (selected) {
         case 0:
-          categoryValue("new");
+          categoryValue("id");
           console.log("1번 작동")
           break;
         case 1:
