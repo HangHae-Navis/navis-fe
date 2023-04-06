@@ -41,23 +41,38 @@ const Header = () => {
   );
 
   useEffect(() => {
+    let eventSource;
     if (token === undefined && code !== "") {
       setCurrentPam(code);
       setIsCallBool(true);
     }
     if (token !== undefined) {
-      const eventSource = new EventSource(
-        `${process.env.REACT_APP_BASEURL}subscribe`,
-        {
-          headers: {
-            Authorization: token,
-          },
-          withCredentials: true,
-        }
-      );
-      eventSource.onmessage = async (event) => {
-        console.log(event);
-      };
+      try {
+        eventSource = new EventSource(
+          `${process.env.REACT_APP_BASEURL}subscribe`,
+          {
+            headers: {
+              Authorization: token,
+            },
+            withCredentials: true,
+          }
+        );
+
+        eventSource.onmessage = (event) => {
+          if (!event.data.includes("EventStream Created."))
+            toast.success("알림이 도착했습니다", {
+              toastId: "alarm",
+            });
+        };
+
+        /* EVENTSOURCE ONERROR ------------------------------------------------------ */
+        eventSource.onerror = (event) => {
+          if (!event.error.message.includes("No activity")) {
+            console.log(event);
+            eventSource.close();
+          }
+        };
+      } catch (error) {}
     }
   }, [token]);
 
