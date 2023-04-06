@@ -101,7 +101,7 @@ const Header = () => {
         </Button>
       ) : (
         <div className="icons">
-          <img src={alarm} alt="알림" onClick={onModal_t} alt="알림" />
+          <img src={alarm} alt="알림" onClick={onModal_t} />
           <img src={profile} onClick={onModal} alt="프로필" />
           {headerModal === true && (
             <HeaderMenu>
