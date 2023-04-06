@@ -172,18 +172,19 @@ export const putHomeWorkData = async (data) => {
     }
   );
   return res;
-}
-
+};
 
 export const postFeedback = async (data) => {
-  //목록의 섭젝트 아이디 있음 
-  const payload = { feedback: data.data, submitCheck : data.check}
-  console.log(data)
-  console.log(payload)
-  const res = await axios.post(`api/${data.groupId}/homeworks/${data.detailId}/${data.subjectId}/feedbacks`,
-  payload)
-  return res
-}
+  //목록의 섭젝트 아이디 있음
+  const payload = { feedback: data.data, submitCheck: data.check };
+  console.log(data);
+  console.log(payload);
+  const res = await axios.post(
+    `api/${data.groupId}/homeworks/${data.detailId}/${data.subjectId}/feedbacks`,
+    payload
+  );
+  return res;
+};
 
 export const postHomeWorkData = async (data) => {
   console.log(data);
@@ -298,5 +299,10 @@ export const postChatPrevious = async (dto) => {
   const res = await axios.get(
     `api/chats/room/${dto.roomId}?to=${dto.to}&page=${dto.page}&size=${dto.size}`
   );
+  return res;
+};
+
+export const getNotification = async () => {
+  const res = await axios.get("/api/subscribe");
   return res;
 };
