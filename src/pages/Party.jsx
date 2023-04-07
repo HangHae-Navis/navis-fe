@@ -23,7 +23,7 @@ const Party = () => {
   const [selected, setSelected] = useState(0);
   const [selectedSecond, setSelectedSecond] = useState(0);
   const [categoryValue, setCategoryValue] = useState("all");
-  const [categoryValueSecond, setCategoryValueSecond] = useState("new");
+  const [categoryValueSecond, setCategoryValueSecond] = useState("id");
   const options = ["전체", "공지", "투표", "과제", "게시글"];
   const optionsSecond = ["최신순", "중요도순"];
   const optionsThird = useState(false);
@@ -60,6 +60,23 @@ const Party = () => {
   );
 
   useEffect(() => {
+    let sortedGroupList = [...groupList];
+
+    if (categoryValueSecond !== 'createdAt') {
+      sortedGroupList.sort((a, b) => {
+        if (categoryValueSecond === 'id') {
+          return b.id - a.id;
+        } else if (categoryValueSecond === 'important') {
+          return b.important - a.important;
+        }
+      });
+    }
+
+    setGroupList(sortedGroupList);
+  }, [categoryValueSecond]);
+
+
+  useEffect(() => {
     const isUserCookie = getCookie("token");
     if (isUserCookie === undefined) {
       navi("/");
@@ -83,6 +100,7 @@ const Party = () => {
             />
           </LeftContainer>
           <RightTotalContainer>
+          <CarouselContainer>
             <CarouselTitle>
               <svg
                 width="22"
@@ -99,8 +117,9 @@ const Party = () => {
                   strokeLinejoin="round"
                 />
               </svg>
-              <h1 className="title">오늘 마감</h1>
+              <h1 className="title">24시간 내 마감</h1>
             </CarouselTitle>
+          </CarouselContainer>
           </RightTotalContainer>
         </PageContainer>
       </>
@@ -118,7 +137,10 @@ const Party = () => {
             groupId={pam.id}
             isAdmin={partyRes.data.data.data.admin}
           />
-        <FloatingMenu></FloatingMenu>
+        <FloatingMenu props = {partyRes.data.data.data.recentlyViewed} groupId = {groupId}
+          groupName={groupName}
+          groupInfo={groupInfo}
+          groupCode={groupCode}></FloatingMenu>
         </LeftContainer>
         <RightTotalContainer>
           <CarouselContainer>
@@ -138,7 +160,7 @@ const Party = () => {
                   strokeLinejoin="round"
                 />
               </svg>
-              <h1 className="title">오늘 마감</h1>
+              <h1 className="title">24시간 내 마감</h1>
             </CarouselTitle>
             <Slider {...settings}>
               {carouselList.map((item) => {
