@@ -84,6 +84,9 @@ const Signin = ({ setIsSignIn }) => {
 };
 const SignInWrapper = styled.div`
   width: 50%;
+  @media (max-width: 750px) {
+    width: 100%;
+  }
   display: flex;
   flex-direction: column;
   justify-content: center;

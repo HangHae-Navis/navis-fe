@@ -87,7 +87,7 @@ const ErrorMessage = styled.p`
 
 const InputWrapper = styled.section`
   position: relative;
-  width: ${({ width }) => (width ? width : "27rem")};
+  width: ${({ width }) => (width ? width : "24rem")};
   display: flex;
   align-items: center;
 `;
