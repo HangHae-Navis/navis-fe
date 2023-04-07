@@ -66,9 +66,6 @@ const Header = () => {
         };
 
         /* EVENTSOURCE ONERROR ------------------------------------------------------ */
-        eventSource.onerror = () => {
-          eventSource.close();
-        };
       } catch (error) {}
 
       return () => {
