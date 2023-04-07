@@ -137,7 +137,10 @@ const Party = () => {
             groupId={pam.id}
             isAdmin={partyRes.data.data.data.admin}
           />
-        <FloatingMenu></FloatingMenu>
+        <FloatingMenu props = {partyRes.data.data.data.recentlyViewed} groupId = {groupId}
+          groupName={groupName}
+          groupInfo={groupInfo}
+          groupCode={groupCode}></FloatingMenu>
         </LeftContainer>
         <RightTotalContainer>
           <CarouselContainer>
