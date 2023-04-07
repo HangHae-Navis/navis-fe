@@ -67,12 +67,13 @@ const Header = () => {
 
         /* EVENTSOURCE ONERROR ------------------------------------------------------ */
         eventSource.onerror = (event) => {
-          if (!event.error.message.includes("No activity")) {
-            console.log(event);
-            eventSource.close();
-          }
+          eventSource.close();
         };
       } catch (error) {}
+
+      return () => {
+        eventSource.close();
+      };
     }
   }, [token]);
 
