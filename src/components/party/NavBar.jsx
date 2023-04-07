@@ -1,9 +1,21 @@
 import React from "react";
 import styled from "styled-components";
 
-const NavBar = ({ activeState, setActiveState }) => {
+const NavBar = ({ activeState, setActiveState, setState }) => {
   const onChangeNavi = (e) => {
     setActiveState(e.target.innerText);
+    switch(e.target.innerText){
+      case '전체그룹':
+        setState('all')
+      break;
+      case '나의그룹':
+        setState('myOwn')
+      break;
+      case '참여그룹':
+        setState('joined')
+      break;
+      default:;
+    }
   };
   return (
     <NavList>

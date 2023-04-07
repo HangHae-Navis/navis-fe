@@ -15,13 +15,18 @@ import RadioButtons from "../components/party/RadioButtons";
 import Carousel from "../components/party/Carousel";
 import { settings } from "../constants/carousel";
 import Chat from "../components/global/Chat";
+import FloatingMenu from "../components/party/FloatingMenu";
 
 const Party = () => {
   const navi = useNavigate();
   const pam = useParams();
   const [selected, setSelected] = useState(0);
+  const [selectedSecond, setSelectedSecond] = useState(0);
   const [categoryValue, setCategoryValue] = useState("all");
+  const [categoryValueSecond, setCategoryValueSecond] = useState("id");
   const options = ["전체", "공지", "투표", "과제", "게시글"];
+  const optionsSecond = ["최신순", "중요도순"];
+  const optionsThird = useState(false);
   const [carouselList, setCarouselList] = useState([]);
   const [groupList, setGroupList] = useState([]);
   const [pageNum, setPageNum] = useState(1);
@@ -49,9 +54,27 @@ const Party = () => {
         setGroupId(pam.id);
         setIsAdmin(data.data.admin);
         setCarouselList(data.data.deadlines);
+        console.log(data)
       },
     }
   );
+
+  useEffect(() => {
+    let sortedGroupList = [...groupList];
+
+    if (categoryValueSecond !== 'createdAt') {
+      sortedGroupList.sort((a, b) => {
+        if (categoryValueSecond === 'id') {
+          return b.id - a.id;
+        } else if (categoryValueSecond === 'important') {
+          return b.important - a.important;
+        }
+      });
+    }
+
+    setGroupList(sortedGroupList);
+  }, [categoryValueSecond]);
+
 
   useEffect(() => {
     const isUserCookie = getCookie("token");
@@ -77,6 +100,7 @@ const Party = () => {
             />
           </LeftContainer>
           <RightTotalContainer>
+          <CarouselContainer>
             <CarouselTitle>
               <svg
                 width="22"
@@ -93,8 +117,9 @@ const Party = () => {
                   strokeLinejoin="round"
                 />
               </svg>
-              <h1 className="title">오늘 마감</h1>
+              <h1 className="title">24시간 내 마감</h1>
             </CarouselTitle>
+          </CarouselContainer>
           </RightTotalContainer>
         </PageContainer>
       </>
@@ -112,6 +137,10 @@ const Party = () => {
             groupId={pam.id}
             isAdmin={partyRes.data.data.data.admin}
           />
+        <FloatingMenu props = {partyRes.data.data.data.recentlyViewed} groupId = {groupId}
+          groupName={groupName}
+          groupInfo={groupInfo}
+          groupCode={groupCode}></FloatingMenu>
         </LeftContainer>
         <RightTotalContainer>
           <CarouselContainer>
@@ -131,7 +160,7 @@ const Party = () => {
                   strokeLinejoin="round"
                 />
               </svg>
-              <h1 className="title">오늘 마감</h1>
+              <h1 className="title">24시간 내 마감</h1>
             </CarouselTitle>
             <Slider {...settings}>
               {carouselList.map((item) => {
@@ -165,7 +194,19 @@ const Party = () => {
               partyRes={partyRes}
               selected={selected}
               setSelected={setSelected}
+              type={'first'}
             />
+            <RadioBox>
+            <RadioButtons
+              options={optionsSecond}
+              categoryValue={setCategoryValueSecond}
+              partyRes={partyRes}
+              selected={selectedSecond}
+              setSelected={setSelectedSecond}
+              type={'second'}
+            />
+            <h1 className="check">만료 제외</h1>
+            </RadioBox>
           </RadioBox>
           <RightContainer>
             {groupList?.map((item) => {
@@ -198,7 +239,19 @@ const Party = () => {
   );
 };
 
-const RadioBox = styled.div``;
+const RadioBox = styled.div`
+display:flex;
+gap : 1rem;
+flex-direction: row;
+align-items: center;
+justify-content: space-between;
+
+.check {
+  font-size: 1.75rem;
+  background-color: transparent;
+  color: ${({ selected }) => (selected ? "#585585" : "#585585")};
+  }
+`;
 
 const CarouselContainer = styled.div`
   width: 60vw;

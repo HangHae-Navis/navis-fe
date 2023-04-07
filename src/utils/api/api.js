@@ -154,6 +154,38 @@ export const deletePage = async (payload) => {
 
 /*-----------------------상세 페이지 기능------------------------------*/
 
+export const putHomeWorkData = async (data) => {
+  console.log(data);
+  const payload = { multipartFiles: data.data };
+  console.log(payload);
+  for (let value of payload.multipartFiles.values()) {
+    console.log(value);
+  }
+
+  const res = await axios.put(
+    `api/${data.groupId}/homeworks/${data.detailId}/updateSubjects`,
+    data.data,
+    {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    }
+  );
+  return res;
+};
+
+export const postFeedback = async (data) => {
+  //목록의 섭젝트 아이디 있음
+  const payload = { feedback: data.data, submitCheck: data.check };
+  console.log(data);
+  console.log(payload);
+  const res = await axios.post(
+    `api/${data.groupId}/homeworks/${data.detailId}/${data.subjectId}/feedbacks`,
+    payload
+  );
+  return res;
+};
+
 export const postHomeWorkData = async (data) => {
   console.log(data);
   const payload = { multipartFiles: data.data };
@@ -267,5 +299,10 @@ export const postChatPrevious = async (dto) => {
   const res = await axios.get(
     `api/chats/room/${dto.roomId}?to=${dto.to}&page=${dto.page}&size=${dto.size}`
   );
+  return res;
+};
+
+export const getNotification = async () => {
+  const res = await axios.get("/api/subscribe");
   return res;
 };

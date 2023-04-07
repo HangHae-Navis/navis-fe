@@ -11,16 +11,32 @@ import Input from "../../element/Input";
 import Button from "../../element/Button";
 import { flexCenter } from "../../utils/style/mixins";
 import Kakao from "../../assets/kakao.webp";
+import { setLocalStorage } from "../../utils/infos/localStorage";
+import { toast } from "react-toastify";
 
 const Signin = ({ setIsSignIn }) => {
   const navigate = useNavigate();
   const setLoginModalState = useSetRecoilState(loginModalState);
-  const { register, formState: errors, handleSubmit } = useForm();
+  const { register, formState: errors, handleSubmit, reset } = useForm();
   const [disable, setDisable] = useState(false);
   const signinMutation = useMutation(postSignIn, {
     onSuccess: ({ data }) => {
+      reset();
       setLoginModalState(false);
       navigate(`/${path.MAIN}`);
+      setLocalStorage(
+        "userInfo",
+        JSON.stringify({
+          nickname: data.data.nickname,
+          username: data.data.username,
+        })
+      );
+    },
+    onError: ({ response }) => {
+      if (response.data.data === "MEMBER_NOT_FOUND")
+        return toast.error("로그인 혹은 비밀번호가 틀렸습니다", {
+          toastId: "loginError",
+        });
     },
   });
   const onLogin = async (data) => {
@@ -31,7 +47,6 @@ const Signin = ({ setIsSignIn }) => {
     const res = await signinMutation.mutateAsync(signinRequest);
   };
   const Rediect_Url = "http://navis.kro.kr";
-  //const Rediect_Url = "http://hanghae1teamwork.s3-website.ap-northeast-2.amazonaws.com"
   const responseKakao = () => {
     window.location.href = `https://kauth.kakao.com/oauth/authorize?client_id=${process.env.REACT_APP_REST_API_KEY}&redirect_uri=${Rediect_Url}&response_type=code`;
   };

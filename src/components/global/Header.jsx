@@ -13,15 +13,20 @@ import Logo from "../../assets/logo.svg";
 import alarm from "../../assets/ic24/notification.svg";
 import profile from "../../assets/ic54/profile.svg";
 import { toast } from "react-toastify";
+import { EventSourcePolyfill, NativeEventSource } from "event-source-polyfill";
+import Alarm from "../alarm/Alarm";
 
 const Header = () => {
+  const EventSource = EventSourcePolyfill || NativeEventSource;
   const setLoginModal = useSetRecoilState(loginModalState);
   const [headerModal, setHeaderModal] = useState(false);
+  const [alarmModal, setAlarmModal] = useState(false);
   const navi = useNavigate();
   const code = window.location.search;
   const [currentPam, setCurrentPam] = useState(code);
   const [isCallBool, setIsCallBool] = useState(false);
   const token = getCookie("token");
+
   const getCode = useQuery(
     ["getCode", currentPam],
     () => getKaKaoLogin(currentPam),
@@ -36,11 +41,41 @@ const Header = () => {
   );
 
   useEffect(() => {
+    let eventSource;
     if (token === undefined && code !== "") {
       setCurrentPam(code);
       setIsCallBool(true);
     }
-  }, []);
+    if (token !== undefined) {
+      try {
+        eventSource = new EventSource(
+          `${process.env.REACT_APP_BASEURL}subscribe`,
+          {
+            headers: {
+              Authorization: token,
+            },
+            withCredentials: true,
+          }
+        );
+
+        eventSource.onmessage = (event) => {
+          if (!event.data.includes("EventStream Created."))
+            toast.success("알림이 도착했습니다", {
+              toastId: "alarm",
+            });
+        };
+
+        /* EVENTSOURCE ONERROR ------------------------------------------------------ */
+        eventSource.onerror = () => {
+          eventSource.close();
+        };
+      } catch (error) {}
+
+      return () => {
+        eventSource.close();
+      };
+    }
+  }, [token]);
 
   const onLogout = () => {
     removeCookie("token");
@@ -48,7 +83,7 @@ const Header = () => {
     navi("/");
     toast.success("정상적으로 로그아웃 되었습니다.");
     onModal();
-    window.location.reload()
+    window.location.reload();
   };
 
   const onShift = () => {
@@ -67,6 +102,12 @@ const Header = () => {
 
   const onModal = () => {
     setHeaderModal(!headerModal);
+    setAlarmModal(false);
+  };
+
+  const onModal_t = () => {
+    setAlarmModal(!alarmModal);
+    setHeaderModal(false);
   };
 
   return (
@@ -77,15 +118,16 @@ const Header = () => {
           Login
         </Button>
       ) : (
-        <div className="icons" onClick={onModal}>
-          <img src={alarm} alt="알림" />
-          <img src={profile} alt="프로필" />
+        <div className="icons">
+          <img src={alarm} alt="알림" onClick={onModal_t} />
+          <img src={profile} onClick={onModal} alt="프로필" />
           {headerModal === true && (
             <HeaderMenu>
               <li onClick={onShiftProfile}>프로필 수정</li>
               <li onClick={onLogout}>로그아웃</li>
             </HeaderMenu>
           )}
+          {alarmModal === true && <Alarm />}
         </div>
       )}
     </HeaderWrapper>
