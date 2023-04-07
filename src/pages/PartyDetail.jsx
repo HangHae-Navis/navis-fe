@@ -161,6 +161,12 @@ function PartyDetail() {
   const { register, formState: errors, handleSubmit } = useForm();
   const [surveyInputValues, setSurveyInputValues] = useState([]);
 
+  //설문 테스트용
+  const testList = [{type : "CheckBox", content : "이것은 체크박스입니다.", value : ["1번","2번","3번"]},
+  {type : "Descriptive", content : "이것은 서술형입니다.", value : "",},
+  {type : "Descriptive", content : "이것은 두 번째 서술형입니다.", value : "",},
+  {type : "Objective", content : "이것은 객관형입니다.", value : ["1번","2번","3번","4번"],}];
+
   useEffect(() => {
     const isUserCookie = getCookie("token");
     if (isUserCookie === undefined) {
@@ -689,7 +695,7 @@ function PartyDetail() {
             )
           ) : null}
           {dtype == "survey"
-          ? <Survey></Survey>
+          ? <Survey list = {testList}></Survey>
           : null}
 
         </ContentsWrapper>
