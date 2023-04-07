@@ -101,10 +101,12 @@ const Header = () => {
 
   const onModal = () => {
     setHeaderModal(!headerModal);
+    setAlarmModal(false);
   };
 
   const onModal_t = () => {
     setAlarmModal(!alarmModal);
+    setHeaderModal(false);
   };
 
   return (
