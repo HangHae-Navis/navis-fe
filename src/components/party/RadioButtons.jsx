@@ -7,44 +7,41 @@ const RadioButtons = ({
   partyRes,
   selected,
   setSelected,
-  type
+  type,
 }) => {
   useEffect(() => {
-    if( type == 'first'){
-    switch (selected) {
-      case 0:
-        categoryValue("all");
-        partyRes.refetch();
-        break;
-      case 1:
-        categoryValue("notice");
-        partyRes.refetch();
-        break;
-      case 2:
-        categoryValue("vote");
-        partyRes.refetch();
-        break;
-      case 3:
-        categoryValue("homework");
-        partyRes.refetch();
-        break;
-      case 4:
-        categoryValue("board");
-        partyRes.refetch();
-        break;
-      default:
-        break;
-    }
-    }
-    else{
+    if (type == "first") {
+      switch (selected) {
+        case 0:
+          categoryValue("all");
+          partyRes.refetch();
+          break;
+        case 1:
+          categoryValue("notice");
+          partyRes.refetch();
+          break;
+        case 2:
+          categoryValue("vote");
+          partyRes.refetch();
+          break;
+        case 3:
+          categoryValue("homework");
+          partyRes.refetch();
+          break;
+        case 4:
+          categoryValue("board");
+          partyRes.refetch();
+          break;
+        default:
+          break;
+      }
+    } else {
       switch (selected) {
         case 0:
           categoryValue("id");
-          console.log("1번 작동")
           break;
         case 1:
           categoryValue("important");
-          console.log("2번 작동")
           break;
         default:
           break;
@@ -68,13 +65,18 @@ const RadioButtons = ({
 };
 
 const RadioButtonStyled = styled.button`
-  width: 5rem;
+  width: max-content;
   height: 4rem;
   border: none;
   font-size: 1.75rem;
   background-color: transparent;
   color: ${({ selected }) => (selected ? "#585585" : "#585585")};
 `;
-const RadioBox = styled.div``;
+const RadioBox = styled.div`
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+`;
 
 export default RadioButtons;
