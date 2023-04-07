@@ -7,37 +7,81 @@ import copy from "../../assets/ic14/copy.svg";
 import write from "../../assets/ic24/write.svg";
 import remove from "../../assets/ic24/delete.svg";
 import { useState } from "react";
+import Button from "../../element/Button";
+import { useEffect } from "react";
 
-function Checkbox({ children, disabled, checked, onChange }) {
-    return (
-      <label>
-        <input
-          type="checkbox"
-          disabled={disabled}
-          checked={checked}
-          onChange={({ target: { checked } }) => onChange(checked)}
+const Checkbox = (props) => {
+  const [checkedItems, setCheckedItems] = useState(Array(props.props.length).fill(false));
+  const handleChange = (event) => {
+    const target = event.target;
+    const value = target.checked;
+    const index = parseInt(target.name.replace("checkbox", ""), 10) - 1;
+    setCheckedItems([...checkedItems.slice(0, index), value, ...checkedItems.slice(index + 1)]); 
+  };
+
+  useEffect(() => {
+    const res = []
+    console.log(checkedItems)
+    
+    checkedItems.map((item, index) =>{
+      if(item == true){
+        res.push(index)
+      }
+    })
+    props.changefunc({value : res, id : props.id})
+  }, [checkedItems])
+  
+  return (
+        props.props.map((item, index) => (
+        <div key={index}>
+          <label>
+        <StyledCheckbox
+          name={`checkbox${item}`}
+          checked={checkedItems[index]}
+          onChange={handleChange}
         />
-        {children}
-      </label>
-    );
+            {item}
+          </label>
+        </div>
+      ))
+  );
+}
+
+const StyledCheckbox = styled.input.attrs({ type: 'checkbox' })`
+  border-radius: 3px;
+  border: 1px solid #ccc;
+  background-color: #fff;
+  width: 16px;
+  height: 16px;
+  margin-right: 8px;
+  cursor: pointer;
+
+  &:checked {
+    background-color: transparent;
   }
+`;
+
 
 const Survey = (props) =>{
+    const [values, setValues] = useState(Array(props.list.length).fill([]));
+    const changeInputList = ({value, id}) =>{
+        let val = [...values];
+        val[id] = value
+        setValues(val)
+    }
 
-    const testList = [{type : "CheckBox", content : "이것은 체크박스입니다.", value : ["1번","2번","3번"]},
-                      {type : "Descriptive", content : "이것은 서술형입니다.", value : "",},
-                      {type : "Objective", content : "이것은 객관형입니다.", value : ["1번","2번","3번","4번"],}];
-
-    const [value, setValue] = useState()
+    const onPost = () => {
+      console.log(values)
+    }
     return (<>
     <SurveyBackground>
-        {testList.map((item, index) => {
+        {props.list.map((item, index) => {
   switch(item.type) {
     case 'CheckBox':
       return (
         <SurveyTypeCheckBox key={index}>
           <h1 className="name">{index+1}. {item.content}</h1>
-          {/* 체크박스 컴포넌트 구현 */}
+          <Checkbox id = {index} props = {item.value} changefunc = {changeInputList}></Checkbox>
         </SurveyTypeCheckBox>
       );
     case 'Descriptive':
@@ -46,18 +90,16 @@ const Survey = (props) =>{
           <h1 className="name">{index+1}. {item.content}</h1>
           
           <InputWrapper>
-            <form className="form" onSubmit={(e) => {e.preventDefault();}}>
+            <div className="form" onSubmit={(e) => {e.preventDefault();}}>
               <section className="center">
                 <div className="inputLayout">
                   <textarea
-                    cols="49"
-                    rows="2"
-                    value={value}
-                    onChange={(e) => setValue(e.target.value)}
+                    value={values[index]}
+                    onChange={(e) => changeInputList({value : e.target.value, id : index})}
                   />
                 </div>
               </section>
-            </form>
+            </div>
           </InputWrapper>
         </SurveyTypeDescriptive>
       );
@@ -72,12 +114,20 @@ const Survey = (props) =>{
       return null;
   }
 })}
+<Button onClick={onPost}>등록하기</Button>
     </SurveyBackground>
     </>)
 }
 
 export default Survey;
 
+const SubmiterButton = styled.button`
+  width: 8rem;
+  height: 3rem;
+  background-color: transparent;
+  border-radius: 2.4rem;
+  border: 0.1rem solid #5d5a88;
+`;
 const InputWrapper = styled.section`
   width: 100%;
   display: flex;
@@ -152,13 +202,13 @@ border: 0.2rem solid #C0C0C0;
 
 const SurveyBackground = styled.div`
 width: 100%;
-height: 100rem;
+height: 100%;
 gap: 2rem;
-    align-items: center;
+    align-items: flex-start;
     flex-direction: column;
     display: flex;
     background-color: #F6F6F6;
-    padding-top: 1rem;
+    padding: 1rem;
   overflow: hidden;
   border-radius: 2.4rem;
   .buttontext {
