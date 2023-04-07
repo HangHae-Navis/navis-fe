@@ -41,22 +41,38 @@ const Header = () => {
   );
 
   useEffect(() => {
+    let eventSource;
     if (token === undefined && code !== "") {
       setCurrentPam(code);
       setIsCallBool(true);
     }
     if (token !== undefined) {
-      const eventSource = new EventSource(
-        `${process.env.REACT_APP_BASEURL}subscribe`,
-        {
-          headers: {
-            Authorization: token,
-          },
-          withCredentials: true,
-        }
-      );
-      eventSource.onmessage = async (event) => {
-        console.log(event);
+      try {
+        eventSource = new EventSource(
+          `${process.env.REACT_APP_BASEURL}subscribe`,
+          {
+            headers: {
+              Authorization: token,
+            },
+            withCredentials: true,
+          }
+        );
+
+        eventSource.onmessage = (event) => {
+          if (!event.data.includes("EventStream Created."))
+            toast.success("알림이 도착했습니다", {
+              toastId: "alarm",
+            });
+        };
+
+        /* EVENTSOURCE ONERROR ------------------------------------------------------ */
+        eventSource.onerror = () => {
+          eventSource.close();
+        };
+      } catch (error) {}
+
+      return () => {
+        eventSource.close();
       };
     }
   }, [token]);
@@ -86,10 +102,12 @@ const Header = () => {
 
   const onModal = () => {
     setHeaderModal(!headerModal);
+    setAlarmModal(false);
   };
 
   const onModal_t = () => {
     setAlarmModal(!alarmModal);
+    setHeaderModal(false);
   };
 
   return (
@@ -101,7 +119,7 @@ const Header = () => {
         </Button>
       ) : (
         <div className="icons">
-          <img src={alarm} alt="알림" onClick={onModal_t} alt="알림" />
+          <img src={alarm} alt="알림" onClick={onModal_t} />
           <img src={profile} onClick={onModal} alt="프로필" />
           {headerModal === true && (
             <HeaderMenu>

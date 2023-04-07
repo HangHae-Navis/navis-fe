@@ -9,7 +9,7 @@ import { getLocalStorage } from "../../utils/infos/localStorage";
 
 const MarkdownRender = () => {
   const markdownValue = useRecoilValue(markdownState);
-  const userName = getLocalStorage("userInfo");
+  const userName = JSON.parse(getLocalStorage("userInfo")).nickname;
   const date = new Date();
   const markdownInfo = useRecoilValue(markdownInfoState);
   return (

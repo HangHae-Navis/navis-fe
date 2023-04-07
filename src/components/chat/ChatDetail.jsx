@@ -68,7 +68,6 @@ const ChatDetail = () => {
     setMessage("");
   };
 
-  console.log(messages)
   const test = async () => {
     const dto = {
       roomId: chatDetailInfo.id,
