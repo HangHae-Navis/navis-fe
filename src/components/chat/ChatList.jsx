@@ -23,7 +23,6 @@ const ChatList = ({ data, setChatDetailVisible }) => {
         <span>{data.nickname}</span>
         <p>{data.lastMessage}</p>
       </ChatInfo>
-      <Alarm />
     </ChatListLayout>
   );
 };
