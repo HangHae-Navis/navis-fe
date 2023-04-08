@@ -154,28 +154,13 @@ function PartyDetail() {
   const [homeWorkUnSubmmiter, setHomeWorkUnSubmmiter] = useState([]);
   const [homeWorkInputFileList, setHomeWorkInputFileList] = useState([]);
   const [homeWorkPostedFileList, setHomeWorkPostedFileList] = useState([]);
+  const [questionList, setQuestionList] = useState([]);
   const [voteSelectedOption, setVoteSelectedOption] = useState();
   const [submitAgain, setSubmitAgain] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [courrentModalContent, setCourrentModalContent] = useState();
   const { register, formState: errors, handleSubmit } = useForm();
   const [surveyInputValues, setSurveyInputValues] = useState([]);
-
-  //설문 테스트용
-  const testList = [
-    {
-      type: "CheckBox",
-      content: "이것은 체크박스입니다.",
-      value: ["1번", "2번", "3번"],
-    },
-    { type: "Descriptive", content: "이것은 서술형입니다.", value: "" },
-    { type: "Descriptive", content: "이것은 두 번째 서술형입니다.", value: "" },
-    {
-      type: "Objective",
-      content: "이것은 객관형입니다.",
-      value: ["1번", "2번", "3번", "4번"],
-    },
-  ];
 
   useEffect(() => {
     const isUserCookie = getCookie("token");
@@ -232,6 +217,10 @@ function PartyDetail() {
             }
             // do something
             break;
+          case "survey":
+            setQuestionList(data.data.questionResponseDto);
+            break;
+
           default:
             break;
         }
@@ -754,11 +743,11 @@ function PartyDetail() {
               </>
             )
           ) : null}
-          {dtype == "survey" ? <Survey list={testList}></Survey> : null}
+          {dtype == "survey" ? <Survey list={questionList}></Survey> : null}
         </ContentsWrapper>
         <Commentcontainer>
           <CommentTopWrapper>
-            <span>댓글 {getComment?.data?.data?.data?.content.length}</span>
+            <span>{getComment?.data?.data?.data?.content.length}</span>
             <img src={conver} alt="댓글" />
           </CommentTopWrapper>
           <CommentsWrapper />

@@ -15,16 +15,15 @@ const Checkbox = (props) => {
   const handleChange = (event) => {
     const target = event.target;
     const value = target.checked;
-    const index = parseInt(target.name.replace("checkbox", ""), 10) - 1;
+    const index = parseInt(target.name.replace("checkbox", ""), 10);
     setCheckedItems([...checkedItems.slice(0, index), value, ...checkedItems.slice(index + 1)]); 
   };
-
   useEffect(() => {
     const res = []
     console.log(checkedItems)
     
     checkedItems.map((item, index) =>{
-      if(item == true){
+      if(item === true){
         res.push(index)
       }
     })
@@ -36,17 +35,46 @@ const Checkbox = (props) => {
         <div key={index}>
           <label>
         <StyledCheckbox
-          name={`checkbox${item}`}
+          name={`checkbox${index}`}
           checked={checkedItems[index]}
           onChange={handleChange}
         />
-            {item}
+            <span className="smallname">{item}</span>
           </label>
         </div>
       ))
   );
 }
+const RadioButton = (props) =>{
 
+  console.log(props)
+  const [selectedOption, setSelectedOption] = useState(["NONE"]);
+
+  const handleOptionChange = (event) => {
+    setSelectedOption(event.target.value);
+    console.log(event.target.value)
+  };
+
+  useEffect(() => {
+    const res = []
+    console.log(selectedOption)
+    res.push(selectedOption)
+    props.changefunc({value : res, id : props.id})
+  }, [selectedOption])
+  
+  return(<>
+  {props.props.map((item, index) =>(<label key = {index}>
+        <input
+          type="radio"
+          name="options"
+          value= {index}
+          checked={selectedOption === index}
+          onChange={handleOptionChange}
+        />
+        {item}
+      </label>))}
+  </>)
+}
 const StyledCheckbox = styled.input.attrs({ type: 'checkbox' })`
   border-radius: 3px;
   border: 1px solid #ccc;
@@ -57,40 +85,54 @@ const StyledCheckbox = styled.input.attrs({ type: 'checkbox' })`
   cursor: pointer;
 
   &:checked {
-    background-color: transparent;
   }
 `;
 
 
+  //설문 테스트용
+  const testList = [{type : "CheckBox", content : "이것은 체크박스입니다.", value : ["1번","2번","3번"]},
+  {type : "Descriptive", content : "이것은 서술형입니다.", value : "",},
+  {type : "Descriptive", content : "이것은 두 번째 서술형입니다.", value : "",},
+  {type : "Objective", content : "이것은 객관형입니다.", value : ["1번","2번","3번","4번"],}];
+
 const Survey = (props) =>{
-    const [values, setValues] = useState(Array(props.list.length).fill([]));
-    const changeInputList = ({value, id}) =>{
+    const [values, setValues] = useState(Array(props.list.length).fill(['NONE']));
+    const changeInputList = ({value, id, survId}) =>{
         let val = [...values];
-        val[id] = value
+        val[id] = [value]
         setValues(val)
+        console.log(survId)
     }
 
+    console.log(props)
+
     const onPost = () => {
+      const payload = {
+        groupId : props.groupId,
+        detailId : props.detailId,
+        answerRequestDto : values
+      }
+      console.log(payload)
       console.log(values)
     }
     return (<>
     <SurveyBackground>
-        {props.list.map((item, index) => {
+        { props.list.map((item, index) => {
   switch(item.type) {
-    case 'CheckBox':
+    case 'CHECKBOX':
       return (
         <SurveyTypeCheckBox key={index}>
-          <h1 className="name">{index+1}. {item.content}</h1>
-          <Checkbox id = {index} props = {item.value} changefunc = {changeInputList}></Checkbox>
+          <h1 className="name">{index+1}. {item.question}</h1>
+          <Checkbox id = {index} props = {item.optionList} changefunc = {changeInputList} survId ={item.id}></Checkbox>
         </SurveyTypeCheckBox>
       );
-    case 'Descriptive':
+    case 'DESCRIPTIVE':
       return (
         <SurveyTypeDescriptive key={index}>
-          <h1 className="name">{index+1}. {item.content}</h1>
+          <h1 className="name">{index+1}. {item.question}</h1>
           
           <InputWrapper>
-            <div className="form" onSubmit={(e) => {e.preventDefault();}}>
+            <div className="form">
               <section className="center">
                 <div className="inputLayout">
                   <textarea
@@ -103,11 +145,11 @@ const Survey = (props) =>{
           </InputWrapper>
         </SurveyTypeDescriptive>
       );
-    case 'Objective':
+    case "OBJECTIVE":
       return (
         <SurveyTypeObjective key={index}>
-          <h1 className="name">{index+1}. {item.content}</h1>
-          {/* 객관형 컴포넌트 구현 */}
+          <h1 className="name">{index+1}. {item.question}</h1>
+          <RadioButton  id = {index} props = {item.optionList} survId ={item.id} changefunc = {changeInputList}/>
         </SurveyTypeObjective>
       );
     default:
@@ -234,7 +276,7 @@ gap: 2rem;
   .smallname {
     font-weight: 400;
     font-size: 1.8rem;
-    color: #9795b5;
+    color: #222222;
     text-overflow: ellipsis;
     white-space: nowrap;
   }
