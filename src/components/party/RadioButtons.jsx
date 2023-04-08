@@ -76,7 +76,7 @@ const RadioBox = styled.div`
   width: 100%;
   display: flex;
   align-items: center;
-  gap: 0.8rem;
+  gap: 2rem;
 `;
 
 export default RadioButtons;
