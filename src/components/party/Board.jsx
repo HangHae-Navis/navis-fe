@@ -99,8 +99,7 @@ const HashTag = styled.span`
 
 const BoardBox = styled.div`
   cursor: pointer;
-  width: 30vw;
-  max-width: 47rem;
+  width: 100%;
   min-width: 25rem;
   height: 24.7rem;
   flex-direction: column;
