@@ -7,7 +7,6 @@ import { FullDateCheck } from "../../element/DateCheck";
 import StarTag from "../global/StarTag";
 
 const FloatingMenu = (props) => {
-  console.log(props);
   const navi = useNavigate();
 
   return (
