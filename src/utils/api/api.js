@@ -154,6 +154,26 @@ export const deletePage = async (payload) => {
 
 /*-----------------------상세 페이지 기능------------------------------*/
 
+export const postSurveyData = async (data) =>{
+  
+  const payload = data.data;
+  const res = await axios.post(
+    `api/${data.groupId}/surveys/${data.detailId}/fillForm`,
+    payload
+  );
+  return res;
+}
+
+export const putSurveyData = async (data) =>{
+  
+  const payload = data.data;
+  const res = await axios.put(
+    `api/${data.groupId}/surveys/${data.detailId}/updataForm`,
+    payload
+  );
+  return res;
+}
+
 export const putHomeWorkData = async (data) => {
   console.log(data);
   const payload = { multipartFiles: data.data };
