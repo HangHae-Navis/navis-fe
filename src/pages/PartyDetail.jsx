@@ -218,7 +218,7 @@ function PartyDetail() {
             // do something
             break;
           case "survey":
-              setQuestionList(data.data.questionResponseDto)
+              setQuestionList(data?.data?.questionResponseDto)
             break;
 
           default:
@@ -439,10 +439,10 @@ function PartyDetail() {
     console.log(showModal);
   };
 
-  if (res.isLoading && getComment.isLoading) {
+  if (res.isLoading || getComment.isLoading) {
     return <></>;
   }
-  if (res.isError && getComment.isError) {
+  if (res.isError || getComment.isError) {
     return <></>;
   }
   return (
@@ -694,7 +694,7 @@ function PartyDetail() {
             )
           ) : null}
           {dtype == "survey"
-          ? <Survey list = {questionList}></Survey>
+          ? <Survey list = {res?.data?.data?.data?.questionResponseDto}></Survey>
           : null}
 
         </ContentsWrapper>

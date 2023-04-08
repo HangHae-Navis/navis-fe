@@ -68,7 +68,7 @@ const RadioButton = (props) =>{
           type="radio"
           name="options"
           value= {index}
-          checked={selectedOption === index}
+          checked={selectedOption == index}
           onChange={handleOptionChange}
         />
         {item}
@@ -96,14 +96,21 @@ const StyledCheckbox = styled.input.attrs({ type: 'checkbox' })`
   {type : "Objective", content : "이것은 객관형입니다.", value : ["1번","2번","3번","4번"],}];
 
 const Survey = (props) =>{
-    const [values, setValues] = useState(Array(props.list.length).fill(['NONE']));
+  console.log(props)
+  const [values, setValues] = useState(props.list.map(item => ({ questionID: item.id, answerList: [''] })));
     const changeInputList = ({value, id, survId}) =>{
         let val = [...values];
-        val[id] = [value]
+        console.log(val)
+        val[id].answerList = [value]
         setValues(val)
         console.log(survId)
     }
 
+
+  //useeffect로 인풋 체크해야겠어.
+  for(let i =0; i< values.length; i++){
+    console.log(values[i])
+  }
     console.log(props)
 
     const onPost = () => {
@@ -136,7 +143,7 @@ const Survey = (props) =>{
               <section className="center">
                 <div className="inputLayout">
                   <textarea
-                    value={values[index]}
+                    value={values[index].answerList}
                     onChange={(e) => changeInputList({value : e.target.value, id : index})}
                   />
                 </div>
