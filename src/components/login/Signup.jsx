@@ -114,6 +114,7 @@ const Signup = ({ setIsSignIn }) => {
             placeholder="비밀번호 확인을 입력하세요."
             register={register}
             name="passwordConfirm"
+            full={true}
           />
         </InputWrapper>
         <Button full={true} disabled={verify === false ? true : false}>
@@ -134,6 +135,9 @@ const SignUpWrapper = styled.div`
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  @media (max-width: 750px) {
+    width: 100%;
+  }
 `;
 
 const SignUpForm = styled.form`
@@ -148,6 +152,7 @@ const SignUpForm = styled.form`
     text-align: right;
     font-size: 1.2rem;
     span {
+      cursor: pointer;
       font-size: 1.2rem;
       text-decoration: underline;
     }

@@ -54,19 +54,17 @@ const Party = () => {
         setGroupId(pam.id);
         setIsAdmin(data.data.admin);
         setCarouselList(data.data.deadlines);
-        console.log(data)
       },
     }
   );
 
   useEffect(() => {
     let sortedGroupList = [...groupList];
-
-    if (categoryValueSecond !== 'createdAt') {
+    if (categoryValueSecond !== "createdAt") {
       sortedGroupList.sort((a, b) => {
-        if (categoryValueSecond === 'id') {
+        if (categoryValueSecond === "id") {
           return b.id - a.id;
-        } else if (categoryValueSecond === 'important') {
+        } else if (categoryValueSecond === "important") {
           return b.important - a.important;
         }
       });
@@ -74,7 +72,6 @@ const Party = () => {
 
     setGroupList(sortedGroupList);
   }, [categoryValueSecond]);
-
 
   useEffect(() => {
     const isUserCookie = getCookie("token");
@@ -100,26 +97,26 @@ const Party = () => {
             />
           </LeftContainer>
           <RightTotalContainer>
-          <CarouselContainer>
-            <CarouselTitle>
-              <svg
-                width="22"
-                height="26"
-                viewBox="0 0 22 26"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  d="M11 10.3333V15.6667H13.6667M1 15C1 16.9778 1.58649 18.9112 2.6853 20.5557C3.78412 22.2002 5.3459 23.4819 7.17317 24.2388C9.00043 24.9957 11.0111 25.1937 12.9509 24.8079C14.8907 24.422 16.6725 23.4696 18.0711 22.0711C19.4696 20.6725 20.422 18.8907 20.8079 16.9509C21.1937 15.0111 20.9957 13.0004 20.2388 11.1732C19.4819 9.3459 18.2002 7.78412 16.5557 6.6853C14.9112 5.58649 12.9778 5 11 5C8.34784 5 5.8043 6.05357 3.92893 7.92893C2.05357 9.8043 1 12.3478 1 15V15ZM11 5V1V5ZM7 1H15H7Z"
-                  stroke="white"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
-              <h1 className="title">24시간 내 마감</h1>
-            </CarouselTitle>
-          </CarouselContainer>
+            <CarouselContainer>
+              <CarouselTitle>
+                <svg
+                  width="22"
+                  height="26"
+                  viewBox="0 0 22 26"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M11 10.3333V15.6667H13.6667M1 15C1 16.9778 1.58649 18.9112 2.6853 20.5557C3.78412 22.2002 5.3459 23.4819 7.17317 24.2388C9.00043 24.9957 11.0111 25.1937 12.9509 24.8079C14.8907 24.422 16.6725 23.4696 18.0711 22.0711C19.4696 20.6725 20.422 18.8907 20.8079 16.9509C21.1937 15.0111 20.9957 13.0004 20.2388 11.1732C19.4819 9.3459 18.2002 7.78412 16.5557 6.6853C14.9112 5.58649 12.9778 5 11 5C8.34784 5 5.8043 6.05357 3.92893 7.92893C2.05357 9.8043 1 12.3478 1 15V15ZM11 5V1V5ZM7 1H15H7Z"
+                    stroke="white"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                </svg>
+                <h1 className="title">24시간 내 마감</h1>
+              </CarouselTitle>
+            </CarouselContainer>
           </RightTotalContainer>
         </PageContainer>
       </>
@@ -137,10 +134,13 @@ const Party = () => {
             groupId={pam.id}
             isAdmin={partyRes.data.data.data.admin}
           />
-        <FloatingMenu props = {partyRes.data.data.data.recentlyViewed} groupId = {groupId}
-          groupName={groupName}
-          groupInfo={groupInfo}
-          groupCode={groupCode}></FloatingMenu>
+          <FloatingMenu
+            props={partyRes.data.data.data.recentlyViewed}
+            groupId={groupId}
+            groupName={groupName}
+            groupInfo={groupInfo}
+            groupCode={groupCode}
+          ></FloatingMenu>
         </LeftContainer>
         <RightTotalContainer>
           <CarouselContainer>
@@ -166,22 +166,22 @@ const Party = () => {
               {carouselList.map((item) => {
                 return (
                   <Carousel
-                  key={item.id}
-                  groupId={pam.id}
-                  createdAt={item.createdAt}
-                  content={item.content}
-                  nickName={item.nickname}
-                  subtitle={item.subtitle}
-                  title={item.title}
-                  id={item.id}
-                  dtype={item.dtype}
-                  important={item.important}
-                  hashtagList={item.hashtagList}
-                  expirationDate={item.expirationDate}
-                  groupName={partyRes.data.data.data.groupName}
-                  groupInfo={partyRes.data.data.data.groupInfo}
-                  groupCode={partyRes.data.data.data.groupCode}
-                  isAdmin={partyRes.data.data.data.admin}
+                    key={item.id}
+                    groupId={pam.id}
+                    createdAt={item.createdAt}
+                    content={item.content}
+                    nickName={item.nickname}
+                    subtitle={item.subtitle}
+                    title={item.title}
+                    id={item.id}
+                    dtype={item.dtype}
+                    important={item.important}
+                    hashtagList={item.hashtagList}
+                    expirationDate={item.expirationDate}
+                    groupName={partyRes.data.data.data.groupName}
+                    groupInfo={partyRes.data.data.data.groupInfo}
+                    groupCode={partyRes.data.data.data.groupCode}
+                    isAdmin={partyRes.data.data.data.admin}
                   />
                 );
               })}
@@ -194,18 +194,18 @@ const Party = () => {
               partyRes={partyRes}
               selected={selected}
               setSelected={setSelected}
-              type={'first'}
+              type={"first"}
             />
             <RadioBox>
-            <RadioButtons
-              options={optionsSecond}
-              categoryValue={setCategoryValueSecond}
-              partyRes={partyRes}
-              selected={selectedSecond}
-              setSelected={setSelectedSecond}
-              type={'second'}
-            />
-            <h1 className="check">만료 제외</h1>
+              <RadioButtons
+                options={optionsSecond}
+                categoryValue={setCategoryValueSecond}
+                partyRes={partyRes}
+                selected={selectedSecond}
+                setSelected={setSelectedSecond}
+                type={"second"}
+              />
+              {/* <h1 className="check">만료 제외</h1> */}
             </RadioBox>
           </RadioBox>
           <RightContainer>
@@ -240,16 +240,21 @@ const Party = () => {
 };
 
 const RadioBox = styled.div`
-display:flex;
-gap : 1rem;
-flex-direction: row;
-align-items: center;
-justify-content: space-between;
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  justify-content: space-between;
 
-.check {
-  font-size: 1.75rem;
-  background-color: transparent;
-  color: ${({ selected }) => (selected ? "#585585" : "#585585")};
+  @media (max-width: 600px) {
+    display: flex;
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .check {
+    font-size: 1.75rem;
+    background-color: transparent;
+    color: ${({ selected }) => (selected ? "#585585" : "#585585")};
   }
 `;
 
