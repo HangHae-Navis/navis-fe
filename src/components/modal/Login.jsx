@@ -52,7 +52,11 @@ const LoginModalBackGround = styled.div`
 const LoginModalWrapper = styled(motion.section)`
   max-width: 80rem;
   max-height: 70rem;
-  width: 90vw;
+  width: 94.5vw;
+  @media (max-width: 750px) {
+    width: 70vw;
+    height: 55rem;
+  }
   height: 80vw;
   display: flex;
   background-color: white;
@@ -60,6 +64,9 @@ const LoginModalWrapper = styled(motion.section)`
 
 const ContentWrapper = styled.section`
   width: 50%;
+  @media (max-width: 750px) {
+    width: 0%;
+  }
   height: 100%;
   background-color: ${(props) => props.theme.color.zeroTwo};
 `;
