@@ -1,17 +1,9 @@
 import React from "react";
-import {
-  BrowserRouter,
-  Route,
-  Routes,
-  useLocation,
-  useParams,
-} from "react-router-dom";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
 import Home from "../pages/Home";
 import Main from "../pages/Main";
 import Party from "../pages/Party";
 import Profile from "../pages/Profile";
-import MeetHome from "../pages/MeetHome";
-import MeetingRoom from "../pages/MeetingRoom";
 import EditPost from "../pages/EditPost";
 import Admin from "../pages/Admin";
 import { path } from "../constants/path";
@@ -33,8 +25,6 @@ const Router = () => {
         <Route element={<Party />} path={`/${path.PARTY}`} />
         <Route element={<PartyDetail />} path={`/${path.PARTYDEATAIL}`} />
         <Route element={<Profile />} path={`/${path.PROFILE}`} />
-        <Route element={<MeetHome />} path={`/${path.MEETHOME}`} />
-        <Route element={<MeetingRoom />} path={`/${path.MEETINGROOM}`} />
         <Route element={<EditPost />} path={`/${path.EDITPOST}`} />
         <Route element={<Admin />} path={`/${path.ADMIN}`} />
         <Route element={<Editor />} path={`/test`} />

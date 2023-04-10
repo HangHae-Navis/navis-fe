@@ -42,12 +42,11 @@ export const SlideChart = (props) => {
   const value = props.voteMax == 0 ? 0 : props.count / props.voteMax;
   return (
     <ChartContainer>
-    <BarText>
-      <h1 className="votename">{props.option}</h1>
-      <h1 className="votename">{props.count}</h1>
-    </BarText>
-      <Bar width={value * 100}>
-      </Bar>
+      <BarText>
+        <h1 className="votename">{props.option}</h1>
+        <h1 className="votename">{props.count}</h1>
+      </BarText>
+      <Bar width={value * 100}></Bar>
     </ChartContainer>
   );
 };
@@ -156,7 +155,7 @@ function PartyDetail() {
   const [homeWorkUnSubmmiter, setHomeWorkUnSubmmiter] = useState([]);
   const [homeWorkInputFileList, setHomeWorkInputFileList] = useState([]);
   const [homeWorkPostedFileList, setHomeWorkPostedFileList] = useState([]);
-  const [questionList, setQuestionList] = useState([])
+  const [questionList, setQuestionList] = useState([]);
   const [voteSelectedOption, setVoteSelectedOption] = useState();
   const [submitAgain, setSubmitAgain] = useState(false);
   const [submitSurvey, setSubmitSurvey] = useState(false);
@@ -165,7 +164,6 @@ function PartyDetail() {
   const { register, formState: errors, handleSubmit } = useForm();
   const [surveyInputValues, setSurveyInputValues] = useState([]);
   const [surveyDTO, setSurveyDTO] = useState();
-
 
   useEffect(() => {
     const isUserCookie = getCookie("token");
@@ -186,7 +184,7 @@ function PartyDetail() {
   const groupInfo = searchParams.get("groupInfo");
   const groupCode = searchParams.get("groupCode");
   const res = useQuery(
-    ["partyDetail", {id: pam.id}],
+    ["partyDetail", { id: pam.id }],
     () => getBoardDetailPage({ groupId, detailId, dtype }),
     {
       onSuccess: ({ data }) => {
@@ -223,9 +221,9 @@ function PartyDetail() {
             // do something
             break;
           case "survey":
-              setQuestionList(data.data.questionResponseDto)
-              setSubmitSurvey(data.data.submit)
-              setSurveyDTO(data.data)
+            setQuestionList(data.data.questionResponseDto);
+            setSubmitSurvey(data.data.submit);
+            setSurveyDTO(data.data);
             break;
 
           default:
@@ -377,27 +375,10 @@ function PartyDetail() {
     ]);
     console.log(file);
     console.log(homeWorkInputFileList);
-    /*
-    let a = null;
-    console.log(file)
-    const reader = new FileReader();
-    if(file != null){
-      a= reader.readAsDataURL(file)
-    }
-    reader.onloadend = () =>{
-      setHomeWorkInputFileList(homeWorkInputFileList => [...homeWorkInputFileList, reader.result])
-    }
-    console.log(homeWorkInputFileList.length)
-    console.log(reader.result)*/
   };
 
   const deleteInput = (data) => {
-    console.log(data);
-    console.log(homeWorkInputFile);
     setHomeWorkInputFile(homeWorkInputFile.filter((item) => item.id != data));
-    console.log(homeWorkInputFile);
-
-    console.log(data);
   };
 
   const postOrPutHomeWork = async (data) => {
@@ -443,10 +424,14 @@ function PartyDetail() {
   const CheckUpModal = (props) => {
     setCourrentModalContent(props);
     setShowModal(!showModal);
-    console.log(showModal);
   };
 
-  if (res.isLoading || res.isError || getComment.isLoading || getComment.isError) {
+  if (
+    res.isLoading ||
+    res.isError ||
+    getComment.isLoading ||
+    getComment.isError
+  ) {
     return <></>;
   }
   return (
@@ -467,10 +452,13 @@ function PartyDetail() {
           groupId={groupId}
           isAdmin={isAdmin}
         />
-        <FloatingMenu  props = {res?.data?.data?.data?.recentlyViewed} groupId = {groupId}
+        <FloatingMenu
+          props={res?.data?.data?.data?.recentlyViewed}
+          groupId={groupId}
           groupName={groupName}
           groupInfo={groupInfo}
-          groupCode={groupCode}></FloatingMenu>
+          groupCode={groupCode}
+        ></FloatingMenu>
         <ContentsWrapper>
           <MarkdownTitle postInfo={postInfo} dtype={dtype} />
           <ReactMarkdownWrapper
@@ -571,13 +559,21 @@ function PartyDetail() {
               res?.data?.data?.data?.submitResponseDto == null) ||
             submitAgain == true ? (
               <form
-                onSubmit={(e) => { e.preventDefault(); handleSubmit(postOrPutHomeWork);}}
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  handleSubmit(postOrPutHomeWork);
+                }}
               >
                 <HomeWorkSubmitContainer>
                   <HomeWorkSubmitButtonBox>
-                    <Button onClick={() => addInput("file")}>파일 추가하기</Button>
+                    <Button onClick={() => addInput("file")}>
+                      파일 추가하기
+                    </Button>
                     {/*<Button onClick={()=> addInput("link")}>링크 추가하기</Button>*/}
-                    <Button onClick={handleSubmit(postOrPutHomeWork)} transparent={true}>
+                    <Button
+                      onClick={handleSubmit(postOrPutHomeWork)}
+                      transparent={true}
+                    >
                       과제 제출하기
                     </Button>
                   </HomeWorkSubmitButtonBox>
@@ -586,8 +582,16 @@ function PartyDetail() {
                       <h1 className="name">제출할 파일</h1>
                       {homeWorkInputFile.map((item) => (
                         <InputContainer key={item.id}>
-                          <StyledInput type="file" onChange={FileHandler}></StyledInput>
-                          <section className="name" onClick={() => deleteInput(item.id)}>X</section>
+                          <StyledInput
+                            type="file"
+                            onChange={FileHandler}
+                          ></StyledInput>
+                          <section
+                            className="name"
+                            onClick={() => deleteInput(item.id)}
+                          >
+                            X
+                          </section>
                         </InputContainer>
                       ))}
                     </HomeworkContentContainer>
@@ -608,11 +612,19 @@ function PartyDetail() {
                     false ? (
                       res?.data?.data?.data?.submitResponseDto.feedbackList
                         ?.length == 0 ? (
-                        <Button transparent={true} onClick={() => doDeleteHomework({ groupId, detailId })}>
+                        <Button
+                          transparent={true}
+                          onClick={() =>
+                            doDeleteHomework({ groupId, detailId })
+                          }
+                        >
                           제출 취소하기
                         </Button>
                       ) : (
-                        <Button transparent={true} onClick={() => setSubmitAgain(true)}>
+                        <Button
+                          transparent={true}
+                          onClick={() => setSubmitAgain(true)}
+                        >
                           다시 제출하기
                         </Button>
                       )
@@ -632,7 +644,14 @@ function PartyDetail() {
                         </h1>
                       </PostedHomeWorkFileBox>
                       {homeWorkPostedFileList?.map((item) => (
-                        <a key={item} href={`${item.fileUrl}?download=true`} className="filename">{" "}{item.fileName}</a>
+                        <a
+                          key={item}
+                          href={`${item.fileUrl}?download=true`}
+                          className="filename"
+                        >
+                          {" "}
+                          {item.fileName}
+                        </a>
                       ))}
                     </HomeworkContentContainer>
 
@@ -646,15 +665,23 @@ function PartyDetail() {
                               <>
                                 <h1 className="name">확정됨</h1>
                                 {res?.data?.data?.data?.submitResponseDto.feedbackList.map(
-                                  (item, index) => (<h1 key={item} className="name">{index + 1}번째 피드백 : {item}</h1>)
+                                  (item, index) => (
+                                    <h1 key={item} className="name">
+                                      {index + 1}번째 피드백 : {item}
+                                    </h1>
+                                  )
                                 )}
                               </>
                             ) : (
                               <>
                                 <h1 className="name">반려됨</h1>
                                 {res?.data?.data?.data?.submitResponseDto.feedbackList.map(
-                                  (item, index) => (<h1 key={item} className="name">{index + 1}번째 사유 : {item}</h1>)
-                                  )}
+                                  (item, index) => (
+                                    <h1 key={item} className="name">
+                                      {index + 1}번째 사유 : {item}
+                                    </h1>
+                                  )
+                                )}
                               </>
                             )
                           ) : (
@@ -680,16 +707,24 @@ function PartyDetail() {
                       <SubmitterContainer key={item.id}>
                         <h1 className="smallname">{item.nickname}</h1>
                         <SubmitterBox>
-                          <h1 className="smallname">{ShortCheck(item.createdAt)} 제출</h1>
-                          <SubmiterButton onClick={() => CheckUpModal(item)} className="buttontext">제출 과제</SubmiterButton>
+                          <h1 className="smallname">
+                            {ShortCheck(item.createdAt)} 제출
+                          </h1>
+                          <SubmiterButton
+                            onClick={() => CheckUpModal(item)}
+                            className="buttontext"
+                          >
+                            제출 과제
+                          </SubmiterButton>
                         </SubmitterBox>
                       </SubmitterContainer>
                     ))}
                   </HomeworkContentContainer>
                   <HomeworkContentContainer borderColor="#CF5C4C">
                     <h1 className="name">미제출자</h1>
-                    {homeWorkUnSubmmiter.map((item) => (<SubmitterContainer key={item.id}>
-                      <h1 className="smallname">{item.nickname}</h1>
+                    {homeWorkUnSubmmiter.map((item) => (
+                      <SubmitterContainer key={item.id}>
+                        <h1 className="smallname">{item.nickname}</h1>
                       </SubmitterContainer>
                     ))}
                   </HomeworkContentContainer>
@@ -697,10 +732,17 @@ function PartyDetail() {
               </>
             )
           ) : null}
-          {dtype == "survey"
-          ? <Survey role = {res?.data?.data?.data?.role} submit = {submitSurvey} res = {res} res0 = {surveyDTO} groupId = {groupId} detailId = {detailId} list = {questionList}></Survey>
-          : null}
-
+          {dtype == "survey" ? (
+            <Survey
+              role={res?.data?.data?.data?.role}
+              submit={submitSurvey}
+              res={res}
+              res0={surveyDTO}
+              groupId={groupId}
+              detailId={detailId}
+              list={questionList}
+            ></Survey>
+          ) : null}
         </ContentsWrapper>
         <Commentcontainer>
           <CommentTopWrapper>
@@ -725,7 +767,13 @@ function PartyDetail() {
           </CommentMapWrapper>
           <CommentInputWrapper>
             <img src={profile} alt="프로필" />
-            <form className="form" onSubmit={(e) => {e.preventDefault();onPost(comment);}}>
+            <form
+              className="form"
+              onSubmit={(e) => {
+                e.preventDefault();
+                onPost(comment);
+              }}
+            >
               <section className="center">
                 <span>{myUserName}</span>
                 <div className="inputLayout">
@@ -904,6 +952,7 @@ const PageContainer = styled.div`
   flex-direction: column;
   ${flexCenter}
   margin: 0 auto;
+  margin-top: 14rem;
 `;
 
 const ReactMarkdownWrapper = styled(ReactMarkdown)`
@@ -995,7 +1044,7 @@ const ContentsWrapper = styled.section`
   width: 60vw;
   margin-left: 6rem;
   margin-bottom: 2rem;
-  gap:1rem;
+  gap: 1rem;
 `;
 
 const CommentsWrapper = styled.section`
