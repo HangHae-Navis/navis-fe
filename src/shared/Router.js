@@ -1,5 +1,11 @@
 import React from "react";
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import {
+  BrowserRouter,
+  Route,
+  Routes,
+  useLocation,
+  useParams,
+} from "react-router-dom";
 import Home from "../pages/Home";
 import Main from "../pages/Main";
 import Party from "../pages/Party";
@@ -14,6 +20,7 @@ import PartyDetail from "../pages/PartyDetail";
 import PartyRegist from "../components/modal/PartyRegist";
 import { useRecoilValue } from "recoil";
 import { partyRegistModalState } from "../store/atom";
+import Editor from "../pages/Editor";
 
 const Router = () => {
   const isPartyRegistModal = useRecoilValue(partyRegistModalState);
@@ -30,6 +37,7 @@ const Router = () => {
         <Route element={<MeetingRoom />} path={`/${path.MEETINGROOM}`} />
         <Route element={<EditPost />} path={`/${path.EDITPOST}`} />
         <Route element={<Admin />} path={`/${path.ADMIN}`} />
+        <Route element={<Editor />} path={`/test`} />
       </Routes>
       {isPartyRegistModal === true && <PartyRegist />}
     </BrowserRouter>

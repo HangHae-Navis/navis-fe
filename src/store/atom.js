@@ -45,3 +45,39 @@ export const chatInfoState = atom({
   key: `state${v4()}`,
   default: null,
 });
+
+export const editorState = atom({
+  key: `state${v4()}`,
+  default: {
+    title: "",
+    subtitle: "",
+    content: "",
+    important: 0,
+    hashtagList: "",
+    expirationDate: 0,
+    optionList: "",
+  },
+});
+
+// requestDto.append("title", markdownInfo.title);
+// requestDto.append("subtitle", data.subtitle);
+// requestDto.append("content", markdownValue);
+// requestDto.append("important", data.important);
+// requestDto.append("hashtagList", data.tags);
+
+// if (data.writing === "게시글") {
+//   const res = await boardMutation.mutateAsync(requestDto);
+// } else if (data.writing === "공지사항") {
+//   const res = await noticeMutation.mutateAsync(requestDto);
+// } else if (data.writing === "과제") {
+//   requestDto.append(
+//     "expirationDate",
+//     new Date(data.datetime).getTime() / 1000
+//   );
+//   const res = await homeWorkMutation.mutateAsync(requestDto);
+// } else if (data.writing === "투표") {
+//   requestDto.append("optionList", data.votes);
+//   requestDto.append(
+//     "expirationDate",
+//     new Date(data.datetime).getTime() / 1000
+//   );
