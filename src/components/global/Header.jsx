@@ -139,8 +139,11 @@ const HeaderMenu = styled.ul`
   height: 8rem;
   display: flex;
   flex-direction: column;
-  background-color: ${(props) => props.theme.color.zeroTwo};
-  border-radius: 1.6rem;
+  background: rgba(246, 246, 246, 0.8);
+  box-shadow: 4px 4px 16px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(16px);
+
+  border-radius: 16px;
 
   li {
     cursor: pointer;
