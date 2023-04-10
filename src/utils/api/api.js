@@ -168,7 +168,7 @@ export const putSurveyData = async (data) =>{
   
   const payload = data.data;
   const res = await axios.put(
-    `api/${data.groupId}/surveys/${data.detailId}/updataForm`,
+    `api/${data.groupId}/surveys/${data.detailId}/updateForm`,
     payload
   );
   return res;
