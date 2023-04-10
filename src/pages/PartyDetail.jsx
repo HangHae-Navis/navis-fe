@@ -38,28 +38,28 @@ import ShowSubmitFile from "../components/modal/ShowSubmitFile";
 import FloatingMenu from "../components/party/FloatingMenu";
 import Survey from "../components/party/Survey";
 
-const SlideChart = (props) => {
+export const SlideChart = (props) => {
   const value = props.voteMax == 0 ? 0 : props.count / props.voteMax;
-  console.log(value);
   return (
     <ChartContainer>
+    <BarText>
+      <h1 className="votename">{props.option}</h1>
+      <h1 className="votename">{props.count}</h1>
+    </BarText>
       <Bar width={value * 100}>
-        <BarText>
-          <p className="votename">{props.option}</p>
-          <p className="votename">{props.count}</p>
-        </BarText>
       </Bar>
     </ChartContainer>
   );
 };
 
 const ChartContainer = styled.div`
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: flex-start;
   text-align: center;
   height: 3rem;
-  width: 30rem;
+  width: 30vw;
   max-width: 100%;
   border: 0.1rem solid #d4d2e3;
   border-radius: 1.7rem;
@@ -74,21 +74,23 @@ const ChartContainer = styled.div`
 
 const BarText = styled.div`
   position: absolute;
-  width: 28rem;
-  max-width: 100%;
+  width: 100%;
   display: flex;
   align-items: center;
   justify-content: space-between;
   text-align: center;
+  padding-left: 1rem;
+  padding-right: 1rem;
 `;
 
 const Bar = styled.div`
   display: flex;
   align-items: center;
-  justify-content: flex-start;
+  justify-content: space-between;
   text-align: center;
   border-radius: 1.7rem;
   padding-left: 1rem;
+  padding-right: 1rem;
   width: ${(props) => props.width}%;
   height: 100%;
   background-color: #d4d2e3;
@@ -696,7 +698,7 @@ function PartyDetail() {
             )
           ) : null}
           {dtype == "survey"
-          ? <Survey submit = {submitSurvey} res = {res} res0 = {surveyDTO} groupId = {groupId} detailId = {detailId} list = {questionList}></Survey>
+          ? <Survey role = {res?.data?.data?.data?.role} submit = {submitSurvey} res = {res} res0 = {surveyDTO} groupId = {groupId} detailId = {detailId} list = {questionList}></Survey>
           : null}
 
         </ContentsWrapper>

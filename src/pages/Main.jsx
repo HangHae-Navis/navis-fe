@@ -30,7 +30,6 @@ const GroupBoxComp = (props) => {
     <>
       <GroupBox onClick={() => navigate(`/party/${props.groupId}`)}>
         <img src={props.groupImage ? props.groupImage : Test} alt="thumbnail" />
-        <span className="tag">태그</span>
         <TextWrapper>
           <h1>{props.groupName}</h1>
           <p>{props.groupInfo}</p>
@@ -75,8 +74,8 @@ const Main = () => {
   //받아오는 데이터는 content(목록), totalElements(총 갯수), totalPages(총 페이지)를 받아옴
   //현재 받아오는 response 중 사용 중인 것은 content와 totalelements 둘 뿐, totalPages를 사용하려면 MakeButton의 로직 변경 필요
   const { isLoading } = useQuery(
-    ["getList", { page: pageNum, size: 8, category: filterParam }],
-    () => getPartyPage({ page: pageNum, size: 8, category: filterParam }),
+    ["getList", { page: pageNum, size: 6, category: filterParam }],
+    () => getPartyPage({ page: pageNum, size: 6, category: filterParam }),
     {
       onSuccess: ({ data }) => {
         setGroupList(data.data.content);
@@ -212,6 +211,7 @@ const GroupBox = styled.div`
   background-color: ${(props) => props.theme.color.zeroOne};
   border-radius: 0.8rem;
   display: flex;
+  gap: 1rem;
   flex-direction: column;
   @media (max-width: 1400px) {
     width: 29rem;

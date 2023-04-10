@@ -13,6 +13,9 @@ import { useMutation } from "react-query";
 import { postSurveyData, putSurveyData } from "../../utils/api/api";
 import axios from "axios";
 import { FullDateCheck } from "../../element/DateCheck";
+import {SlideChart} from "../../pages/PartyDetail"
+
+
 
 const Checkbox = (props) => {
   const [checkedItems, setCheckedItems] = useState(Array(props.props.length).fill(false));
@@ -93,16 +96,16 @@ const StyledCheckbox = styled.input.attrs({ type: 'checkbox' })`
 `;
 //props.res?.data?.data?.data?.questionResponseDto?.
 const Survey = (props) =>{
-  console.log(props)
-  console.log(props.res)
-  console.log(props.res0)
-  console.log(props.list)
+  //console.log(props)
+  //console.log(props.res)
+  //console.log(props.res0)
+  //console.log(props.list)
   const [values, setValues] = useState(props?.res?.data?.data?.data?.questionResponseDto?.map((item) => ({ questionId: item.id, answerList: [''] })));
   const [isSubmit, setIsSubmit] = useState(props?.res?.data?.data?.data?.submit);
-  console.log(props.res)
-  console.log(props.submit)
-  console.log(props.res?.data?.data?.data?.submit)
-  console.log(isSubmit)
+  //console.log(props.res)
+  //console.log(props.submit)
+  //console.log(props.res?.data?.data?.data?.submit)
+  //console.log(isSubmit)
 //console.log(values)
 /*
 useEffect(() => {
@@ -110,7 +113,11 @@ useEffect(() => {
 }, []);
 */
 useEffect(() => {
- props.res.refetch()
+  //어드민서포터면, 엔서리스트를 돌면서 값 할당
+  if(props?.role != 'USER'){
+    console.log("흠...")
+    console.log(props.role)
+  }
 }, [])
 
 useEffect(() => {
@@ -163,13 +170,11 @@ useEffect(() => {
 
     return (
     <SurveyBackground>
-      {/* */}
-      
+      {props?.role === 'USER'
+      ?<>
       <TitleBox>
-      <h1 className="name">총 {props?.list?.length}개 항목이 있습니다.</h1>
-      {/*<h1 className="smalltitle">만료일자 : {FullDateCheck(props?.res?.data?.data?.data?.expirationDate)} </h1> */}
-       
-      
+      <h1 className="name">총 {props?.res?.data?.data?.data?.questionResponseDto.length}개 항목이 있습니다.</h1>
+      <h1 className="smalltitle">만료일자 : {FullDateCheck(props?.res?.data?.data?.data?.expirationDate)} </h1> 
       </TitleBox>
       {isSubmit == false
       ?<>
@@ -219,12 +224,77 @@ switch(item.type) {
 <Button onClick={() => setIsSubmit(false)}>다시하기</Button>
     </>
     }
+      </>
+
+      :<>
+      <TitleBox>
+      <h1 className="name">총 {props?.res?.data?.data?.data?.answerList?.length}개 항목이 있습니다.</h1>
+      <h1 className="smalltitle">만료일자 : {FullDateCheck(props?.res?.data?.data?.data?.expirationDate)} </h1> 
+      </TitleBox>
+      {props?.res?.data?.data?.data?.answerList?.map((item, index )=> {
+switch(item.type) {
+  case 'CHECKBOX':
+    return (
+      <SurveyTypeCheckBox key={index}>
+      <h1 className="name">{index+1}. {item.question}</h1>
+      {
+      item.options.split(", ").map((iteminoption, index) => (
+        <SlideChart key = {index}
+        option={iteminoption}
+        voteMax={item.answerCount.split(", ").reduce((acc, curr) => acc + parseInt(curr), 0)}
+        count={item.answerCount.split(", ")[index]}></SlideChart>
+      ))}
+      </SurveyTypeCheckBox>
+    );
+  case 'DESCRIPTIVE':
+    return (
+      <SurveyTypeDescriptive key={index}>
+        <h1 className="name">{index+1}. {item.question}</h1>
+      {item.answerCount.split("|| ").map((item, index) => (
+        <AnswerBox key={index}
+        >
+        <h1 className="smallname">{item}</h1>
+        </AnswerBox>
+      ))}
+      </SurveyTypeDescriptive>
+    );
+  case "OBJECTIVE":
+    return (
+      <SurveyTypeObjective key={index}>
+      <h1 className="name">{index+1}. {item.question}</h1>
+      {
+      item.options.split(", ").map((iteminoption, index) => (
+        <SlideChart key = {index}
+        option={iteminoption}
+        voteMax={item.answerCount.split(", ").reduce((acc, curr) => acc + parseInt(curr), 0)}
+        count={item.answerCount.split(", ")[index]}></SlideChart>
+      ))}
+      </SurveyTypeObjective>
+    );
+  default:
+    return null;
+}
+})}
+      </>
+      }
+      
     {/* */} {/* */}
     </SurveyBackground>
     )
 }
 
 export default Survey;
+
+const AnswerBox = styled.div`
+align-items: flex-start;
+flex-direction: column;
+display: flex;
+gap: 1rem;
+    width: 90%;
+    background-color: #F6F6F6;
+    padding: 1rem;
+  border-radius: 1.6rem;
+`
 
 const TitleBox = styled.div`
   width: 100%;
@@ -280,11 +350,14 @@ flex-direction: column;
 display: flex;
 gap: 1rem;
     width: 90%;
-    max-height: 20rem;
     padding: 2rem;
     background-color: white;
 border-radius: 2.4rem;
 border: 0.2rem solid #C0C0C0;
+    overflow: hidden;
+    white-space: pre-wrap;
+    text-overflow: ellipsis;
+    word-break: break-all;
 `
 
 const SurveyTypeCheckBox = styled.div`
@@ -293,7 +366,6 @@ flex-direction: column;
 display: flex;
 gap: 1rem;
 width: 90%;
-max-height: 20rem;
     padding: 2rem;
 background-color: white;
 border-radius: 2.4rem;
@@ -304,9 +376,9 @@ const SurveyTypeObjective = styled.div`
 align-items: flex-start;
 flex-direction: column;
 display: flex;
-gap: 1rem;
+justify-content: flex-start;
+gap:1rem;
 width: 90%;
-max-height: 20rem;
     padding: 2rem;
 background-color: white;
 border-radius: 2.4rem;
@@ -328,43 +400,55 @@ gap: 2rem;
     font-weight: 400;
     font-size: 1.4rem;
     color: #5d5a88;
+    overflow: hidden;
+    white-space: normal;
+    text-overflow: ellipsis;
+    word-break: break-all;
   }
   .filename {
     font-weight: 400;
     font-size: 1.6rem;
     color: #9795b5;
-    text-overflow: ellipsis;
     overflow: hidden;
-    white-space: nowrap;
+    white-space: normal;
+    text-overflow: ellipsis;
+    word-break: break-all;
   }
   .name {
     font-weight: 400;
     font-size: 2.2rem;
     color: #222222;
+    overflow: hidden;
+    white-space: normal;
     text-overflow: ellipsis;
-    white-space: nowrap;
+    word-break: break-all;
   }
   .smalltitle {
     font-weight: 300;
     font-size: 1.3rem;
     color: #222222;
+    overflow: hidden;
+    white-space: normal;
     text-overflow: ellipsis;
-    white-space: nowrap;
+    word-break: break-all;
   }
   .smallname {
     font-weight: 400;
     font-size: 1.8rem;
     color: #222222;
+    overflow: hidden;
+    white-space: normal;
     text-overflow: ellipsis;
-    white-space: nowrap;
+    word-break: break-all;
   }
   .date {
     font-weight: 400;
     font-size: 2rem;
     color: #9795b5;
-    text-overflow: ellipsis;
     overflow: hidden;
-    white-space: nowrap;
+    white-space: normal;
+    text-overflow: ellipsis;
+    word-break: break-all;
   }
 `
 

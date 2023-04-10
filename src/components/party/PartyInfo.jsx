@@ -25,7 +25,7 @@ const PartyInfo = (props) => {
           <img src={copy} alt="copy" />
         </span>
       </CopyToClipboard>
-      <h1>{props?.groupName}</h1>
+      <h1 className="linktomain" onClick={() => navi(`/party/${props.groupId}`)}>{props?.groupName}</h1>
       <p>{props?.groupInfo}</p>
       <ButtonWrapper>
         <div
@@ -98,6 +98,10 @@ const PartyInfoWrapper = styled.section`
     font-size: 2rem;
     margin-bottom: 2rem;
     color: ${(props) => props.theme.color.grey100};
+  }
+
+  .linktomain{
+    cursor: pointer;
   }
 
   p {
