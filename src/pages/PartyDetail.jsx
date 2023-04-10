@@ -14,7 +14,7 @@ import {
   putHomeWorkData,
 } from "../utils/api/api";
 import "react-loading-skeleton/dist/skeleton.css";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import PartyInfo from "../components/party/PartyInfo";
 import { flexCenter } from "../utils/style/mixins";
@@ -157,10 +157,13 @@ function PartyDetail() {
   const [questionList, setQuestionList] = useState([])
   const [voteSelectedOption, setVoteSelectedOption] = useState();
   const [submitAgain, setSubmitAgain] = useState(false);
+  const [submitSurvey, setSubmitSurvey] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [courrentModalContent, setCourrentModalContent] = useState();
   const { register, formState: errors, handleSubmit } = useForm();
   const [surveyInputValues, setSurveyInputValues] = useState([]);
+  const [surveyDTO, setSurveyDTO] = useState();
+
 
   useEffect(() => {
     const isUserCookie = getCookie("token");
@@ -172,7 +175,7 @@ function PartyDetail() {
     }
   }, []);
   const now = new Date().getTime();
-
+  const pam = useParams();
   const groupId = searchParams.get("groupId");
   const detailId = searchParams.get("detailId");
   const dtype = searchParams.get("dtype");
@@ -181,7 +184,7 @@ function PartyDetail() {
   const groupInfo = searchParams.get("groupInfo");
   const groupCode = searchParams.get("groupCode");
   const res = useQuery(
-    ["partyDetail"],
+    ["partyDetail", {id: pam.id}],
     () => getBoardDetailPage({ groupId, detailId, dtype }),
     {
       onSuccess: ({ data }) => {
@@ -219,6 +222,8 @@ function PartyDetail() {
             break;
           case "survey":
               setQuestionList(data.data.questionResponseDto)
+              setSubmitSurvey(data.data.submit)
+              setSurveyDTO(data.data)
             break;
 
           default:
@@ -439,10 +444,7 @@ function PartyDetail() {
     console.log(showModal);
   };
 
-  if (res.isLoading && getComment.isLoading) {
-    return <></>;
-  }
-  if (res.isError && getComment.isError) {
+  if (res.isLoading || res.isError || getComment.isLoading || getComment.isError) {
     return <></>;
   }
   return (
@@ -694,7 +696,7 @@ function PartyDetail() {
             )
           ) : null}
           {dtype == "survey"
-          ? <Survey list = {questionList}></Survey>
+          ? <Survey submit = {submitSurvey} res = {res} res0 = {surveyDTO} groupId = {groupId} detailId = {detailId} list = {questionList}></Survey>
           : null}
 
         </ContentsWrapper>
