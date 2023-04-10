@@ -78,7 +78,8 @@ const RadioButton = (props) =>{
           checked={selectedOption == props.props[index]}
           onChange={handleOptionChange}
         />
-        {item}
+        <span className="smallname"> {item}</span>
+        
       </label>))}
   </>)
 }
@@ -161,9 +162,11 @@ useEffect(() => {
         console.log(payload)
         if(props.submit == true){
           const res = putsurvey.mutateAsync(payload)
+          setIsSubmit(true)
         }
         else{
           const res = postsurvey.mutateAsync(payload)
+          setIsSubmit(true)
         }
       //console.log(values)
     }
