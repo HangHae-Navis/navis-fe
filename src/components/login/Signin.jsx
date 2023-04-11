@@ -70,13 +70,13 @@ const Signin = ({ setisSignin }) => {
           width={"50rem"}
         />
         <ButtonBox>
-        <div className="kakao" onClick={responseKakao}>
-          <img src={Kakao} alt="kakao-logo" />
-          카카오톡으로 로그인
-        </div>
-        <Button disabled={false}  width={"13rem"} height={"6rem"}>
-          로그인
-        </Button>
+          <div className="kakao" onClick={responseKakao}>
+            <img src={Kakao} alt="kakao-logo" />
+            카카오톡으로 로그인
+          </div>
+          <Button disabled={false} width={"13rem"} height={"6rem"}>
+            로그인
+          </Button>
         </ButtonBox>
       </SigninForm>
       <p>
@@ -87,15 +87,6 @@ const Signin = ({ setisSignin }) => {
   );
 };
 
-const KaKaoButton = styled.div`
-display: flex;
-justify-content: center;
-flex-direction: row;
-align-items: center;
-  width: 20rem;
-  height: 6rem;
-`
-
 const ButtonBox = styled.div`
   width: 100%;
   display: flex;
@@ -105,7 +96,7 @@ const ButtonBox = styled.div`
   padding-top: 5rem;
   padding-bottom: 3rem;
   gap: 2rem;
-`
+`;
 const SignInWrapper = styled.div`
   width: 50%;
   @media (max-width: 750px) {
@@ -116,6 +107,12 @@ const SignInWrapper = styled.div`
   justify-content: center;
   align-items: center;
   gap: 0.6rem;
+
+  input {
+    @media (max-width: 750px) {
+      width: 70% !important;
+    }
+  }
 
   p {
     display: flex;
@@ -142,7 +139,7 @@ const SignInWrapper = styled.div`
     }
     width: 25rem;
     height: 6rem;
-    background-color: #F8E50B;
+    background-color: #f8e50b;
     font-size: 1.8rem;
     font-weight: bold;
     border-radius: 3.4rem;

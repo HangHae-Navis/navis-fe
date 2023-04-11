@@ -4,15 +4,19 @@ import styled from "styled-components";
 import { chatModalState } from "../../store/atom";
 import { flexCenter } from "../../utils/style/mixins";
 import Talk from "./Talk";
+import { useLocation } from "react-router-dom";
 
 const Chat = () => {
+  const { pathname } = useLocation();
   const [chatModal, setChatModal] = useRecoilState(chatModalState);
   const onToggleModal = () => {
     setChatModal(!chatModal);
   };
   return (
     <>
-      {chatModal === true ? (
+      {pathname === "/" ? (
+        <></>
+      ) : chatModal === true ? (
         <Talk />
       ) : (
         <ChatIcons onClick={onToggleModal}>

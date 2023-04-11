@@ -29,7 +29,7 @@ const Login = () => {
         exit="exit"
         issignin={issignin.toString()}
       >
-      <img src={Logo} className="logo" alt="logo"/>
+        <img src={Logo} className="logo" alt="logo" />
         {issignin === true ? (
           <Signin setisSignin={setissignin} />
         ) : (
@@ -47,39 +47,27 @@ const LoginModalBackGround = styled.div`
   width: 100vw;
   height: 100vh;
   z-index: 999;
-  background-color: rgba(0, 0, 0, 0.0);
+  background-color: rgba(0, 0, 0, 0);
   ${flexCenter}
 `;
 
 const LoginModalWrapper = styled(motion.section)`
   max-width: 78rem;
-  height: ${({ issignin }) => (issignin == "true" ? "75%" : "80%")};
+  height: ${({ issignin }) => (issignin === "true" ? "75%" : "80%")};
   display: flex;
   align-items: center;
   flex-direction: column;
   justify-content: flex-start;
-  margin-top: ${({ issignin }) => (issignin == "true" ? "0rem" : "2rem")};
-  padding-top: ${({ issignin }) => (issignin == "true" ? "10rem" : "5rem")};
+  margin-top: ${({ issignin }) => (issignin === "true" ? "0rem" : "2rem")};
+  padding-top: ${({ issignin }) => (issignin === "true" ? "10rem" : "5rem")};
   padding-bottom: 1rem;
-  gap: ${({ issignin }) => (issignin == "true" ? "7rem" : "2rem")};
-  width: 94.5vw;
+  gap: ${({ issignin }) => (issignin === "true" ? "7rem" : "2rem")};
+  width: 91vw;
   border-radius: 2.5rem;
-  @media (max-width: 750px) {
-    width: 70vw;
-    height: 55rem;
-  }
+
   display: flex;
   background-color: rgba(255, 255, 255, 0.6);
   backdrop-filter: blur(10px); // 블러 효과 추가
-`;
-
-const ContentWrapper = styled.section`
-  width: 50%;
-  @media (max-width: 750px) {
-    width: 0%;
-  }
-  height: 100%;
-  background-color: ${(props) => props.theme.color.zeroTwo};
 `;
 
 export default Login;

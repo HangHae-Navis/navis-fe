@@ -46,12 +46,18 @@ export const chatInfoState = atom({
   default: null,
 });
 
+export const editReadyState = atom({
+  key: `state${v4()}`,
+  default: false,
+});
+
 export const editorState = atom({
   key: `state${v4()}`,
   default: {
     title: "",
     subtitle: "",
     content: "",
+    category: "게시글",
     important: 0,
     hashtagList: "",
     expirationDate: 0,
