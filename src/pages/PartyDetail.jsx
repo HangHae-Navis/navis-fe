@@ -578,6 +578,7 @@ function PartyDetail() {
                     <Button
                       onClick={handleSubmit(postOrPutHomeWork)}
                       transparent={true}
+                      color="rgb(88, 85, 133)"
                     >
                       과제 제출하기
                     </Button>
@@ -619,6 +620,7 @@ function PartyDetail() {
                         ?.length == 0 ? (
                         <Button
                           transparent={true}
+                          color="rgb(88, 85, 133)"
                           onClick={() =>
                             doDeleteHomework({ groupId, detailId })
                           }
@@ -629,6 +631,7 @@ function PartyDetail() {
                         <Button
                           transparent={true}
                           onClick={() => setSubmitAgain(true)}
+                          color="rgb(88, 85, 133)"
                         >
                           다시 제출하기
                         </Button>

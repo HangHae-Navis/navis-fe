@@ -27,9 +27,25 @@ import { useSetRecoilState } from "recoil";
 import PartyInfo from "../components/party/PartyInfo";
 import Input from "../element/Input";
 import { useForm } from "react-hook-form";
+import { toast } from "react-toastify";
 
 const GroupList = (props) => {
   const navi = useNavigate();
+
+  
+  const deleteGroup = useMutation(deletePage, {
+    onSuccess: ({ data }) => {
+      
+      toast.success("그룹을 삭제했습니다.");
+      props.res.refetch();
+    },
+  });
+
+
+  const doDeletePage = (data) => {
+    const res = deleteGroup.mutateAsync(data);
+  };
+
   return (
     <>
       <GroupListBox>
@@ -45,7 +61,7 @@ const GroupList = (props) => {
           <Button onClick={() => navi(`/party/${props.item.groupId}`)}>
             관리하기
           </Button>
-          <Button transparent={true}>삭제하기</Button>
+          <Button transparent={true} color="rgb(88, 85, 133)" onClick={()=>doDeletePage(props.item.groupId)}>삭제하기</Button>
         </GroupButtonBox>
       </GroupListBox>
     </>
@@ -265,7 +281,7 @@ const Profile = () => {
           </GroupTitleBox>
           <BottomContentContainer>
             {userGroup?.map((item) => {
-              return <GroupList key={item.groupId} item={item} />;
+              return <GroupList key={item.groupId} item={item} res = {getInfo} />;
             })}
           </BottomContentContainer>
         </RightTotalContainer>

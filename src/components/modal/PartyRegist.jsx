@@ -241,7 +241,7 @@ const PartyRegist = () => {
                 {currentPage == "/main" ? (
                   <ModalButtonBox>
                     <Button>그룹 생성하기</Button>
-                    <Button transparent={true} onClick={ModalClose}>
+                    <Button transparent={true} color="rgb(88, 85, 133)" onClick={ModalClose}>
                       취소하기
                     </Button>
                   </ModalButtonBox>
