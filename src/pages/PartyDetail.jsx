@@ -674,7 +674,7 @@ function PartyDetail() {
             ) : (
               <>
                 <PostedHomeWorkFileBox>
-                  <HomeworkContentContainer width="80rem">
+                  <HomeworkContentContainer width="80vw">
                     <h1 className="name">제출완료</h1>
                     {homeWorkSubmmiter.map((item) => (
                       <SubmitterContainer key={item.id}>
@@ -780,7 +780,7 @@ const PostedHomeWorkFileBox = styled.div`
   text-align: center;
 `;
 const HomeworkContentContainer = styled.div`
-  width: ${({ width }) => width || "50rem"};
+  width: ${({ width }) => width || "50vw"};
   max-width: 100%;
   height: 100%;
   align-items: flex-start;

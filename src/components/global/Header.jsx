@@ -38,7 +38,13 @@ const Header = () => {
       onSuccess: ({ data }) => {
         navi(`/${path.MAIN}`);
         setCookie("token", data.data.token);
-        localStorage.setItem("userInfo", data.data.nickname);
+        localStorage.setItem(
+          "userInfo",
+          JSON.stringify({
+            nickname: data.data.nickname,
+            username: data.data.username,
+          })
+        );
       },
       enabled: isCallBool,
     }

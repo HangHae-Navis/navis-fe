@@ -9,6 +9,7 @@ const Button = ({
   disabled,
   full,
   type,
+  color,
 }) => {
   return (
     <CustomButton
@@ -18,6 +19,7 @@ const Button = ({
       onClick={onClick}
       full={full}
       type={type}
+      color={color}
     >
       {children}
     </CustomButton>
@@ -41,7 +43,7 @@ const CustomButton = styled.button`
       border: 0.05rem solid ${(props) => props.theme.color.zeroTwo};
       color: ${(props) => props.theme.color.zeroFour};
       background: transparent;
-      color: ${(props) => props.theme.color.white};
+      color: ${(props) => (props.color ? props.color : "white")};
     `}
 
   ${(props) =>
