@@ -4,7 +4,7 @@ import { useRecoilValue } from "recoil";
 import Login from "../components/modal/Login";
 import { loginModalState } from "../store/atom";
 import { getCookie } from "../utils/infos/cookie";
-import styled from "styled-components";
+import styled, { keyframes } from "styled-components";
 import Logo from "../assets/whiteLogo.svg";
 import Polygon from "../assets/Polygon 2.svg";
 import first from "../assets/1.svg";
@@ -61,6 +61,18 @@ const Home = () => {
     </LandingWrapper>
   );
 };
+
+const FlyingAnimation = keyframes`
+  0% {
+    transform: translateY(10px);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+  100% {
+    transform: translateY(10px);
+  }
+`;
 
 const LandingWrapper = styled.main`
   position: relative;
@@ -124,6 +136,7 @@ const FirstInfo = styled.section`
   }
 
   .polygons {
+    animation: ${FlyingAnimation} 3s infinite ease-in-out;
     display: flex;
     flex-direction: column;
     margin-top: 8rem;
@@ -148,6 +161,8 @@ const EtcInfo = styled.section`
   }
 
   img {
+    animation: ${FlyingAnimation} 4s infinite ease-in-out;
+
     max-width: 120rem;
     width: 90%;
   }
