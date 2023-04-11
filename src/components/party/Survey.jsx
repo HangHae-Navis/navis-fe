@@ -14,6 +14,7 @@ import { postSurveyData, putSurveyData } from "../../utils/api/api";
 import axios from "axios";
 import { FullDateCheck } from "../../element/DateCheck";
 import { SlideChart,PartyDetail } from "../../pages/PartyDetail"
+import ShowSurveyModal from "../modal/ShowSurveyModal";
 
 
 
@@ -105,6 +106,9 @@ const Survey = (props) => {
   const [isSubmit, setIsSubmit] = useState(props?.res?.data?.data?.data?.submit);
   const [adminSwitch, setAdminSwitch] = useState(false)
   const [IndividualModal, setIndividual] = useState(false)
+  const [IndividualModalID, setIndividualModalID] = useState({id : "", name : ""})
+  const [id, setid] = useState("")
+  const [name, setname] = useState("")
   //console.log(props.res)
   //console.log(props.submit)
   //console.log(props.res?.data?.data?.data?.submit)
@@ -150,6 +154,7 @@ const Survey = (props) => {
   //console.log(props)
 
   const IndividualModalOn = (props) => {
+    setIndividualModalID({id : props.id, name : props.name})
     setIndividual(true)
     console.log(props)
   }
@@ -177,6 +182,15 @@ const Survey = (props) => {
   }
 
   return (
+    <>
+    {IndividualModal == true ? (
+      <ShowSurveyModal
+      setShowModal={setIndividual}
+      questions= {props?.res?.data?.data?.data?.submitResponseDto}
+      names= {IndividualModalID}
+      DTO = {props?.res?.data?.data?.data?.answerList}
+      />
+    ) : null}
     <SurveyBackground>
       {props?.role === 'USER'
         ? <>
@@ -307,6 +321,7 @@ const Survey = (props) => {
 
       {/* */} {/* */}
     </SurveyBackground>
+    </>
   )
 }
 
@@ -344,6 +359,7 @@ const IndividualSurveyContainer = styled.div`
   white-space: normal;
   padding: 5rem;
   gap: 2rem;
+  background-color: white;
   .buttontext {
     font-weight: 400;
     font-size: 1.4rem;
