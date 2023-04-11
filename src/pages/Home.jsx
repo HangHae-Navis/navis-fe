@@ -78,7 +78,7 @@ const LandingWrapper = styled.main`
   position: relative;
   min-width: 100vw;
   min-height: 100vh;
-  background-color: ${(props) => props.theme.color.zeroFour};
+  background: linear-gradient(180deg, #585585 12.7%, #9795b5 100%);
   padding: 18rem 0;
   display: flex;
   flex-direction: column;

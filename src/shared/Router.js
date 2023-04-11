@@ -13,6 +13,7 @@ import PartyRegist from "../components/modal/PartyRegist";
 import { useRecoilValue } from "recoil";
 import { partyRegistModalState } from "../store/atom";
 import Editor from "../pages/Editor";
+import Footer from "../components/global/Footer";
 
 const Router = () => {
   const isPartyRegistModal = useRecoilValue(partyRegistModalState);
@@ -30,6 +31,7 @@ const Router = () => {
         <Route element={<Editor />} path={`/test`} />
       </Routes>
       {isPartyRegistModal === true && <PartyRegist />}
+      <Footer />
     </BrowserRouter>
   );
 };
