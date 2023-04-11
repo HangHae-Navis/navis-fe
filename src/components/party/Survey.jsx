@@ -104,6 +104,7 @@ const Survey = (props) => {
   const [values, setValues] = useState(props?.res?.data?.data?.data?.questionResponseDto?.map((item) => ({ questionId: item.id, answerList: [''] })));
   const [isSubmit, setIsSubmit] = useState(props?.res?.data?.data?.data?.submit);
   const [adminSwitch, setAdminSwitch] = useState(false)
+  const [IndividualModal, setIndividual] = useState(false)
   //console.log(props.res)
   //console.log(props.submit)
   //console.log(props.res?.data?.data?.data?.submit)
@@ -147,6 +148,11 @@ const Survey = (props) => {
     console.log(values)
   }
   //console.log(props)
+
+  const IndividualModalOn = (props) => {
+    setIndividual(true)
+    console.log(props)
+  }
 
   const onPost = () => {
     //여기서 
@@ -237,7 +243,7 @@ const Survey = (props) => {
             <Button transparent={adminSwitch} color="rgb(88, 85, 133)" onClick={() => setAdminSwitch(false)}>전체통계</Button>
             <Button transparent={!adminSwitch} color="rgb(88, 85, 133)" onClick={() => setAdminSwitch(true)}>개별응답</Button>
           </AdminBox>
-          {adminSwitch == false
+          {adminSwitch === false
             ?
             props?.res?.data?.data?.data?.answerList?.map((item, index) => {
               switch (item.type) {
@@ -289,7 +295,7 @@ const Survey = (props) => {
                     {props?.res?.data?.data?.data?.submitResponseDto.map((item, index) =>(
                       <SubmitterContainer key = {index}>
                       <h1 className="smallname">{item.nickname}</h1>
-                      <SubmiterButton>응답보기</SubmiterButton>
+                      <SubmiterButton onClick={() => IndividualModalOn({name : item.nickname, id : item.userId})}>응답보기</SubmiterButton>
                       </SubmitterContainer>
                     ))}
               </IndividualSurveyContainer>
@@ -323,13 +329,6 @@ const SubmitterContainer = styled.div`
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
-`;
-const SubmitterBox = styled.div`
-  gap: 1rem;
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: flex-end;
 `;
 const IndividualSurveyContainer = styled.div`
   width: ${({ width }) => width || "25vw"};
