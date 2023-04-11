@@ -22,6 +22,7 @@ import { useEffect, useState } from "react";
 import { FullDateCheck, DayCheck } from "../element/DateCheck";
 import { useSetRecoilState } from "recoil";
 import PartyInfo from "../components/party/PartyInfo";
+import { pageMargin } from "../utils/style/mixins";
 
 function Board(props) {
   const deletePartyMember = useMutation(deletePageMembers, {
@@ -413,6 +414,7 @@ const PageContainer = styled.div`
   align-items: center;
   width: 100vw;
   padding-bottom: 3rem;
+  ${pageMargin}
 
   .title {
     font-weight: 700;

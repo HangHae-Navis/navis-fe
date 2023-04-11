@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useQuery } from "react-query";
 import { useNavigate } from "react-router";
 import { useSetRecoilState } from "recoil";
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import { loginModalState } from "../../store/atom";
 import { getKaKaoLogin } from "../../utils/api/api";
 import { getCookie, removeCookie, setCookie } from "../../utils/infos/cookie";
@@ -15,8 +15,12 @@ import profile from "../../assets/ic54/profile.svg";
 import { toast } from "react-toastify";
 import { EventSourcePolyfill, NativeEventSource } from "event-source-polyfill";
 import Alarm from "../alarm/Alarm";
+import { useLocation } from "react-router-dom";
+import White from "../../assets/whiteLogo.svg";
+import { ButtonStyle } from "../../utils/style/mixins";
 
 const Header = () => {
+  const { pathname } = useLocation();
   const EventSource = EventSourcePolyfill || NativeEventSource;
   const setLoginModal = useSetRecoilState(loginModalState);
   const [headerModal, setHeaderModal] = useState(false);
@@ -34,7 +38,13 @@ const Header = () => {
       onSuccess: ({ data }) => {
         navi(`/${path.MAIN}`);
         setCookie("token", data.data.token);
-        localStorage.setItem("userInfo", data.data.nickname);
+        localStorage.setItem(
+          "userInfo",
+          JSON.stringify({
+            nickname: data.data.nickname,
+            username: data.data.username,
+          })
+        );
       },
       enabled: isCallBool,
     }
@@ -108,24 +118,34 @@ const Header = () => {
   };
 
   return (
-    <HeaderWrapper>
-      <img src={Logo} className="logo" alt="logo" onClick={onShift} />
+    <HeaderWrapper pathname={pathname}>
       {token === undefined ? (
-        <Button transparent={true} onClick={() => setLoginModal(true)}>
-          Login
-        </Button>
+        <>
+          <img src={White} className="logo" alt="logo" onClick={onShift} />
+          <div className="buttons">
+            <Button transparent={true} onClick={() => setLoginModal(true)}>
+              Login
+            </Button>
+            <button className="signup" onClick={() => setLoginModal(true)}>
+              가입하기
+            </button>
+          </div>
+        </>
       ) : (
-        <div className="icons">
-          <img src={alarm} alt="알림" onClick={onModal_t} />
-          <img src={profile} onClick={onModal} alt="프로필" />
-          {headerModal === true && (
-            <HeaderMenu>
-              <li onClick={onShiftProfile}>프로필 수정</li>
-              <li onClick={onLogout}>로그아웃</li>
-            </HeaderMenu>
-          )}
-          {alarmModal === true && <Alarm />}
-        </div>
+        <>
+          <img src={Logo} className="logo" alt="logo" onClick={onShift} />
+          <div className="icons">
+            <img src={alarm} alt="알림" onClick={onModal_t} />
+            <img src={profile} onClick={onModal} alt="프로필" />
+            {headerModal === true && (
+              <HeaderMenu>
+                <li onClick={onShiftProfile}>프로필 수정</li>
+                <li onClick={onLogout}>로그아웃</li>
+              </HeaderMenu>
+            )}
+            {alarmModal === true && <Alarm />}
+          </div>
+        </>
       )}
     </HeaderWrapper>
   );
@@ -139,8 +159,11 @@ const HeaderMenu = styled.ul`
   height: 8rem;
   display: flex;
   flex-direction: column;
-  background-color: ${(props) => props.theme.color.zeroTwo};
-  border-radius: 1.6rem;
+  background: rgba(246, 246, 246, 0.8);
+  box-shadow: 4px 4px 16px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(16px);
+
+  border-radius: 16px;
 
   li {
     cursor: pointer;
@@ -167,7 +190,37 @@ const HeaderWrapper = styled.header`
   width: 100vw;
   height: 10rem;
   padding: 1rem;
-  background: ${(props) => props.theme.color.zeroOne};
+
+  .buttons {
+    display: flex;
+    gap: 1.2rem;
+    align-items: center;
+
+    .signup {
+      padding: 0 2rem;
+      width: fit-content;
+      height: 4rem;
+      border-radius: 3.4rem;
+      color: ${(props) => props.theme.color.zeroFour};
+      background-color: #ffcf52;
+      font-size: 1.6rem;
+      border: none;
+      cursor: pointer;
+    }
+  }
+
+  button {
+    font-weight: 500;
+  }
+
+  ${(props) =>
+    props.pathname === "/"
+      ? css`
+          background: ${(props) => props.theme.color.zeroFour};
+        `
+      : css`
+          background: ${(props) => props.theme.color.zeroOne};
+        `}
   .icons {
     position: relative;
     display: flex;

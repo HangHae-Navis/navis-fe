@@ -17,6 +17,7 @@ const EditPost = () => {
 const EditPostWrapper = styled.section`
   margin: 0 auto;
   max-width: 108rem;
+  margin-top: 14rem;
 `;
 
 const MarkdownWrapper = styled.section`

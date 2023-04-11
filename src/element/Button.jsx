@@ -1,7 +1,16 @@
 import React from "react";
 import styled, { css } from "styled-components";
 
-const Button = ({ onClick, br, children, transparent, disabled, full, type }) => {
+const Button = ({
+  onClick,
+  br,
+  children,
+  transparent,
+  disabled,
+  full,
+  type,
+  color,
+}) => {
   return (
     <CustomButton
       disabled={disabled}
@@ -10,6 +19,7 @@ const Button = ({ onClick, br, children, transparent, disabled, full, type }) =>
       onClick={onClick}
       full={full}
       type={type}
+      color={color}
     >
       {children}
     </CustomButton>
@@ -17,7 +27,6 @@ const Button = ({ onClick, br, children, transparent, disabled, full, type }) =>
 };
 
 const CustomButton = styled.button`
-  type : ${(props) => props.type};
   padding: 0 2rem;
   width: fit-content;
   height: 4rem;
@@ -31,9 +40,10 @@ const CustomButton = styled.button`
   ${(props) =>
     props.transparent === true &&
     css`
-      border: 0.1rem solid ${(props) => props.theme.color.zeroTwo};
+      border: 0.05rem solid ${(props) => props.theme.color.zeroTwo};
       color: ${(props) => props.theme.color.zeroFour};
-      background: ${(props) => props.theme.color.white};
+      background: transparent;
+      color: ${(props) => (props.color ? props.color : "white")};
     `}
 
   ${(props) =>

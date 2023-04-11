@@ -1,4 +1,4 @@
-import { useQuery } from "react-query";
+import { QueryClient, useQuery, useQueryClient } from "react-query";
 import styled from "styled-components";
 import { getDetailPage } from "../utils/api/api";
 import "react-loading-skeleton/dist/skeleton.css";
@@ -18,6 +18,7 @@ import Chat from "../components/global/Chat";
 import FloatingMenu from "../components/party/FloatingMenu";
 
 const Party = () => {
+  const queryClient = useQueryClient();
   const navi = useNavigate();
   const pam = useParams();
   const [selected, setSelected] = useState(0);
@@ -54,6 +55,9 @@ const Party = () => {
         setGroupId(pam.id);
         setIsAdmin(data.data.admin);
         setCarouselList(data.data.deadlines);
+
+        //파티디테일의 dtype에 따라 렌더링 실패 이슈를 방지하기 위해, 모든 파티디테일 쿼리를 삭제한다.
+        queryClient.removeQueries("partyDetail", { inactive: true });
       },
     }
   );
@@ -296,6 +300,7 @@ const PageContainer = styled.div`
   max-width: 128rem;
   margin: 0 auto;
   padding: 2rem 0 3rem 0;
+  margin-top: 14rem;
 `;
 
 const LeftContainer = styled.div`
