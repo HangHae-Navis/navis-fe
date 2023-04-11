@@ -14,7 +14,7 @@ import Kakao from "../../assets/kakao.webp";
 import { setLocalStorage } from "../../utils/infos/localStorage";
 import { toast } from "react-toastify";
 
-const Signin = ({ setIsSignIn }) => {
+const Signin = ({ setisSignin }) => {
   const navigate = useNavigate();
   const setLoginModalState = useSetRecoilState(loginModalState);
   const { register, formState: errors, handleSubmit, reset } = useForm();
@@ -59,6 +59,7 @@ const Signin = ({ setIsSignIn }) => {
           name="username"
           type="text"
           label="이메일 주소"
+          width={"50rem"}
         />
         <Input
           placeholder="비밀번호를 입력하세요."
@@ -66,22 +67,36 @@ const Signin = ({ setIsSignIn }) => {
           name="password"
           type="password"
           label="비밀번호"
+          width={"50rem"}
         />
-        <Button disabled={false} full={true}>
-          로그인
-        </Button>
-        <div className="kakao" onClick={responseKakao}>
-          <img src={Kakao} alt="kakao-logo" />
-          카카오톡으로 로그인하기
-        </div>
+        <ButtonBox>
+          <div className="kakao" onClick={responseKakao}>
+            <img src={Kakao} alt="kakao-logo" />
+            카카오톡으로 로그인
+          </div>
+          <Button disabled={false} width={"13rem"} height={"6rem"}>
+            로그인
+          </Button>
+        </ButtonBox>
       </SigninForm>
       <p>
         계정이 존재하지 않나요?
-        <span onClick={() => setIsSignIn(false)}>회원가입</span>
+        <span onClick={() => setisSignin(false)}>회원가입</span>
       </p>
     </SignInWrapper>
   );
 };
+
+const ButtonBox = styled.div`
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  flex-direction: row;
+  align-items: center;
+  padding-top: 5rem;
+  padding-bottom: 3rem;
+  gap: 2rem;
+`;
 const SignInWrapper = styled.div`
   width: 50%;
   @media (max-width: 750px) {
@@ -93,16 +108,23 @@ const SignInWrapper = styled.div`
   align-items: center;
   gap: 0.6rem;
 
+  input {
+    @media (max-width: 750px) {
+      width: 70% !important;
+    }
+  }
+
   p {
     display: flex;
     align-items: center;
     gap: 0.5rem;
-    font-size: 1.1rem;
-
+    font-size: 2.1rem;
+    color: #505050;
     span {
       cursor: pointer;
+      font-weight: bold;
       text-decoration: underline;
-      font-size: 1.1rem;
+      font-size: 2.2rem;
     }
   }
 
@@ -112,15 +134,15 @@ const SignInWrapper = styled.div`
     gap: 1rem;
     align-items: center;
     img {
-      width: 1.5rem;
-      height: 1.5rem;
+      width: 2.5rem;
+      height: 2.5rem;
     }
-    width: 100%;
-    height: 4rem;
-    background-color: #f4d501;
-    font-size: 1.35rem;
-    font-weight: 500;
-    border-radius: 0.8rem;
+    width: 25rem;
+    height: 6rem;
+    background-color: #f8e50b;
+    font-size: 1.8rem;
+    font-weight: bold;
+    border-radius: 3.4rem;
     ${flexCenter}
   }
 `;
@@ -129,7 +151,7 @@ const SigninForm = styled.form`
   display: flex;
   flex-direction: column;
   justify-content: center;
-  gap: 1.2rem;
+  gap: 3.2rem;
 `;
 
 export default Signin;

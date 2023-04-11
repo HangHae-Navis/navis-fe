@@ -241,6 +241,7 @@ function PartyDetail() {
     () => getCommentPage({ groupId, boardId: detailId, page: 1, size: 999 }),
     {
       onSuccess: ({ data }) => {
+        console.log(data.data);
         setCommentList(data.data.content);
       },
     }
@@ -307,6 +308,7 @@ function PartyDetail() {
       comment: data,
     };
     const res = await post.mutateAsync(payload);
+    setComment("");
   };
 
   const OnVotePost = async () => {
@@ -509,6 +511,7 @@ function PartyDetail() {
                   <Button
                     transparent={true}
                     onClick={() => setWhereToVoted(-2)}
+                    color="rgb(88, 85, 133)"
                   >
                     결과보기
                   </Button>
@@ -530,6 +533,7 @@ function PartyDetail() {
                     <Button
                       transparent={true}
                       onClick={() => setWhereToVoted(-1)}
+                      color="rgb(88, 85, 133)"
                     >
                       투표하기
                     </Button>
@@ -542,6 +546,7 @@ function PartyDetail() {
                           voteId: res?.data?.data?.data?.id,
                         })
                       }
+                      color="rgb(88, 85, 133)"
                     >
                       다시하기
                     </Button>
@@ -573,6 +578,7 @@ function PartyDetail() {
                     <Button
                       onClick={handleSubmit(postOrPutHomeWork)}
                       transparent={true}
+                      color="rgb(88, 85, 133)"
                     >
                       과제 제출하기
                     </Button>
@@ -614,6 +620,7 @@ function PartyDetail() {
                         ?.length == 0 ? (
                         <Button
                           transparent={true}
+                          color="rgb(88, 85, 133)"
                           onClick={() =>
                             doDeleteHomework({ groupId, detailId })
                           }
@@ -624,6 +631,7 @@ function PartyDetail() {
                         <Button
                           transparent={true}
                           onClick={() => setSubmitAgain(true)}
+                          color="rgb(88, 85, 133)"
                         >
                           다시 제출하기
                         </Button>
@@ -746,7 +754,7 @@ function PartyDetail() {
         </ContentsWrapper>
         <Commentcontainer>
           <CommentTopWrapper>
-            <span>{getComment?.data?.data?.data?.content.length}</span>
+            <span>댓글 {getComment?.data?.data?.data?.content.length}</span>
             <img src={conver} alt="댓글" />
           </CommentTopWrapper>
           <CommentsWrapper />

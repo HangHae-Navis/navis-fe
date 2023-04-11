@@ -15,7 +15,7 @@ const Editor = () => {
 
 const EditorWrapper = styled.section`
   position: absolute;
-  width: 50svw;
+  width: 90vw;
   top: 40%;
   left: 50%;
   transform: translate(-50%, -50%);

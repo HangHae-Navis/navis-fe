@@ -12,6 +12,7 @@ const Input = ({
   label,
   defaultValue,
   width,
+  height,
 }) => {
   const [passwordVisible, setPasswordVisible] = useState(false);
   const onVisible = (e) => {
@@ -66,13 +67,14 @@ const InputLayout = styled.section`
   position: relative;
   display: flex;
   flex-direction: column;
-  gap: 0.6rem;
+  gap: 1.6rem;
 `;
 
 const Label = styled.section`
   align-self: flex-start;
-  font-size: 1.6rem;
+  font-size: 2.4rem;
   color: ${(props) => props.theme.color.zeroFour};
+  font-weight: bold;
 `;
 
 const InputCustom = styled.input`

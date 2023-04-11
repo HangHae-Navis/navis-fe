@@ -10,7 +10,7 @@ import {
   postSignUp,
 } from "../../utils/api/api";
 
-const Signup = ({ setIsSignIn }) => {
+const Signup = ({ setisSignin }) => {
   const { register, handleSubmit, formState: errors, watch } = useForm();
   const [verify, setVerify] = useState(false);
   const [emailConfirm, setEmailConfirm] = useState(false);
@@ -45,7 +45,7 @@ const Signup = ({ setIsSignIn }) => {
 
   const signupMutation = useMutation(postSignUp, {
     onSuccess: ({ data }) => {
-      setIsSignIn(true);
+      setisSignin(true);
     },
     onError: (error) => {
       alert("에러");
@@ -74,6 +74,7 @@ const Signup = ({ setIsSignIn }) => {
             label="닉네임"
             register={register}
             name="nickname"
+            width={"50rem"}
           />
         </InputWrapper>
         <InputWrapper>
@@ -83,8 +84,9 @@ const Signup = ({ setIsSignIn }) => {
             label="이메일 주소"
             register={register}
             name="username"
+            width={"50rem"}
           />
-          <Button onClick={onEmailConfirm}>인증</Button>
+          <Button onClick={onEmailConfirm} width={"10rem"}>인증</Button>
         </InputWrapper>
         {emailConfirm === true && (
           <InputWrapper>
@@ -94,8 +96,9 @@ const Signup = ({ setIsSignIn }) => {
               register={register}
               label="인증번호"
               placeholder="인증번호를 입력하세요."
+              width={"50rem"}
             />
-            <Button onClick={onVerify}>확인</Button>
+            <Button onClick={onVerify} width={"10rem"}>확인</Button>
           </InputWrapper>
         )}
         <InputWrapper>
@@ -105,6 +108,7 @@ const Signup = ({ setIsSignIn }) => {
             placeholder="비밀번호를 입력하세요."
             register={register}
             name="password"
+            width={"50rem"}
           />
         </InputWrapper>
         <InputWrapper>
@@ -115,19 +119,30 @@ const Signup = ({ setIsSignIn }) => {
             register={register}
             name="passwordConfirm"
             full={true}
+            width={"50rem"}
           />
         </InputWrapper>
-        <Button full={true} disabled={verify === false ? true : false}>
+        <SubmitBox>
+        <Button disabled={verify === false ? true : false} width={"25rem"} height={"4rem"}>
           회원가입
         </Button>
         <p>
           계정이 존재하신가요?{" "}
-          <span onClick={() => setIsSignIn(true)}>로그인</span>
+          <span onClick={() => setisSignin(true)}>로그인</span>
         </p>
+        </SubmitBox>
       </SignUpForm>
     </SignUpWrapper>
   );
 };
+
+const SubmitBox = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  gap: 2rem;
+`
 
 const SignUpWrapper = styled.div`
   width: 50%;
@@ -144,27 +159,34 @@ const SignUpForm = styled.form`
   display: flex;
   flex-direction: column;
   justify-content: center;
+  height: 65vh;
   gap: 0.8rem;
   button {
     margin-top: 1rem;
   }
   p {
-    text-align: right;
-    font-size: 1.2rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 2.1rem;
+    color: #505050;
     span {
       cursor: pointer;
-      font-size: 1.2rem;
+      font-weight: bold;
       text-decoration: underline;
+      font-size: 2.2rem;
     }
   }
 `;
 
 const InputWrapper = styled.div`
   display: flex;
-  gap: 1rem;
   align-items: center;
+  flex-direction: row;
+  justify-content: space-between;
+  gap: 1rem;
   button {
-    margin-top: 2.2rem;
+    margin-top: 4.7rem;
   }
 `;
 

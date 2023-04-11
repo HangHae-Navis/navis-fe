@@ -188,7 +188,7 @@ const HeaderWrapper = styled.header`
   z-index: 700;
   justify-content: space-around;
   width: 100vw;
-  height: 10rem;
+  height: 9rem;
   padding: 1rem;
 
   .buttons {
