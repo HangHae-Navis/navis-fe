@@ -25,7 +25,12 @@ const PartyInfo = (props) => {
           <img src={copy} alt="copy" />
         </span>
       </CopyToClipboard>
-      <h1 className="linktomain" onClick={() => navi(`/party/${props.groupId}`)}>{props?.groupName}</h1>
+      <h1
+        className="linktomain"
+        onClick={() => navi(`/party/${props.groupId}`)}
+      >
+        {props?.groupName}
+      </h1>
       <p>{props?.groupInfo}</p>
       <ButtonWrapper>
         <div
@@ -100,7 +105,7 @@ const PartyInfoWrapper = styled.section`
     color: ${(props) => props.theme.color.grey100};
   }
 
-  .linktomain{
+  .linktomain {
     cursor: pointer;
   }
 
@@ -118,7 +123,7 @@ const PartyInfoWrapper = styled.section`
 
   .button {
     cursor: pointer;
-    padding: 0.8rem 1.8rem;
+    padding: 0.8rem 1.4rem;
     display: flex;
     gap: 0.6rem;
     height: 4.3rem;
@@ -128,7 +133,8 @@ const PartyInfoWrapper = styled.section`
     border: 0.1rem solid ${(props) => props.theme.color.zeroFour};
     border-radius: 0.8rem;
     span {
-      font-size: 1.45rem;
+      white-space: nowrap;
+      font-size: 1.05vw;
       font-weight: 500;
       color: ${(props) => props.theme.color.zeroFour};
     }
@@ -144,10 +150,13 @@ const PartyInfoWrapper = styled.section`
   }
 
   .admin {
-    width: 11.4rem;
+    width: fit-content;
+    cursor: pointer;
+    padding: 0.8rem 1.4rem;
     display: flex;
     justify-content: center;
     border: none;
+
     background: ${(props) => props.theme.color.zeroThree};
     span {
       color: #ffffff;
