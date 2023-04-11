@@ -6,6 +6,8 @@ import styled from "styled-components";
 import copy from "../../assets/ic14/copy.svg";
 import write from "../../assets/ic24/write.svg";
 import remove from "../../assets/ic24/delete.svg";
+import { useSetRecoilState } from "recoil";
+import { editReadyState } from "../../store/atom";
 
 const PartyInfo = (props) => {
   const navi = useNavigate();
@@ -14,6 +16,7 @@ const PartyInfo = (props) => {
       toastId: "withdrawal",
     });
   };
+  const setIsOpen = useSetRecoilState(editReadyState);
   return (
     <PartyInfoWrapper>
       <CopyToClipboard
@@ -33,10 +36,7 @@ const PartyInfo = (props) => {
       </h1>
       <p>{props?.groupInfo}</p>
       <ButtonWrapper>
-        <div
-          className="button"
-          onClick={() => navi(`/party/${props.groupId}/edit`)}
-        >
+        <div className="button" onClick={() => setIsOpen(true)}>
           <img src={write} alt="글쓰기" />
           <span>글쓰기</span>
         </div>
@@ -134,7 +134,7 @@ const PartyInfoWrapper = styled.section`
     border-radius: 0.8rem;
     span {
       white-space: nowrap;
-      font-size: 1.05vw;
+      font-size: 1.3rem;
       font-weight: 500;
       color: ${(props) => props.theme.color.zeroFour};
     }

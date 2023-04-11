@@ -1,4 +1,4 @@
-import { QueryClient, useQuery, useQueryClient } from "react-query";
+import { useQuery, useQueryClient } from "react-query";
 import styled from "styled-components";
 import { getDetailPage } from "../utils/api/api";
 import "react-loading-skeleton/dist/skeleton.css";
@@ -16,6 +16,9 @@ import Carousel from "../components/party/Carousel";
 import { settings } from "../constants/carousel";
 import Chat from "../components/global/Chat";
 import FloatingMenu from "../components/party/FloatingMenu";
+import EditReady from "../components/edit/EditReady";
+import { editReadyState } from "../store/atom";
+import { useRecoilState, useResetRecoilState } from "recoil";
 
 const Party = () => {
   const queryClient = useQueryClient();
@@ -27,7 +30,6 @@ const Party = () => {
   const [categoryValueSecond, setCategoryValueSecond] = useState("id");
   const options = ["전체", "공지", "투표", "과제", "게시글"];
   const optionsSecond = ["최신순", "중요도순"];
-  const optionsThird = useState(false);
   const [carouselList, setCarouselList] = useState([]);
   const [groupList, setGroupList] = useState([]);
   const [pageNum, setPageNum] = useState(1);
@@ -36,6 +38,7 @@ const Party = () => {
   const [groupCode, setGroupCode] = useState();
   const [groupId, setGroupId] = useState(pam.id);
   const [isAdmin, setIsAdmin] = useState(false);
+  const isOpen = useRecoilState(editReadyState);
 
   const partyRes = useQuery(
     ["party", { id: pam.id, page: pageNum, size: 99, category: categoryValue }],
@@ -238,6 +241,7 @@ const Party = () => {
           </RightContainer>
         </RightTotalContainer>
         <Chat />
+        {isOpen === true && <EditReady />}
       </PageContainer>
     </>
   );

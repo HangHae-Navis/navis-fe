@@ -46,6 +46,11 @@ export const chatInfoState = atom({
   default: null,
 });
 
+export const editReadyState = atom({
+  key: `state${v4()}`,
+  default: false,
+});
+
 export const editorState = atom({
   key: `state${v4()}`,
   default: {
