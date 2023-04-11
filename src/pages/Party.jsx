@@ -38,7 +38,7 @@ const Party = () => {
   const [groupCode, setGroupCode] = useState();
   const [groupId, setGroupId] = useState(pam.id);
   const [isAdmin, setIsAdmin] = useState(false);
-  const isOpen = useRecoilState(editReadyState);
+  const [isOpen, setIsOpen] = useRecoilState(editReadyState);
 
   const partyRes = useQuery(
     ["party", { id: pam.id, page: pageNum, size: 99, category: categoryValue }],

@@ -18,7 +18,7 @@ export const InputStyle = css`
   width: 100%;
   padding-left: 1.8rem;
   font-size: 1.8rem;
-  border: 0.05rem solid ${(props) => props.theme.color.zeroThree};
+  border: 0.1rem solid ${(props) => props.theme.color.zeroTwo};
   color: ${(props) => props.theme.color.zeroFour};
 
   &:focus {

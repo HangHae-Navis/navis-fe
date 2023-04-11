@@ -57,6 +57,7 @@ export const editorState = atom({
     title: "",
     subtitle: "",
     content: "",
+    category: "게시글",
     important: 0,
     hashtagList: "",
     expirationDate: 0,
