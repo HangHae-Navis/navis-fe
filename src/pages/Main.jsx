@@ -68,7 +68,7 @@ const Main = () => {
   const [groupList, setGroupList] = useState([]);
   const [totalNum, setTotalNum] = useState(0);
   const [pageNum, setPageNum] = useState(1);
-  const [filterParam,setFilterParam] = useState('all')
+  const [filterParam, setFilterParam] = useState("all");
   const navigate = useNavigate();
   const [activeState, setActiveState] = useState("전체그룹");
   //받아오는 데이터는 content(목록), totalElements(총 갯수), totalPages(총 페이지)를 받아옴
@@ -121,7 +121,11 @@ const Main = () => {
     <>
       <PageContainer>
         <GroupHeaderWrapper>
-          <NavBar setState = {setFilterParam} activeState={activeState} setActiveState={setActiveState} />
+          <NavBar
+            setState={setFilterParam}
+            activeState={activeState}
+            setActiveState={setActiveState}
+          />
           <Button
             className="topBtn"
             transparent={false}
@@ -174,6 +178,7 @@ const PageContainer = styled.div`
   align-items: center;
   width: 100vw;
   margin: 0 auto;
+  margin-top: 14rem;
   gap: 1rem;
 `;
 

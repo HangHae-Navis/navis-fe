@@ -57,7 +57,7 @@ const Party = () => {
         setCarouselList(data.data.deadlines);
 
         //파티디테일의 dtype에 따라 렌더링 실패 이슈를 방지하기 위해, 모든 파티디테일 쿼리를 삭제한다.
-        queryClient.removeQueries("partyDetail", { inactive: true })
+        queryClient.removeQueries("partyDetail", { inactive: true });
       },
     }
   );
@@ -300,6 +300,7 @@ const PageContainer = styled.div`
   max-width: 128rem;
   margin: 0 auto;
   padding: 2rem 0 3rem 0;
+  margin-top: 14rem;
 `;
 
 const LeftContainer = styled.div`
