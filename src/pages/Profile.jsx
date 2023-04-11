@@ -211,7 +211,7 @@ const Profile = () => {
                     <label htmlFor="file-upload">
                       <GroupInfoImage
                         src={userImg != null ? userImg : Test}
-                      ></GroupInfoImage>
+                      />
                     </label>
                     <h1 className="inputcontent">
                       이미지를 클릭하여 <br />
@@ -318,6 +318,7 @@ const GroupInfoImage = styled.img`
   border-radius: 2rem;
   width: 18rem;
   height: 18rem;
+  object-fit: cover;
 `;
 
 const RightTotalContainer = styled.div`
