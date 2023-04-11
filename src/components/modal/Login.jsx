@@ -7,10 +7,11 @@ import Signin from "../login/Signin";
 import Signup from "../login/Signup";
 import { flexCenter } from "../../utils/style/mixins";
 import { modalVariants } from "../../utils/variants/variants";
+import Logo from "../../assets/logo.svg";
 
 const Login = () => {
   const setLoginModal = useSetRecoilState(loginModalState);
-  const [isSignin, setIsSignIn] = useState(true);
+  const [issignin, setissignin] = useState(true);
   const modalRef = useRef(null);
   return (
     <LoginModalBackGround
@@ -26,12 +27,13 @@ const Login = () => {
         initial="start"
         animate="animate"
         exit="exit"
+        issignin={issignin.toString()}
       >
-        <ContentWrapper></ContentWrapper>
-        {isSignin === true ? (
-          <Signin setIsSignIn={setIsSignIn} />
+      <img src={Logo} className="logo" alt="logo"/>
+        {issignin === true ? (
+          <Signin setisSignin={setissignin} />
         ) : (
-          <Signup setIsSignIn={setIsSignIn} />
+          <Signup setisSignin={setissignin} />
         )}
       </LoginModalWrapper>
     </LoginModalBackGround>
@@ -45,21 +47,30 @@ const LoginModalBackGround = styled.div`
   width: 100vw;
   height: 100vh;
   z-index: 999;
-  background-color: rgba(0, 0, 0, 0.5);
+  background-color: rgba(0, 0, 0, 0.0);
   ${flexCenter}
 `;
 
 const LoginModalWrapper = styled(motion.section)`
-  max-width: 80rem;
-  max-height: 70rem;
+  max-width: 78rem;
+  height: ${({ issignin }) => (issignin == "true" ? "75%" : "80%")};
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  justify-content: flex-start;
+  margin-top: ${({ issignin }) => (issignin == "true" ? "0rem" : "2rem")};
+  padding-top: ${({ issignin }) => (issignin == "true" ? "10rem" : "5rem")};
+  padding-bottom: 1rem;
+  gap: ${({ issignin }) => (issignin == "true" ? "7rem" : "2rem")};
   width: 94.5vw;
+  border-radius: 2.5rem;
   @media (max-width: 750px) {
     width: 70vw;
     height: 55rem;
   }
-  height: 80vw;
   display: flex;
-  background-color: white;
+  background-color: rgba(255, 255, 255, 0.6);
+  backdrop-filter: blur(10px); // 블러 효과 추가
 `;
 
 const ContentWrapper = styled.section`

@@ -10,6 +10,8 @@ const Button = ({
   full,
   type,
   color,
+  width,
+  height,
 }) => {
   return (
     <CustomButton
@@ -20,6 +22,8 @@ const Button = ({
       full={full}
       type={type}
       color={color}
+      width={width}
+      height={height}
     >
       {children}
     </CustomButton>
@@ -28,8 +32,9 @@ const Button = ({
 
 const CustomButton = styled.button`
   padding: 0 2rem;
-  width: fit-content;
-  height: 4rem;
+  
+  width: ${({ width }) => (width ? width : "fit-content")};
+  height: ${({ height }) => (height ? height : "4rem")};
   border-radius: 3.4rem;
   color: white;
   background-color: ${(props) => props.theme.color.zeroFour};
