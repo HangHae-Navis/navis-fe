@@ -6,7 +6,6 @@ import Logo from "../../assets/logo.svg";
 
 const Footer = () => {
   const { pathname } = useLocation();
-  console.log(pathname);
   return (
     <FooterWrapper pathname={pathname}>
       {pathname === "/" ? (

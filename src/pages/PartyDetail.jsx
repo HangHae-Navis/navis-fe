@@ -241,7 +241,7 @@ function PartyDetail() {
     () => getCommentPage({ groupId, boardId: detailId, page: 1, size: 999 }),
     {
       onSuccess: ({ data }) => {
-        console.log(data.data)
+        console.log(data.data);
         setCommentList(data.data.content);
       },
     }
@@ -308,7 +308,7 @@ function PartyDetail() {
       comment: data,
     };
     const res = await post.mutateAsync(payload);
-    setComment("")
+    setComment("");
   };
 
   const OnVotePost = async () => {
@@ -754,7 +754,7 @@ function PartyDetail() {
         </ContentsWrapper>
         <Commentcontainer>
           <CommentTopWrapper>
-            <span>댓글 : {getComment?.data?.data?.data?.content.length}</span>
+            <span>댓글 {getComment?.data?.data?.data?.content.length}</span>
             <img src={conver} alt="댓글" />
           </CommentTopWrapper>
           <CommentsWrapper />

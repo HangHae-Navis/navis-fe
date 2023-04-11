@@ -11,14 +11,14 @@ const FloatingMenu = (props) => {
   const navi = useNavigate();
   const queryClient = useQueryClient();
 
-  const naviToRecent = (data) =>{
-    queryClient.removeQueries("partyDetail")
-    console.log(data)
+  const naviToRecent = (data) => {
+    queryClient.removeQueries("partyDetail");
+    console.log(data);
     navi(
       `/party/detail?groupId=${props.groupId}&detailId=${data.id}&dtype=${data.dtype}&groupName=${props.groupName}&groupInfo=${props.groupInfo}&groupCode=${props.groupCode}`
-    )
+    );
     window.location.reload();
-  }
+  };
 
   return (
     <FloatingButtonsContainer>
@@ -49,16 +49,18 @@ const FloatingButtonsContainer = styled.div`
   position: fixed;
   top: 48rem;
   left: 6vw;
+  gap: 0.4rem;
 
   .title {
+    margin-bottom: 0.8rem;
     font-weight: 600;
-    font-size: 2.2rem;
+    font-size: 1.6rem;
     color: rgb(88, 85, 133);
   }
   .subtitle {
     cursor: pointer;
     font-weight: 400;
-    font-size: 1.8rem;
+    font-size: 1.15rem;
     color: #9795b5;
   }
 `;
@@ -67,14 +69,13 @@ const FloatingButtonsList = styled.ul`
   display: inline-block;
   list-style: none;
   position: fixed;
-  top: 47rem;
+  top: 50rem;
   width: 20vw;
-  max-width: 20rem;
-  left: 6vw;
+  max-width: 15rem;
+  left: 4vw;
   gap: 1rem;
   padding: 1rem;
   min-height: 5rem;
   border-radius: 2rem;
-  border: 0.1rem solid rgb(88, 85, 133);
   background: #ffffff;
 `;
