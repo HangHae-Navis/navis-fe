@@ -26,7 +26,7 @@ const FooterWrapper = styled.section`
   justify-content: space-around;
   bottom: 0;
   width: 100vw;
-  height: 10rem;
+  height: 8rem;
 
   ${(props) =>
     props.pathname === "/"
