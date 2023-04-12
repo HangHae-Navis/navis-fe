@@ -29,6 +29,7 @@ const Signin = ({ setisSignin }) => {
         JSON.stringify({
           nickname: data.data.nickname,
           username: data.data.username,
+          profileImage: data.data.profileImage,
         })
       );
     },
