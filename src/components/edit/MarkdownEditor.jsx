@@ -4,11 +4,7 @@ import { languages } from "@codemirror/language-data";
 import styled from "styled-components";
 import { useRecoilState, useResetRecoilState } from "recoil";
 import { useCallback } from "react";
-import {
-  editorState,
-  markdownInfoState,
-  markdownState,
-} from "../../store/atom";
+import { editorState } from "../../store/atom";
 import {
   postBoard,
   postHomework,
@@ -17,14 +13,13 @@ import {
 } from "../../utils/api/api";
 import { useMutation } from "react-query";
 import { useNavigate, useParams } from "react-router-dom";
-import { InputStyle } from "../../utils/style/mixins";
 import Button from "../../element/Button";
 import { toast } from "react-toastify";
 
 const MarkdownEditor = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const [editorInfo, setEditorInfo] = useRecoilState(markdownState);
+  const [editorInfo, setEditorInfo] = useRecoilState(editorState);
   const resetInfo = useResetRecoilState(editorState);
   const onMarkdownEditorChange = useCallback((value) => {
     setEditorInfo({ ...editorInfo, content: value });
@@ -35,7 +30,6 @@ const MarkdownEditor = () => {
         toastId: "boardSuccess",
       });
       resetInfo();
-
       navigate(`/party/${id}`);
     },
   });
@@ -45,7 +39,6 @@ const MarkdownEditor = () => {
         toastId: "noticeSuccess",
       });
       resetInfo();
-
       navigate(`/party/${id}`);
     },
   });
@@ -55,7 +48,6 @@ const MarkdownEditor = () => {
         toastId: "voteSuccess",
       });
       resetInfo();
-
       navigate(`/party/${id}`);
     },
   });
@@ -109,7 +101,7 @@ const MarkdownEditor = () => {
         extensions={[
           markdown({ base: markdownLanguage, codeLanguages: languages }),
         ]}
-        value={editorInfo}
+        value={editorInfo.content}
         theme={"dark"}
         onChange={onMarkdownEditorChange}
         width="95%"
@@ -135,13 +127,14 @@ const MarkdownEditorWrapper = styled.form`
   flex-direction: column;
   font-size: 1.3rem;
   border-radius: 2.4rem;
+  height: 70rem;
   .buttonWrapper {
     justify-self: flex-end;
     align-self: flex-end;
   }
 `;
 
-const InputWrapper = styled.section`
+const InfoWrapper = styled.section`
   width: 90%;
   display: flex;
   align-items: center;
@@ -152,14 +145,11 @@ const ReactMarkdownEditor = styled(ReactCodeMirror)`
   * {
     outline: none !important;
   }
-  padding: 1rem;
   border-radius: 2.4rem;
   overflow-x: auto;
-
   .cm-selectionBackground {
     background-color: #e7e7fc !important;
   }
-
   .ͼo {
     background-color: #f9f9ff !important;
   }

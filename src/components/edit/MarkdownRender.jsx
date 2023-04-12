@@ -1,4 +1,4 @@
-import { markdownInfoState, markdownState } from "../../store/atom";
+import { editorState } from "../../store/atom";
 import { ReactMarkdown } from "react-markdown/lib/react-markdown";
 import { useRecoilValue } from "recoil";
 import remarkGfm from "remark-gfm";
@@ -8,20 +8,19 @@ import { a11yDark } from "react-syntax-highlighter/dist/esm/styles/prism";
 import { getLocalStorage } from "../../utils/infos/localStorage";
 
 const MarkdownRender = () => {
-  const markdownValue = useRecoilValue(markdownState);
   const userName = JSON.parse(getLocalStorage("userInfo")).nickname;
   const date = new Date();
-  const markdownInfo = useRecoilValue(markdownInfoState);
+  const editInfo = useRecoilValue(editorState);
   return (
     <MarkdownWrapper>
       <TitleRenderContent>
-        <h1>{markdownInfo.title}</h1>
+        <h1>{editInfo.title}</h1>
         <span>{userName}</span>
         <span>|</span>
         <span>{date.toLocaleDateString()}</span>
       </TitleRenderContent>
       <ReactMarkdownWrapper
-        children={markdownValue}
+        children={editInfo.content}
         remarkPlugins={[remarkGfm]}
         style={a11yDark}
         components={{
