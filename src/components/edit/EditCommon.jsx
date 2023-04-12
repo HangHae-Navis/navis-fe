@@ -20,6 +20,11 @@ const EditCommon = ({ reset, setPage }) => {
       setPage(2);
     }
   };
+
+  const onCancel = () => {
+    setIsOpen(false);
+    reset();
+  };
   return (
     <CommonInfoWrapper
       variants={modalVariants}
@@ -78,7 +83,7 @@ const EditCommon = ({ reset, setPage }) => {
         </InputWrapper>
       </InputWrappers>
       <ButtonWrapper>
-        <button className="close" onClick={() => setIsOpen(false)}>
+        <button className="close" onClick={onCancel}>
           취소하기
         </button>
         <button className="next" onClick={nextPage}>

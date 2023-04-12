@@ -70,7 +70,7 @@ function Board(props) {
           )}
         </BoardBoxTitleBox>
         <div>
-          {props.groupMemberRoleEnum == "ADMIN" || props.bannedAt != null ? (
+          {props.groupMemberRoleEnum === "ADMIN" || props.bannedAt != null ? (
             props.bannedAt != null ? (
               <Button
                 onClick={() =>
@@ -89,7 +89,7 @@ function Board(props) {
               추방하기
             </Button>
           )}
-          {props.groupMemberRoleEnum == "USER" && props.bannedAt == null ? (
+          {props.groupMemberRoleEnum === "USER" && props.bannedAt === null ? (
             <Button
               onClick={() =>
                 ChangeRoleMember({ pam: props.pam, memberId: props.id })
@@ -97,7 +97,7 @@ function Board(props) {
             >
               서포터로 변경
             </Button>
-          ) : props.groupMemberRoleEnum == "SUPPORT" ? (
+          ) : props.groupMemberRoleEnum === "SUPPORT" ? (
             <Button
               onClick={() =>
                 ChangeRoleMember({ pam: props.pam, memberId: props.id })
@@ -168,17 +168,17 @@ const Admin = () => {
 
         setAdmin(
           data.data.groupMembers.filter(
-            (item) => item.groupMemberRoleEnum == "ADMIN"
+            (item) => item.groupMemberRoleEnum === "ADMIN"
           )
         );
         setSupport(
           data.data.groupMembers.filter(
-            (item) => item.groupMemberRoleEnum == "SUPPORT"
+            (item) => item.groupMemberRoleEnum === "SUPPORT"
           )
         );
         setMember(
           data.data.groupMembers.filter(
-            (item) => item.groupMemberRoleEnum == "USER"
+            (item) => item.groupMemberRoleEnum === "USER"
           )
         );
       },
@@ -399,14 +399,6 @@ const GroupInfoText = styled.div`
   gap: 2rem;
 `;
 
-const LeftContainer = styled.div`
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  width: 30rem;
-  gap: 1rem;
-  font-size: 1.45rem;
-`;
 const PageContainer = styled.div`
   display: flex;
   flex-direction: column;

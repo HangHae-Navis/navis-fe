@@ -34,7 +34,7 @@ const EditReady = () => {
       {page === 1 ? (
         <EditCommon setPage={setPage} reset={reset} />
       ) : (
-        <EditSpecial setPage={setPage} reset={reset} />
+        <EditSpecial setPage={setPage} />
       )}
     </ModalWrapper>
   );

@@ -5,10 +5,16 @@ import { modalVariants } from "../../utils/variants/variants";
 import { InputStyle } from "../../utils/style/mixins";
 import { useRecoilState } from "recoil";
 import { editorState } from "../../store/atom";
+import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 
 const EditSpecial = ({ setPage }) => {
   const [editInfo, setEditInfo] = useRecoilState(editorState);
-  console.log(editInfo);
+  const navigate = useNavigate();
+  const onNext = () => {
+    if (editInfo.category !== "투표") navigate("/edit");
+    else setPage(3);
+  };
   return (
     <SpecialInfoWrapper
       variants={modalVariants}
@@ -17,27 +23,42 @@ const EditSpecial = ({ setPage }) => {
     >
       <InputWrappers>
         <h1>게시물 작성하기</h1>
-        <div className="top-infos">
-          <InputWrapper>
-            <span>제출 기한</span>
-            <input
-              min={new Date().toISOString().slice(0, -8)}
-              type="datetime-local"
-              className="date"
-            />
-          </InputWrapper>
-          <InputWrapper>
-            <span>중요도</span>
-            <select>
-              <option value="0">0</option>
-              <option value="1">1</option>
-              <option value="2">2</option>
-              <option value="3">3</option>
-              <option value="4">4</option>
-              <option value="5">5</option>
-            </select>
-          </InputWrapper>
-        </div>
+        {editInfo.category === "과제" ||
+          (editInfo.category === "투표" && (
+            <div className="top-infos">
+              <InputWrapper>
+                <span>제출 기한</span>
+                <input
+                  min={new Date().toISOString().slice(0, -8)}
+                  onChange={(event) =>
+                    setEditInfo({
+                      ...editInfo,
+                      expirationDate: event.target.value,
+                    })
+                  }
+                  value={editInfo.expirationDate}
+                  type="datetime-local"
+                  className="date"
+                />
+              </InputWrapper>
+              <InputWrapper>
+                <span>중요도</span>
+                <select
+                  onChange={(e) =>
+                    setEditInfo({ ...editInfo, important: e.target.value })
+                  }
+                  value={editInfo.important}
+                >
+                  <option value="0">0</option>
+                  <option value="1">1</option>
+                  <option value="2">2</option>
+                  <option value="3">3</option>
+                  <option value="4">4</option>
+                  <option value="5">5</option>
+                </select>
+              </InputWrapper>
+            </div>
+          ))}
       </InputWrappers>
       <Info>
         <ul className="info">
@@ -65,7 +86,9 @@ const EditSpecial = ({ setPage }) => {
       </Info>
       <ButtonWrapper>
         <button onClick={() => setPage(1)}>이전으로</button>
-        <button className="next">다음으로</button>
+        <button className="next" onClick={onNext}>
+          다음으로
+        </button>
       </ButtonWrapper>
     </SpecialInfoWrapper>
   );
@@ -85,10 +108,13 @@ const Info = styled.section`
     gap: 0.8rem;
 
     .title {
-      font-size: 1.3rem;
+      width: 6rem;
+      font-size: 1.4rem;
     }
 
     .value {
+      color: #676767;
+      font-size: 1.25rem;
     }
   }
 `;
@@ -122,10 +148,11 @@ const InputWrappers = styled.section`
   span {
     width: 5rem;
     white-space: nowrap;
-    font-size: 1.3rem;
+    font-size: 1.4rem;
   }
 
   .top-infos {
+    padding-top: 7rem;
     display: flex;
     align-items: center;
     gap: 1rem;
@@ -174,7 +201,6 @@ const SpecialInfoWrapper = styled(motion.section)`
     color: ${(props) => props.theme.color.zeroFour};
     font-weight: 700;
     text-align: center;
-    margin-bottom: 7rem;
   }
 
   input {

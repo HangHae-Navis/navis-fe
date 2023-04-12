@@ -29,7 +29,6 @@ const Router = () => {
         <Route element={<Profile />} path={`/${path.PROFILE}`} />
         <Route element={<EditPost />} path={`/${path.EDITPOST}`} />
         <Route element={<Admin />} path={`/${path.ADMIN}`} />
-        <Route element={<Editor />} path={`/test`} />
       </Routes>
       {isPartyRegistModal === true && <PartyRegist />}
       <Chat />
