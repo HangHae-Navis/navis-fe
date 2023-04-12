@@ -165,6 +165,10 @@ function PartyDetail() {
   const [surveyInputValues, setSurveyInputValues] = useState([]);
   const [surveyDTO, setSurveyDTO] = useState();
 
+  const token = getCookie("token");
+  const storedData = JSON.parse(localStorage.getItem('userInfo'));
+  const profileImage = token != null ?storedData.profileImage == null ?profile : storedData.profileImage : profile;
+
   useEffect(() => {
     const isUserCookie = getCookie("token");
     if (isUserCookie === undefined) {
@@ -763,6 +767,7 @@ function PartyDetail() {
               <Comment
                 key={comment.id}
                 id={comment.id}
+                profileImage={comment.profileImage}
                 groupId={groupId}
                 detailId={detailId}
                 content={comment.content}
@@ -774,7 +779,7 @@ function PartyDetail() {
             ))}
           </CommentMapWrapper>
           <CommentInputWrapper>
-            <img src={profile} alt="프로필" />
+            <img src={profileImage} alt="프로필" />
             <form
               className="form"
               onSubmit={(e) => {
