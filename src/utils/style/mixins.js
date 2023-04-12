@@ -14,7 +14,7 @@ export const InputStyle = css`
   position: relative;
   background-color: ${(props) => props.theme.color.white};
   border-radius: 5rem;
-  height: 5.2rem;
+  height: 4.2rem;
   width: 100%;
   padding-left: 1.8rem;
   font-size: 1.8rem;

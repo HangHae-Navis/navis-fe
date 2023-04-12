@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { useQuery } from "react-query";
 import { useNavigate } from "react-router";
-import { useSetRecoilState } from "recoil";
+import { useRecoilState, useSetRecoilState } from "recoil";
 import styled, { css } from "styled-components";
-import { loginModalState } from "../../store/atom";
+import { loginModalState, signinModalState } from "../../store/atom";
 import { getKaKaoLogin } from "../../utils/api/api";
 import { getCookie, removeCookie, setCookie } from "../../utils/infos/cookie";
 import { path } from "../../constants/path";
@@ -23,6 +23,7 @@ const Header = () => {
   const { pathname } = useLocation();
   const EventSource = EventSourcePolyfill || NativeEventSource;
   const setLoginModal = useSetRecoilState(loginModalState);
+  const setSigninModal = useSetRecoilState(signinModalState);
   const [headerModal, setHeaderModal] = useState(false);
   const [alarmModal, setAlarmModal] = useState(false);
   const navi = useNavigate();
@@ -49,6 +50,11 @@ const Header = () => {
       enabled: isCallBool,
     }
   );
+
+  const openModal =( props) =>{
+    setLoginModal(true)
+    setSigninModal(props)
+  }
 
   useEffect(() => {
     let eventSource;
@@ -123,10 +129,10 @@ const Header = () => {
         <>
           <img src={White} className="logo" alt="logo" onClick={onShift} />
           <div className="buttons">
-            <Button transparent={true} onClick={() => setLoginModal(true)}>
+            <Button transparent={true} onClick={() => openModal(true)}>
               Login
             </Button>
-            <button className="signup" onClick={() => setLoginModal(true)}>
+            <button className="signup" onClick={() => openModal(false)}>
               가입하기
             </button>
           </div>
@@ -188,7 +194,7 @@ const HeaderWrapper = styled.header`
   z-index: 700;
   justify-content: space-around;
   width: 100vw;
-  height: 9rem;
+  height: 7rem;
   padding: 1rem;
 
   .buttons {

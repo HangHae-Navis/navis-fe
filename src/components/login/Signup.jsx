@@ -86,7 +86,7 @@ const Signup = ({ setisSignin }) => {
             name="username"
             width={"50rem"}
           />
-          <Button onClick={onEmailConfirm} width={"10rem"}>인증</Button>
+          <Button onClick={onEmailConfirm} width={"8rem"} height={"3rem"}>인증</Button>
         </InputWrapper>
         {emailConfirm === true && (
           <InputWrapper>
@@ -98,7 +98,7 @@ const Signup = ({ setisSignin }) => {
               placeholder="인증번호를 입력하세요."
               width={"50rem"}
             />
-            <Button onClick={onVerify} width={"10rem"}>확인</Button>
+            <Button onClick={onVerify}  width={"8rem"} height={"3rem"}>확인</Button>
           </InputWrapper>
         )}
         <InputWrapper>
@@ -123,7 +123,7 @@ const Signup = ({ setisSignin }) => {
           />
         </InputWrapper>
         <SubmitBox>
-        <Button disabled={verify === false ? true : false} width={"25rem"} height={"4rem"}>
+        <Button disabled={verify === false ? true : false} font={"2.3rem"} width={"50rem"} height={"4rem"}>
           회원가입
         </Button>
         <p>
@@ -141,7 +141,7 @@ const SubmitBox = styled.div`
   flex-direction: column;
   align-items: center;
   width: 100%;
-  gap: 2rem;
+  gap: 3rem;
 `
 
 const SignUpWrapper = styled.div`
@@ -153,6 +153,12 @@ const SignUpWrapper = styled.div`
   @media (max-width: 750px) {
     width: 100%;
   }
+  
+  input {
+    @media (max-width: 750px){
+      width: 100%;
+    }
+  }
 `;
 
 const SignUpForm = styled.form`
@@ -160,7 +166,7 @@ const SignUpForm = styled.form`
   flex-direction: column;
   justify-content: center;
   height: 65vh;
-  gap: 0.8rem;
+  gap: 2rem;
   button {
     margin-top: 1rem;
   }
@@ -180,13 +186,18 @@ const SignUpForm = styled.form`
 `;
 
 const InputWrapper = styled.div`
+  position: relative; // 추가된 속성
   display: flex;
   align-items: center;
   flex-direction: row;
   justify-content: space-between;
+  width: 100%;
   gap: 1rem;
   button {
-    margin-top: 4.7rem;
+    position: absolute; // 추가된 속성
+    top: 0; // 버튼이 상위 요소에 상대적으로 위치하도록 함
+    right: 7px; // 버튼이 오른쪽 끝에 위치하도록 함
+    margin-top: 3.5rem;
   }
 `;
 

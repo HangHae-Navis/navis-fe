@@ -1,8 +1,8 @@
 import { motion } from "framer-motion";
 import React, { useRef, useState } from "react";
-import { useSetRecoilState } from "recoil";
+import { useRecoilState, useSetRecoilState } from "recoil";
 import styled from "styled-components";
-import { loginModalState } from "../../store/atom";
+import { loginModalState, signinModalState } from "../../store/atom";
 import Signin from "../login/Signin";
 import Signup from "../login/Signup";
 import { flexCenter } from "../../utils/style/mixins";
@@ -11,7 +11,7 @@ import Logo from "../../assets/logo.svg";
 
 const Login = () => {
   const setLoginModal = useSetRecoilState(loginModalState);
-  const [issignin, setissignin] = useState(true);
+  const [issignin, setissignin] = useRecoilState(signinModalState);
   const modalRef = useRef(null);
   return (
     <LoginModalBackGround
@@ -60,6 +60,11 @@ const LoginModalWrapper = styled(motion.section)`
   justify-content: flex-start;
   margin-top: ${({ issignin }) => (issignin === "true" ? "0rem" : "2rem")};
   padding-top: ${({ issignin }) => (issignin === "true" ? "10rem" : "5rem")};
+  
+  @media (max-height: 750px) {
+  padding-top: 2rem;
+  gap: ${({ issignin }) => (issignin === "true" ? "4rem" : "2rem")};
+  }
   padding-bottom: 1rem;
   gap: ${({ issignin }) => (issignin === "true" ? "7rem" : "2rem")};
   width: 91vw;
