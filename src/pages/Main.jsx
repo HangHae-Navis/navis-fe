@@ -5,7 +5,7 @@ import Button from "../element/Button";
 import { getPartyPage } from "../utils/api/api";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
-import Test from "../assets/d65d5952-d801-4225-ab16-8720733b499a.png";
+import Test from "./../assets/Image Placeholder.svg";
 import Pagination from "react-js-pagination";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
