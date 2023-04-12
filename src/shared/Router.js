@@ -12,7 +12,6 @@ import PartyDetail from "../pages/PartyDetail";
 import PartyRegist from "../components/modal/PartyRegist";
 import { useRecoilValue } from "recoil";
 import { partyRegistModalState } from "../store/atom";
-import Editor from "../pages/Editor";
 import Footer from "../components/global/Footer";
 import Chat from "../components/global/Chat";
 

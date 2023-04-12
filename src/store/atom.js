@@ -65,7 +65,7 @@ export const editorState = atom({
     category: "게시글",
     important: 0,
     hashtagList: "",
-    expirationDate: 0,
+    expirationDate: "",
     optionList: "",
   },
 });
