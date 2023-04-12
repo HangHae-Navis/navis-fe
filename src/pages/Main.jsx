@@ -106,7 +106,7 @@ const Main = () => {
       <PaginationBox>
         <Pagination
           activePage={pageNum}
-          itemsCountPerPage={8}
+          itemsCountPerPage={6}
           totalItemsCount={totalNum}
           pageRangeDisplayed={5}
           onChange={(page) => {
