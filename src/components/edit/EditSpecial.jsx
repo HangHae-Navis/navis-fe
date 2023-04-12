@@ -5,14 +5,15 @@ import { modalVariants } from "../../utils/variants/variants";
 import { InputStyle } from "../../utils/style/mixins";
 import { useRecoilState } from "recoil";
 import { editorState } from "../../store/atom";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 
 const EditSpecial = ({ setPage }) => {
+  const { id } = useParams();
   const [editInfo, setEditInfo] = useRecoilState(editorState);
   const navigate = useNavigate();
   const onNext = () => {
-    if (editInfo.category !== "투표") navigate("/edit");
+    if (editInfo.category !== "투표") navigate(`/party/${id}/edit`);
     else setPage(3);
   };
   return (
