@@ -12,6 +12,7 @@ const Button = ({
   color,
   width,
   height,
+  font,
 }) => {
   return (
     <CustomButton
@@ -24,6 +25,7 @@ const Button = ({
       color={color}
       width={width}
       height={height}
+      font={font}
     >
       {children}
     </CustomButton>
@@ -38,7 +40,7 @@ const CustomButton = styled.button`
   border-radius: 3.4rem;
   color: white;
   background-color: ${(props) => props.theme.color.zeroFour};
-  font-size: 1.6rem;
+  font-size: ${({ font }) => (font ? font : "1.6rem")};
   border: none;
   cursor: pointer;
 
