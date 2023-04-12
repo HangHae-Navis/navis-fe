@@ -67,7 +67,6 @@ const InputLayout = styled.section`
   position: relative;
   display: flex;
   flex-direction: column;
-  gap: 1.6rem;
 `;
 
 const Label = styled.section`
@@ -75,6 +74,7 @@ const Label = styled.section`
   font-size: 2.4rem;
   color: ${(props) => props.theme.color.zeroFour};
   font-weight: bold;
+  padding-left: 1rem;
 `;
 
 const InputCustom = styled.input`
