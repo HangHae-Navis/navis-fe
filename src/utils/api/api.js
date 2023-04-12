@@ -326,3 +326,8 @@ export const getNotification = async () => {
   const res = await axios.get("/api/subscribe");
   return res;
 };
+
+export const deleteNotification = async () => {
+  const res = await axios.delete("/api/subscribe/all");
+  return res;
+};
