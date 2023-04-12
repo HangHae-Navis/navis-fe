@@ -12,10 +12,11 @@ const EditCommon = ({ reset, setPage }) => {
   const setIsOpen = useSetRecoilState(editReadyState);
   const [editor, setEditorState] = useRecoilState(editorState);
   const nextPage = () => {
-    toast.error("게시글의 제목을 입력해주세요", {
-      toastId: "nextError",
-    });
-    if (editor.title !== "") {
+    if (editor.title === "") {
+      toast.error("게시글의 제목을 입력해주세요", {
+        toastId: "nextError",
+      });
+    } else {
       setPage(2);
     }
   };

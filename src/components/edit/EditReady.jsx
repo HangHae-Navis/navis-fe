@@ -10,15 +10,18 @@ import { useEffect } from "react";
 import EditSpecial from "./EditSpecial";
 
 const EditReady = () => {
+  const reset = useResetRecoilState(editorState);
+  const [page, setPage] = useState(1);
+
   const setIsOpen = useSetRecoilState(editReadyState);
   const modal = useRef();
   const onModalClose = (event) => {
     if (event.target === event.currentTarget) {
       setIsOpen(false);
+      reset();
+      setPage(0);
     }
   };
-  const reset = useResetRecoilState(editorState);
-  const [page, setPage] = useState(1);
 
   useEffect(() => {
     return () => {
@@ -31,7 +34,7 @@ const EditReady = () => {
       {page === 1 ? (
         <EditCommon setPage={setPage} reset={reset} />
       ) : (
-        <EditSpecial />
+        <EditSpecial setPage={setPage} reset={reset} />
       )}
     </ModalWrapper>
   );
