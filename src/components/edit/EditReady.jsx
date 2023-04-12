@@ -7,6 +7,7 @@ import { flexCenter } from "../../utils/style/mixins";
 import EditCommon from "./EditCommon";
 import { useState } from "react";
 import { useEffect } from "react";
+import EditSpecial from "./EditSpecial";
 
 const EditReady = () => {
   const setIsOpen = useSetRecoilState(editReadyState);
@@ -27,7 +28,11 @@ const EditReady = () => {
 
   return (
     <ModalWrapper ref={modal} onClick={onModalClose}>
-      {page === 1 ? <EditCommon setPage={setPage} reset={reset} /> : <></>}
+      {page === 1 ? (
+        <EditCommon setPage={setPage} reset={reset} />
+      ) : (
+        <EditSpecial />
+      )}
     </ModalWrapper>
   );
 };
