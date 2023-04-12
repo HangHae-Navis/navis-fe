@@ -6,6 +6,11 @@ export const loginModalState = atom({
   default: true,
 });
 
+export const signinModalState = atom({
+  key: `state${v4()}`,
+  default: true,
+});
+
 export const partyRegistModalState = atom({
   key: `state${v4()}`,
   default: false,
