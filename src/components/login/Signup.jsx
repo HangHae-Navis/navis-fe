@@ -123,7 +123,7 @@ const Signup = ({ setisSignin }) => {
           />
         </InputWrapper>
         <SubmitBox>
-        <Button disabled={verify === false ? true : false} font={"2.3rem"} width={"50rem"} height={"4rem"}>
+        <Button disabled={verify === false ? true : false} font={"2.3rem"} width={"50rem"} height={"4.7rem"}>
           회원가입
         </Button>
         <p>

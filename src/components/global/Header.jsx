@@ -31,6 +31,8 @@ const Header = () => {
   const [currentPam, setCurrentPam] = useState(code);
   const [isCallBool, setIsCallBool] = useState(false);
   const token = getCookie("token");
+  const storedData = JSON.parse(localStorage.getItem('userInfo'));
+  const profileImage = token != null ?storedData.profileImage == null ?profile : storedData.profileImage : profile;
 
   const getCode = useQuery(
     ["getCode", currentPam],
@@ -142,7 +144,7 @@ const Header = () => {
           <img src={Logo} className="logo" alt="logo" onClick={onShift} />
           <div className="icons">
             <img src={alarm} alt="알림" onClick={onModal_t} />
-            <img src={profile} onClick={onModal} alt="프로필" />
+            <Profileimg src={profileImage} onClick={onModal} alt="프로필" />
             {headerModal === true && (
               <HeaderMenu>
                 <li onClick={onShiftProfile}>프로필 수정</li>
@@ -156,6 +158,10 @@ const Header = () => {
     </HeaderWrapper>
   );
 };
+
+const Profileimg = styled.img`
+border-radius: 50%;
+`
 
 const HeaderMenu = styled.ul`
   position: absolute;
@@ -236,6 +242,7 @@ const HeaderWrapper = styled.header`
     img {
       cursor: pointer;
       width: 3.5rem;
+      height: 3.5rem;
     }
   }
   .logo {

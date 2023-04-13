@@ -29,6 +29,7 @@ const Signin = ({ setisSignin }) => {
         JSON.stringify({
           nickname: data.data.nickname,
           username: data.data.username,
+          profileImage: data.data.profileImage,
         })
       );
     },
@@ -70,7 +71,7 @@ const Signin = ({ setisSignin }) => {
           width={"47rem"}
         />
         <ButtonBox>
-          <Button disabled={false} className = {"buttontext"}  font={"2.3rem"} width={"47rem"} height={"7rem"}>
+          <Button disabled={false} className = {"buttontext"}  font={"2.3rem"} width={"47rem"} height={"4.7rem"}>
             로그인
           </Button>
           <div className="kakao" onClick={responseKakao}>
@@ -152,7 +153,7 @@ height: 40vh;
       height: 2.5rem;
     }
     width: 47rem;
-    height: 7rem;
+    height: 4.7rem;
     background-color: #f8e50b;
     font-size: 2rem;
     font-weight: bold;
