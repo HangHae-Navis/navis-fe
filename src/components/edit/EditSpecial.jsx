@@ -16,7 +16,6 @@ const EditSpecial = ({ setPage }) => {
     if (editInfo.category !== "survey") navigate(`/party/${id}/edit`);
     else setPage(3);
   };
-  console.log(editInfo.expirationDate);
   return (
     <SpecialInfoWrapper
       variants={modalVariants}
@@ -25,7 +24,9 @@ const EditSpecial = ({ setPage }) => {
     >
       <InputWrappers>
         <h1>게시물 작성하기</h1>
-        {(editInfo.category === "homework" || editInfo.category === "vote") && (
+        {(editInfo.category === "homework" ||
+          editInfo.category === "vote" ||
+          editInfo.category === "survey") && (
           <>
             <div className="top-infos">
               <InputWrapper>
@@ -43,22 +44,24 @@ const EditSpecial = ({ setPage }) => {
                   className="date"
                 />
               </InputWrapper>
-              <InputWrapper>
-                <span>중요도</span>
-                <select
-                  onChange={(e) =>
-                    setEditInfo({ ...editInfo, important: e.target.value })
-                  }
-                  value={editInfo.important}
-                >
-                  <option value="0">0</option>
-                  <option value="1">1</option>
-                  <option value="2">2</option>
-                  <option value="3">3</option>
-                  <option value="4">4</option>
-                  <option value="5">5</option>
-                </select>
-              </InputWrapper>
+              {editInfo.category !== "survey" && (
+                <InputWrapper>
+                  <span>중요도</span>
+                  <select
+                    onChange={(e) =>
+                      setEditInfo({ ...editInfo, important: e.target.value })
+                    }
+                    value={editInfo.important}
+                  >
+                    <option value="0">0</option>
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                  </select>
+                </InputWrapper>
+              )}
             </div>
             {editInfo.category === "vote" && (
               <InputWrapper>

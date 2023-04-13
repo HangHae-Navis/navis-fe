@@ -328,3 +328,9 @@ export const deleteNotification = async () => {
   const res = await axios.delete("/api/subscribe/all");
   return res;
 };
+
+export const postSurvey = async (id, requestDto) => {
+  console.log(id, requestDto);
+  const res = await axios.post(`/api/${id}/surveys`, requestDto);
+  return res;
+};

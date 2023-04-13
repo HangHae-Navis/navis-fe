@@ -81,6 +81,7 @@ const Party = () => {
   }, [categoryValueSecond]);
 
   useEffect(() => {
+    setIsOpen(false);
     const isUserCookie = getCookie("token");
     if (isUserCookie === undefined) {
       navi("/");

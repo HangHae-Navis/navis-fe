@@ -3,22 +3,22 @@ import React from "react";
 import styled from "styled-components";
 import { modalVariants } from "../../utils/variants/variants";
 import { InputStyle } from "../../utils/style/mixins";
-import { useRecoilState } from "recoil";
-import { editorState } from "../../store/atom";
+import { useRecoilState, useSetRecoilState } from "recoil";
+import { editReadyState, editorState } from "../../store/atom";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import { useState } from "react";
 import { v4 } from "uuid";
+import { useMutation, useQueryClient } from "react-query";
+import { postSurvey } from "../../utils/api/api";
 
 const EditSurvey = ({ setPage }) => {
   const { id } = useParams();
+  const setEditReady = useSetRecoilState(editReadyState);
+  const queryclient = useQueryClient();
   const [editInfo, setEditInfo] = useRecoilState(editorState);
   const navigate = useNavigate();
-  const onNext = () => {
-    if (editInfo.category !== "survey") navigate(`/party/${id}/edit`);
-    else setPage(3);
-  };
-  const [dd, setDD] = useState([
+  const [surveyArr, setSurveyArr] = useState([
     {
       id: `${v4()}`,
       type: "DESCRIPTIVE",
@@ -27,8 +27,8 @@ const EditSurvey = ({ setPage }) => {
     },
   ]);
   const onAdd = () => {
-    setDD([
-      ...dd,
+    setSurveyArr([
+      ...surveyArr,
       {
         id: `${v4()}`,
         type: "DESCRIPTIVE",
@@ -39,13 +39,13 @@ const EditSurvey = ({ setPage }) => {
   };
 
   const onDelete = () => {
-    const newDD = [...dd];
+    const newDD = [...surveyArr];
     newDD.pop(); // 맨 마지막 요소를 제거
-    setDD(newDD);
+    setSurveyArr(newDD);
   };
 
   const onTypeChange = (event, id) => {
-    const newDD = dd.map((item) => {
+    const newDD = surveyArr.map((item) => {
       if (item.id === id) {
         return {
           ...item,
@@ -56,11 +56,11 @@ const EditSurvey = ({ setPage }) => {
       }
       return item;
     });
-    setDD(newDD);
+    setSurveyArr(newDD);
   };
 
   const onQuestionChange = (event, id) => {
-    const newDD = dd.map((item) => {
+    const newDD = surveyArr.map((item) => {
       if (item.id === id) {
         return {
           ...item,
@@ -69,11 +69,11 @@ const EditSurvey = ({ setPage }) => {
       }
       return item;
     });
-    setDD(newDD);
+    setSurveyArr(newDD);
   };
 
   const onOptionsChange = (event, id) => {
-    const newDD = dd.map((item) => {
+    const newDD = surveyArr.map((item) => {
       if (item.id === id) {
         return {
           ...item,
@@ -82,7 +82,52 @@ const EditSurvey = ({ setPage }) => {
       }
       return item;
     });
-    setDD(newDD);
+    setSurveyArr(newDD);
+  };
+
+  const postSurveyMutate = useMutation(
+    (requestDto) => {
+      postSurvey(id, requestDto);
+    },
+    {
+      onSuccess: () => {
+        queryclient.invalidateQueries("party");
+        setEditReady(false);
+        toast.success("설문조사가 게시되었습니다.", {
+          toastId: "surveySuccess",
+        });
+      },
+    }
+  );
+
+  const onSubmit = async () => {
+    const time = new Date(editInfo.expirationDate).getTime() / 1000;
+    const requestDto = {
+      title: editInfo.title,
+      subtitle: editInfo.subtitle,
+      content: "",
+      important: 0,
+      hashtagList: editInfo.hashtagList,
+      expirationDate: time,
+      questionList: [],
+    };
+    surveyArr.map((ddd) => {
+      const arr = ddd.options.split(" ");
+      if (ddd.type === "DESCRIPTIVE") {
+        requestDto.questionList.push({
+          type: ddd.type,
+          question: ddd.question,
+          options: [""],
+        });
+      } else {
+        requestDto.questionList.push({
+          type: ddd.type,
+          question: ddd.question,
+          options: arr,
+        });
+      }
+    });
+    const res = await postSurveyMutate.mutateAsync(requestDto);
   };
 
   return (
@@ -96,12 +141,12 @@ const EditSurvey = ({ setPage }) => {
           <h1>게시물 작성하기</h1>
           <div className="menu">
             <span onClick={onAdd}>추가</span>
-            {dd.length !== 1 && <span onClick={onDelete}>삭제</span>}
+            {surveyArr.length !== 1 && <span onClick={onDelete}>삭제</span>}
           </div>
         </div>
         {editInfo.category === "survey" && (
           <SurveyWrapper>
-            {dd.map((ddd) => (
+            {surveyArr.map((ddd) => (
               <SurveyList key={ddd.id}>
                 <span>형식</span>
                 <select
@@ -137,7 +182,7 @@ const EditSurvey = ({ setPage }) => {
       </InputWrappers>
       <ButtonWrapper>
         <button onClick={() => setPage(2)}>이전으로</button>
-        <button className="next" onClick={onNext}>
+        <button className="next" onClick={onSubmit}>
           게시하기
         </button>
       </ButtonWrapper>

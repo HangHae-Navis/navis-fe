@@ -36,8 +36,6 @@ const MarkdownEditor = ({ isSmallScreen }) => {
     },
   });
 
-  console.log(editorInfo);
-
   const noticeMutation = useMutation((data) => postNotice(id, data), {
     onSuccess: () => {
       toast.success("공지가 등록되었습니다", {
