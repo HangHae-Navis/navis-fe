@@ -6,7 +6,7 @@ const StarTag = ({ important }) => {
   const arr = important > 0 ? new Array(parseInt(important)).fill(0) : [];
   return (
     <>
-      {important !== undefined && important !== 0 && (
+      {important !== 0 && (
         <TagWrapper>
           {arr.map((_, i) => (
             <img src={star} alt="과제" key={i} />
