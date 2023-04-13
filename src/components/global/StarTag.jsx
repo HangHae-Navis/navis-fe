@@ -3,7 +3,7 @@ import star from "../../assets/ic20/star.svg";
 import { tagStyle } from "../../utils/style/mixins";
 
 const StarTag = ({ important }) => {
-  const arr = new Array(important).fill(0);
+  const arr = new Array(parseInt(important)).fill(0);
   return (
     <>
       {important !== 0 && (

@@ -79,7 +79,7 @@ const LandingWrapper = styled.main`
   min-width: 100vw;
   min-height: 100vh;
   background: linear-gradient(180deg, #585585 12.7%, #9795b5 100%);
-  padding: 18rem 0;
+  padding: 16rem 0 6rem 0;
   display: flex;
   flex-direction: column;
   gap: 20rem;

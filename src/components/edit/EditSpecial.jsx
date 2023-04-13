@@ -13,9 +13,10 @@ const EditSpecial = ({ setPage }) => {
   const [editInfo, setEditInfo] = useRecoilState(editorState);
   const navigate = useNavigate();
   const onNext = () => {
-    if (editInfo.category !== "투표") navigate(`/party/${id}/edit`);
+    if (editInfo.category !== "survey") navigate(`/party/${id}/edit`);
     else setPage(3);
   };
+  console.log(editInfo.expirationDate);
   return (
     <SpecialInfoWrapper
       variants={modalVariants}
@@ -24,8 +25,8 @@ const EditSpecial = ({ setPage }) => {
     >
       <InputWrappers>
         <h1>게시물 작성하기</h1>
-        {editInfo.category === "과제" ||
-          (editInfo.category === "투표" && (
+        {(editInfo.category === "homework" || editInfo.category === "vote") && (
+          <>
             <div className="top-infos">
               <InputWrapper>
                 <span>제출 기한</span>
@@ -59,12 +60,37 @@ const EditSpecial = ({ setPage }) => {
                 </select>
               </InputWrapper>
             </div>
-          ))}
+            {editInfo.category === "vote" && (
+              <InputWrapper>
+                <span>투표 목록</span>
+                <input
+                  placeholder="ex ) 피자 햄버거 짜장면"
+                  onChange={(event) =>
+                    setEditInfo({
+                      ...editInfo,
+                      optionList: event.target.value,
+                    })
+                  }
+                  value={editInfo.optionList}
+                  type="text"
+                />
+              </InputWrapper>
+            )}
+          </>
+        )}
       </InputWrappers>
       <Info>
         <ul className="info">
           <li className="title">카테고리</li>
-          <li className="value">{editInfo.category}</li>
+          {editInfo.category === "board" && <li className="value">게시글</li>}
+          {editInfo.category === "homework" && <li className="value">과제</li>}
+          {editInfo.category === "vote" && <li className="value">투표</li>}
+          {editInfo.category === "notice" && (
+            <li className="value">공지사항</li>
+          )}
+          {editInfo.category === "survey" && (
+            <li className="value">설문조사</li>
+          )}
         </ul>
         <ul className="info">
           <li className="title">글 제목</li>
@@ -208,7 +234,7 @@ const SpecialInfoWrapper = styled(motion.section)`
     color: ${(props) => props.theme.color.zeroThree} !important;
     height: 3rem !important;
     width: 100% !important;
-    font-size: 1.15rem;
+    font-size: 1.15rem !important;
     padding-left: 0.8rem !important;
     font-weight: 500;
     ${InputStyle}

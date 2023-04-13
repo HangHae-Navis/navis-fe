@@ -50,7 +50,7 @@ export const editorState = atom({
     title: "",
     subtitle: "",
     content: "",
-    category: "게시글",
+    category: "board",
     important: 0,
     hashtagList: "",
     expirationDate: "",

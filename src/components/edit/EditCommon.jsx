@@ -41,11 +41,11 @@ const EditCommon = ({ reset, setPage }) => {
             }
             value={editor.category}
           >
-            <option value="게시글">게시글</option>
-            <option value="과제">과제</option>
-            <option value="투표">투표</option>
-            <option value="공지사항">공지사항</option>
-            <option value="설문조사">설문조사</option>
+            <option value="board">게시글</option>
+            <option value="homework">과제</option>
+            <option value="vote">투표</option>
+            <option value="notice">공지사항</option>
+            <option value="survey">설문조사</option>
           </select>
         </InputWrapper>
         <InputWrapper>

@@ -6,7 +6,7 @@ function useSmallScreen(throttleTime = 500) {
 
   useEffect(() => {
     const handleResize = throttle(() => {
-      setIsSmallScreen(window.innerWidth <= 900);
+      setIsSmallScreen(window.innerWidth <= 800);
     }, throttleTime);
 
     window.addEventListener("resize", handleResize);

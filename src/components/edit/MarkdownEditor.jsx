@@ -1,7 +1,7 @@
 import ReactCodeMirror from "@uiw/react-codemirror";
 import { markdown, markdownLanguage } from "@codemirror/lang-markdown";
 import { languages } from "@codemirror/language-data";
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import { useRecoilState, useResetRecoilState } from "recoil";
 import { useCallback } from "react";
 import { editorState } from "../../store/atom";
@@ -15,8 +15,10 @@ import { useMutation } from "react-query";
 import { useNavigate, useParams } from "react-router-dom";
 import Button from "../../element/Button";
 import { toast } from "react-toastify";
+import Tag from "../global/Tag";
+import StarTag from "../global/StarTag";
 
-const MarkdownEditor = () => {
+const MarkdownEditor = ({ isSmallScreen }) => {
   const { id } = useParams();
   const navigate = useNavigate();
   const [editorInfo, setEditorInfo] = useRecoilState(editorState);
@@ -33,6 +35,9 @@ const MarkdownEditor = () => {
       navigate(`/party/${id}`);
     },
   });
+
+  console.log(editorInfo);
+
   const noticeMutation = useMutation((data) => postNotice(id, data), {
     onSuccess: () => {
       toast.success("공지가 등록되었습니다", {
@@ -62,35 +67,42 @@ const MarkdownEditor = () => {
     },
   });
 
-  const onSubmit = async (data) => {
+  const onSubmit = async (e) => {
+    e.preventDefault();
     const requestDto = new FormData();
+    const time = new Date(editorInfo.expirationDate).getTime() / 1000;
     requestDto.append("title", editorInfo.title);
     requestDto.append("subtitle", editorInfo.subtitle);
     requestDto.append("content", editorInfo.content);
     requestDto.append("important", editorInfo.important);
     requestDto.append("hashtagList", editorInfo.hashtagList);
-    if (data.writing === "게시글") {
+    if (editorInfo.category === "board") {
       const res = await boardMutation.mutateAsync(requestDto);
-    } else if (data.writing === "공지사항") {
+    } else if (editorInfo.category === "notice") {
       const res = await noticeMutation.mutateAsync(requestDto);
-    } else if (data.writing === "과제") {
-      requestDto.append(
-        "expirationDate",
-        new Date(data.datetime).getTime() / 1000
-      );
+    } else if (editorInfo.category === "homework") {
+      requestDto.append("expirationDate", time);
       const res = await homeWorkMutation.mutateAsync(requestDto);
-    } else if (data.writing === "투표") {
-      requestDto.append("optionList", data.votes);
-      requestDto.append(
-        "expirationDate",
-        new Date(data.datetime).getTime() / 1000
-      );
+    } else if (editorInfo.category === "vote") {
+      requestDto.append("optionList", editorInfo.optionList);
+      requestDto.append("expirationDate", time);
       const res = await voteMutation.mutateAsync(requestDto);
     }
   };
 
   return (
-    <MarkdownEditorWrapper onSubmit={onSubmit}>
+    <MarkdownEditorWrapper isSmallScreen={isSmallScreen} onSubmit={onSubmit}>
+      <InfoWrapper>
+        <div className="tags">
+          <Tag dtype={editorInfo.category} />
+          <StarTag important={editorInfo.important} />
+        </div>
+        <div className="title">
+          <h1>{editorInfo.title}</h1>
+          <p>{editorInfo.hashtagList}</p>
+        </div>
+        <p className="subtitle">{editorInfo.subtitle}</p>
+      </InfoWrapper>
       <ReactMarkdownEditor
         placeholder={"텍스트를 입력해주세요."}
         basicSetup={{
@@ -120,7 +132,14 @@ const MarkdownEditorWrapper = styled.form`
   }
   background-color: #f6f6f6;
   padding: 1rem 3.2rem;
-  width: 52%;
+  ${(props) =>
+    props.isSmallScreen === true
+      ? css`
+          width: 95%;
+        `
+      : css`
+          width: 52%;
+        `}
   font-family: Pretendard !important;
   display: flex;
   gap: 1.5rem;
@@ -137,8 +156,36 @@ const MarkdownEditorWrapper = styled.form`
 const InfoWrapper = styled.section`
   width: 90%;
   display: flex;
-  align-items: center;
   gap: 1rem;
+  flex-direction: column;
+  padding-top: 3rem;
+
+  .tags {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+  }
+
+  .title {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    h1 {
+      font-size: 1.85rem;
+    }
+    p {
+      font-weight: 500;
+      align-self: flex-end;
+      font-size: 1.15rem;
+      color: #9795b5;
+    }
+  }
+
+  .subtitle {
+    font-size: 1.2rem;
+    color: #878787;
+    font-weight: 500;
+  }
 `;
 
 const ReactMarkdownEditor = styled(ReactCodeMirror)`
