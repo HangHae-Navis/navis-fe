@@ -250,6 +250,14 @@ export const getBoardDetailPage = async (payload) => {
   return res;
 };
 
+
+export const deletaBoardDetailPage = async (payload) => {
+  const res = await axios.delete(
+    `api/${payload.groupId}/${payload.dtype}s/${payload.detailId}`
+  );
+  return res;
+};
+
 export const getCommentPage = async (payload) => {
   const res = await axios.get(
     `api/${payload.groupId}/${payload.boardId}/comments?page=${payload.page}&size=${payload.size}`
