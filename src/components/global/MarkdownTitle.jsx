@@ -6,9 +6,29 @@ import vote from "../../assets/ic20/vote.svg";
 import task from "../../assets/ic20/task.svg";
 import Tag from "./Tag";
 import StarTag from "./StarTag";
+import Button from "../../element/Button";
+import { useMutation, useQueryClient } from "react-query";
+import { deleteBoardDetailPage } from "../../utils/api/api";
+import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 
-const MarkdownTitle = ({ postInfo, dtype }) => {
+const MarkdownTitle = ({ postInfo, dtype, author, role, authorRole, groupId, detailId }) => {
   const date = new Date(postInfo.createAt);
+  const queryClient = useQueryClient()
+  const navi = useNavigate()
+
+  const deleteHomework = useMutation(deleteBoardDetailPage, {
+    onSuccess: ({ data }) => {
+      toast.success("게시글을 삭제했습니다.");
+      queryClient.invalidateQueries();
+      navi(`/party/${groupId}`)
+    },
+  });
+
+  const onclick = () =>{
+    const res = deleteHomework.mutateAsync({ groupId, dtype, detailId });
+  }
+
   return (
     <TitleRenderContent>
       <TitleTopWrapper>
@@ -23,15 +43,37 @@ const MarkdownTitle = ({ postInfo, dtype }) => {
           ))}
         </HashTagWrapper>
       </TitleMidWrapper>
+      <BottomBox>
       <TitleBottomWrapper>
         <p>{postInfo?.subtitle}</p>
         <span>
           {postInfo?.nickname} | {`${date.toLocaleDateString()}`}
         </span>
       </TitleBottomWrapper>
+      {author == "ADMIN"
+      ?<Button onClick={() => onclick()}>삭제하기</Button>
+      :role == "SUPPORT"
+        ?authorRole == "USER"
+          ?<Button onClick={() => onclick()}>삭제하기</Button>
+          :author == true
+            ?<Button onClick={() => onclick()}>삭제하기</Button>
+            :null
+        :author == true
+          ?<Button onClick={() => onclick()}>삭제하기</Button>
+          :null
+      }
+      </BottomBox>
     </TitleRenderContent>
   );
 };
+
+const BottomBox = styled.div`
+  display: flex;
+  width: 100%;
+  align-items: center;
+  justify-content: space-between;
+  flex-direction: row;
+`
 
 const TitleTopWrapper = styled.section`
   display: flex;
