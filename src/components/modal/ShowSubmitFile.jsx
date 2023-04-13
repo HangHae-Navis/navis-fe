@@ -102,6 +102,7 @@ const ShowSubmitFile = (props) =>{
               :<h1 className="buttontitle">내가 남긴 피드백 (반려)</h1>
               }
               <h1 className="infocontent">{props.courrentModalContent.feedbackList[0]}</h1>
+              
               </FeedbackBox>
               <FeedbackInput type="text" value={inputValue} onChange={handleInputChange}></FeedbackInput>
               <FeedbackInputBox>
@@ -111,14 +112,11 @@ const ShowSubmitFile = (props) =>{
               </>
               :
               <FeedbackBox>
-                {props.courrentModalContent.submitCheck == true
-                ?<h1 className="buttontitle">내가 남긴 피드백 (확정)</h1>
-              :<h1 className="buttontitle">내가 남긴 피드백 (반려)</h1>
-              }
-              <h1 className="infocontent">{props.courrentModalContent.feedbackList[0]}</h1>
+              <h1 className="buttontitle">내가 남긴 피드백</h1>
+              {props.courrentModalContent.feedbackList.map((item, index) => (
+                <h1 key = {item + index} className="infocontent">{index + 1}번 : {item}</h1>
+              ))}
               </FeedbackBox>
-
-
               }
         </FeedbackContainer>
         </SubmitFileModalWrapper>
