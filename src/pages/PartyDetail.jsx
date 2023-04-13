@@ -238,7 +238,7 @@ function PartyDetail() {
   );
 
   useEffect(() => {
-    res.refetch();
+    queryClient.invalidateQueries();
   }, [detailId]);
   const getComment = useQuery(
     ["comment", { groupId, boardId: detailId, page: 1, size: 999 }],
@@ -262,14 +262,14 @@ function PartyDetail() {
       queryClient.invalidateQueries("comment");
       toast.success("과제물이 수정되었습니다.");
       setSubmitAgain(false);
-      res.refetch();
+      queryClient.invalidateQueries();
     },
   });
   const postvote = useMutation(PostVoteDetail, {
     onSuccess: ({ data }) => {
       console.log("투표 성공");
       toast.success("투표 성공.");
-      res.refetch();
+      queryClient.invalidateQueries();
     },
   });
 
@@ -278,7 +278,7 @@ function PartyDetail() {
       console.log("제출 성공");
       toast.success("제출 성공.");
       setSubmitAgain(false);
-      res.refetch();
+      queryClient.invalidateQueries();
     },
     onError: (error) => {
       toast.error("오류 발생.");
@@ -288,13 +288,13 @@ function PartyDetail() {
   const deleteHomework = useMutation(deleteHomeWorkData, {
     onSuccess: ({ data }) => {
       toast.success("제출을 취소했습니다.");
-      res.refetch();
+      queryClient.invalidateQueries();
     },
   });
 
   const deleteVote = useMutation(DeleteVoteDetail, {
     onSuccess: ({ data }) => {
-      res.refetch();
+      queryClient.invalidateQueries();
       toast.success("투표를 취소했습니다.");
     },
   });
