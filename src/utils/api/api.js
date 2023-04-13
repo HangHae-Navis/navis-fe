@@ -1,4 +1,3 @@
-import { async } from "q";
 import { setCookie } from "../infos/cookie";
 import { setLocalStorage } from "../infos/localStorage";
 import Axios from "./axios";
@@ -154,25 +153,23 @@ export const deletePage = async (payload) => {
 
 /*-----------------------상세 페이지 기능------------------------------*/
 
-export const postSurveyData = async (data) =>{
-  
+export const postSurveyData = async (data) => {
   const payload = data.data;
   const res = await axios.post(
     `api/${data.groupId}/surveys/${data.detailId}/fillForm`,
     payload
   );
   return res;
-}
+};
 
-export const putSurveyData = async (data) =>{
-  
+export const putSurveyData = async (data) => {
   const payload = data.data;
   const res = await axios.put(
     `api/${data.groupId}/surveys/${data.detailId}/updateForm`,
     payload
   );
   return res;
-}
+};
 
 export const putHomeWorkData = async (data) => {
   console.log(data);
@@ -249,7 +246,6 @@ export const getBoardDetailPage = async (payload) => {
   );
   return res;
 };
-
 
 export const deleteBoardDetailPage = async (payload) => {
   const res = await axios.delete(
@@ -337,5 +333,11 @@ export const getNotification = async () => {
 
 export const deleteNotification = async () => {
   const res = await axios.delete("/api/subscribe/all");
+  return res;
+};
+
+export const postSurvey = async (id, requestDto) => {
+  console.log(id, requestDto);
+  const res = await axios.post(`/api/${id}/surveys`, requestDto);
   return res;
 };
