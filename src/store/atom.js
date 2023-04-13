@@ -29,18 +29,6 @@ export const userInfoState = atom({
   default: "",
 });
 
-export const markdownState = atom({
-  key: `state${v4()}`,
-  default: "",
-});
-
-export const markdownInfoState = atom({
-  key: `state${v4()}`,
-  default: {
-    title: "",
-  },
-});
-
 export const chatModalState = atom({
   key: `state${v4()}`,
   default: false,
@@ -62,10 +50,10 @@ export const editorState = atom({
     title: "",
     subtitle: "",
     content: "",
-    category: "게시글",
+    category: "board",
     important: 0,
     hashtagList: "",
-    expirationDate: 0,
+    expirationDate: "",
     optionList: "",
   },
 });

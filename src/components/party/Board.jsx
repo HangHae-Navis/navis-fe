@@ -109,7 +109,7 @@ const BoardBox = styled.div`
   @media (max-width: 800px) {
     width: 100%;
   }
-  background-color: ${(props) => props.theme.color.zeroOne};
+  background: #f7f7f7;
   .title {
     width: 80%;
     font-size: 1.9rem;

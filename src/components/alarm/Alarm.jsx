@@ -14,31 +14,40 @@ const Alarm = () => {
     },
   });
 
-  const deleteAllNotifi = useMutation(deleteNotification,{
-    onSuccess : ({data}) =>{
-      alarmQuery.refetch()
-    }
-  })
+  const deleteAllNotifi = useMutation(deleteNotification, {
+    onSuccess: ({ data }) => {
+      alarmQuery.refetch();
+    },
+  });
 
-  const onDelete = async () =>{
-    const res = await deleteAllNotifi.mutateAsync()
-  }
+  const onDelete = async () => {
+    const res = await deleteAllNotifi.mutateAsync();
+  };
 
-  return (
-    alarmQuery?.data?.data?.data?.length != 0
-    ?
+  return alarmQuery?.data?.data?.data?.length != 0 ? (
     <AlarmWrapper>
-    <Button width={"18rem"} height={"3rem"} transparent={true} color={"rgb(88, 85, 133)"} onClick={onDelete}>알림삭제</Button>
+      <Button
+        width={"18rem"}
+        height={"3rem"}
+        transparent={true}
+        color={"rgb(88, 85, 133)"}
+        onClick={onDelete}
+      >
+        알림삭제
+      </Button>
       {alarm !== null &&
         alarm.map((element, i) => (
-          <AlarmList key={i} read={element.read.toString()}>{element.content}</AlarmList>
+          <AlarmList key={i} read={element.read.toString()}>
+            {element.content}
+          </AlarmList>
         ))}
     </AlarmWrapper>
-    :
+  ) : (
     <AlarmWrapper>
-      <AlarmList read={"false"} className="nonetitle">알림이 없습니다</AlarmList>
+      <AlarmList read={"false"} className="nonetitle">
+        알림이 없습니다
+      </AlarmList>
     </AlarmWrapper>
-    
   );
 };
 
@@ -56,8 +65,11 @@ const AlarmWrapper = styled.ul`
   border-radius: 16px;
   padding: 1rem;
 
-  .nonetitle{
-  font-size: 1.8rem;
+  .nonetitle {
+    font-size: 1.3rem;
+    text-align: center;
+    text-decoration: underline;
+    text-underline-position: under;
   }
 `;
 
@@ -68,7 +80,7 @@ const AlarmList = styled.li`
   border-bottom: 0.05rem black;
   padding-bottom: 0.8rem;
   border-bottom: 0.05rem solid black;
-  color: ${({ read }) => (read === "true" ?  "gray": "black")};
+  color: ${({ read }) => (read === "true" ? "gray" : "black")};
   &:last-child {
     border-bottom: none;
   }

@@ -81,7 +81,7 @@ const PartyInfo = (props) => {
 };
 
 const PartyInfoWrapper = styled.section`
-  width: 20vw;
+  width: 16vw;
   max-width: 22.5rem;
   display: flex;
   flex-direction: column;
