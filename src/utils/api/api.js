@@ -38,7 +38,6 @@ export const getKaKaoLogin = async (payload) => {
 /*-----------------------로그인 기능------------------------------*/
 
 export const postGroupParticipation = async (data) => {
-  console.log(data);
   const res = await axios.post("/api/groups/apply", data);
   return res;
 };
@@ -107,8 +106,6 @@ export const postVote = async (id, data) => {
 /*-----------------------어드민 페이지 기능------------------------------*/
 
 export const getDetailPageForAdmin = async (payload) => {
-  console.log("호출");
-  console.log(payload);
   const res = await axios.get(`api/groups/${payload.id}/admin`);
   return res;
 };
@@ -172,12 +169,6 @@ export const putSurveyData = async (data) => {
 };
 
 export const putHomeWorkData = async (data) => {
-  console.log(data);
-  const payload = { multipartFiles: data.data };
-  console.log(payload);
-  for (let value of payload.multipartFiles.values()) {
-    console.log(value);
-  }
 
   const res = await axios.put(
     `api/${data.groupId}/homeworks/${data.detailId}/updateSubjects`,
@@ -194,8 +185,6 @@ export const putHomeWorkData = async (data) => {
 export const postFeedback = async (data) => {
   //목록의 섭젝트 아이디 있음
   const payload = { feedback: data.data, submitCheck: data.check };
-  console.log(data);
-  console.log(payload);
   const res = await axios.post(
     `api/${data.groupId}/homeworks/${data.detailId}/${data.subjectId}/feedbacks`,
     payload
@@ -204,12 +193,7 @@ export const postFeedback = async (data) => {
 };
 
 export const postHomeWorkData = async (data) => {
-  console.log(data);
   const payload = { multipartFiles: data.data };
-  console.log(payload);
-  for (let value of payload.multipartFiles.values()) {
-    console.log(value);
-  }
 
   const res = await axios.post(
     `api/${data.groupId}/homeworks/${data.detailId}/homeworkSubmit`,
@@ -270,7 +254,6 @@ export const deleteCommentPage = async (payload) => {
 
 export const PostVoteDetail = async (payload) => {
   const data = { voteOption: payload.voteOption };
-  console.log(data);
   const res = await axios.post(
     `api/${payload.groupId}/votes/${payload.voteId}/pick`,
     data
@@ -312,7 +295,6 @@ export const getChat = async () => {
 };
 
 export const postChat = async ({ to }) => {
-  console.log(to);
   const res = await axios.post(`api/chats/room`, {
     to: to,
   });
@@ -337,7 +319,6 @@ export const deleteNotification = async () => {
 };
 
 export const postSurvey = async (id, requestDto) => {
-  console.log(id, requestDto);
   const res = await axios.post(`/api/${id}/surveys`, requestDto);
   return res;
 };
