@@ -247,7 +247,6 @@ export const getBoardDetailPage = async (payload) => {
   return res;
 };
 
-
 export const deleteBoardDetailPage = async (payload) => {
   const res = await axios.delete(
     `api/${payload.groupId}/${payload.dtype}s/${payload.detailId}`
