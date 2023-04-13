@@ -29,6 +29,7 @@ const Signin = ({ setisSignin }) => {
         JSON.stringify({
           nickname: data.data.nickname,
           username: data.data.username,
+          profileImage: data.data.profileImage,
         })
       );
     },
@@ -59,7 +60,7 @@ const Signin = ({ setisSignin }) => {
           name="username"
           type="text"
           label="이메일 주소"
-          width={"50rem"}
+          width={"47rem"}
         />
         <Input
           placeholder="비밀번호를 입력하세요."
@@ -67,16 +68,16 @@ const Signin = ({ setisSignin }) => {
           name="password"
           type="password"
           label="비밀번호"
-          width={"50rem"}
+          width={"47rem"}
         />
         <ButtonBox>
+          <Button disabled={false} className = {"buttontext"}  font={"2.3rem"} width={"47rem"} height={"4.7rem"}>
+            로그인
+          </Button>
           <div className="kakao" onClick={responseKakao}>
             <img src={Kakao} alt="kakao-logo" />
             카카오톡으로 로그인
           </div>
-          <Button disabled={false} width={"13rem"} height={"6rem"}>
-            로그인
-          </Button>
         </ButtonBox>
       </SigninForm>
       <p>
@@ -89,18 +90,32 @@ const Signin = ({ setisSignin }) => {
 
 const ButtonBox = styled.div`
   width: 100%;
+  height: 15vh;
   display: flex;
   justify-content: center;
-  flex-direction: row;
+  flex-direction: column;
   align-items: center;
-  padding-top: 5rem;
   padding-bottom: 3rem;
   gap: 2rem;
+  
+    font-size: 2rem;
+  @media (max-height: 750px) {
+    padding-top: 1rem;
+  padding-bottom: 1rem;
+  }
+  @media (max-height: 850px) {
+    padding-top: 3rem;
+  padding-bottom: 2rem;
+  }
 `;
 const SignInWrapper = styled.div`
+height: 40vh;
   width: 50%;
   @media (max-width: 750px) {
     width: 100%;
+  }
+  @media (max-height: 750px) {
+    height: 60vh;
   }
   display: flex;
   flex-direction: column;
@@ -109,8 +124,8 @@ const SignInWrapper = styled.div`
   gap: 0.6rem;
 
   input {
-    @media (max-width: 750px) {
-      width: 70% !important;
+    @media (max-width: 550px){
+      width: 40rem;
     }
   }
 
@@ -137,10 +152,10 @@ const SignInWrapper = styled.div`
       width: 2.5rem;
       height: 2.5rem;
     }
-    width: 25rem;
-    height: 6rem;
+    width: 47rem;
+    height: 4.7rem;
     background-color: #f8e50b;
-    font-size: 1.8rem;
+    font-size: 2rem;
     font-weight: bold;
     border-radius: 3.4rem;
     ${flexCenter}
@@ -148,10 +163,14 @@ const SignInWrapper = styled.div`
 `;
 
 const SigninForm = styled.form`
+height: 40vh;
   display: flex;
   flex-direction: column;
   justify-content: center;
   gap: 3.2rem;
+  @media (max-height: 750px) {
+    gap: 1rem;
+  }
 `;
 
 export default Signin;

@@ -1,4 +1,4 @@
-import { markdownInfoState, markdownState } from "../../store/atom";
+import { editorState } from "../../store/atom";
 import { ReactMarkdown } from "react-markdown/lib/react-markdown";
 import { useRecoilValue } from "recoil";
 import remarkGfm from "remark-gfm";
@@ -6,22 +6,40 @@ import styled from "styled-components";
 import SyntaxHighlighter from "react-syntax-highlighter";
 import { a11yDark } from "react-syntax-highlighter/dist/esm/styles/prism";
 import { getLocalStorage } from "../../utils/infos/localStorage";
+import Tag from "../global/Tag";
+import StarTag from "../global/StarTag";
 
 const MarkdownRender = () => {
-  const markdownValue = useRecoilValue(markdownState);
   const userName = JSON.parse(getLocalStorage("userInfo")).nickname;
   const date = new Date();
-  const markdownInfo = useRecoilValue(markdownInfoState);
+  const editorInfo = useRecoilValue(editorState);
   return (
     <MarkdownWrapper>
-      <TitleRenderContent>
-        <h1>{markdownInfo.title}</h1>
+      {/* <TitleRenderContent>
+        <h1>{editInfo.title}</h1>
         <span>{userName}</span>
         <span>|</span>
         <span>{date.toLocaleDateString()}</span>
-      </TitleRenderContent>
+      </TitleRenderContent> */}
+      <InfoWrapper>
+        <div className="tags">
+          <Tag dtype={editorInfo.category} />
+          <StarTag important={editorInfo.important} />
+        </div>
+        <div className="title">
+          <h1>{editorInfo.title}</h1>
+          <p>{editorInfo.hashtagList}</p>
+        </div>
+        <div className="bottom">
+          <p className="subtitle">{editorInfo.subtitle}</p>
+
+          <div className="writer">
+            {userName} | {date.toLocaleDateString()}
+          </div>
+        </div>
+      </InfoWrapper>
       <ReactMarkdownWrapper
-        children={markdownValue}
+        children={editorInfo.content}
         remarkPlugins={[remarkGfm]}
         style={a11yDark}
         components={{
@@ -50,31 +68,60 @@ const MarkdownRender = () => {
 const MarkdownWrapper = styled.section`
   width: 50%;
   height: 100%;
-  border: 0.1rem solid #9795b5;
+  border: 1px solid #c0c0c0;
   border-radius: 2rem;
   padding: 1.5rem;
-  height: 865px;
+  height: 70rem;
 `;
 
-const TitleRenderContent = styled.section`
-  padding: 5rem 0 0.75rem 0;
+const InfoWrapper = styled.section`
+  width: 98%;
   display: flex;
-  align-items: center;
-  gap: 0.8rem;
-  h1 {
-    width: 29rem;
-    font-size: 2.1rem;
-    line-height: 1.45;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
+  gap: 1rem;
+  flex-direction: column;
+  padding-top: 2rem;
+  border-bottom: 0.05rem solid #d9d9d9;
+  padding-bottom: 1rem;
+
+  .tags {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
   }
-  span {
-    align-self: flex-cent;
-    font-size: 1.4rem;
-    color: ${(props) => props.theme.color.grey40};
+
+  .title {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    h1 {
+      font-size: 1.85rem;
+    }
+    p {
+      font-weight: 500;
+      align-self: flex-end;
+      font-size: 1.15rem;
+      color: #9795b5;
+    }
   }
-  border-bottom: 1px solid hsla(0, 0%, 50%, 0.33);
+
+  .subtitle {
+    font-size: 1.2rem;
+    color: #878787;
+    font-weight: 500;
+  }
+
+  .bottom {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    .writer {
+      color: #a0a0a0;
+      font-size: 1.05rem;
+      font-weight: 500;
+    }
+  }
 `;
 
 const ReactMarkdownWrapper = styled(ReactMarkdown)`
@@ -85,7 +132,8 @@ const ReactMarkdownWrapper = styled(ReactMarkdown)`
   padding: 2.5rem 0;
   display: flex;
   flex-direction: column;
-  overflow: hidden;
+  overflow-y: auto;
+  height: 56rem;
   p {
     word-wrap: break-word;
   }

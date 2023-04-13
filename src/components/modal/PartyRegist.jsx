@@ -444,7 +444,7 @@ const RegistInputContainer = styled.div`
 `;
 
 const RegistModalWrapper = styled(motion.section)`
-  width: 90vw;
+  width: 60vw;
   min-height: 70rem;
   display: flex;
   align-items: center;

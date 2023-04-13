@@ -18,7 +18,7 @@ import {
 import { partyRegistModalState, partyInfoState } from "../store/atom";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
-import Test from "../assets/d65d5952-d801-4225-ab16-8720733b499a.png";
+import Test from "./../assets/Image Placeholder.svg";
 import Pagination from "react-js-pagination";
 import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { useEffect, useState } from "react";
@@ -248,7 +248,7 @@ const Profile = () => {
                         <p className="infocontent">{userName}</p>
                       </GroupInfoText>
                       <GroupInfoText>
-                        <h1 className="infotitle">닉네임</h1>
+                        <h1 className="infotitle">닉네임&nbsp;&nbsp;&nbsp;&nbsp;</h1>
                         <Input
                           placeholder="변경할 닉네임을 입력하세요."
                           register={register}
@@ -256,7 +256,7 @@ const Profile = () => {
                           type="text"
                           isput={isPut}
                           defaultValue={userNick}
-                          width={"55rem"}
+                          width={"20vw"}
                         />
                       </GroupInfoText>
                       <GroupInfoText>
@@ -267,7 +267,7 @@ const Profile = () => {
                           name="password"
                           type="text"
                           isput={isPut}
-                          width={"55rem"}
+                          width={"20vw"}
                         />
                       </GroupInfoText>
                     </form>
@@ -328,7 +328,10 @@ const GroupInfoBox = styled.div`
   display: flex;
   flex-direction: row;
   align-items: center;
-  gap: 15rem;
+  gap: 11rem;
+  @media (max-width: 960px) {
+    gap: 4rem;
+  }
 `;
 const GroupInfoImage = styled.img`
   border-radius: 2rem;
@@ -352,6 +355,7 @@ const GroupInfoTextBox = styled.div`
   flex-direction: column;
   align-items: flex-start;
   gap: 3rem;
+
 `;
 
 const GroupInfoText = styled.div`

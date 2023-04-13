@@ -47,7 +47,7 @@ function Comment(props) {
 
   return (
     <CommentBox>
-      <img src={profile} alt="profile" />
+      <img src={props.profileImage} alt="profile" />
       <div className="comment">
         <span>{props.nickname}</span>
         <p>{props.content}</p>

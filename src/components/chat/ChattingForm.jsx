@@ -5,12 +5,21 @@ const ChattingForm = ({ onMessageSend, setMessage, message }) => {
   const onChange = useCallback((e) => {
     setMessage(e.target.value);
   }, []);
+
+  const onKeyDown = (e) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      onMessageSend()
+    }
+  };
+
   return (
     <FormWrapper onSubmit={onMessageSend}>
       <textarea
         type="text"
         onChange={onChange}
         value={message}
+        onKeyDown={onKeyDown}
         placeholder="내용을 입력해 주세요."
       />
       <SubmitWrapper type="submit">

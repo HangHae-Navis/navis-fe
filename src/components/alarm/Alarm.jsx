@@ -1,21 +1,52 @@
-import { useQuery } from "react-query";
+import { useMutation, useQuery } from "react-query";
 import styled from "styled-components";
-import { getNotification } from "../../utils/api/api";
+import { deleteNotification, getNotification } from "../../utils/api/api";
 import { useState } from "react";
+import Button from "../../element/Button";
+import { toast } from "react-toastify";
 
 const Alarm = () => {
   const [alarm, setAlarm] = useState(null);
+
   const alarmQuery = useQuery("notification", getNotification, {
     onSuccess: ({ data }) => {
       setAlarm(data.data);
     },
   });
-  return (
+
+  const deleteAllNotifi = useMutation(deleteNotification, {
+    onSuccess: ({ data }) => {
+      alarmQuery.refetch();
+    },
+  });
+
+  const onDelete = async () => {
+    const res = await deleteAllNotifi.mutateAsync();
+  };
+
+  return alarmQuery?.data?.data?.data?.length != 0 ? (
     <AlarmWrapper>
+      <Button
+        width={"18rem"}
+        height={"3rem"}
+        transparent={true}
+        color={"rgb(88, 85, 133)"}
+        onClick={onDelete}
+      >
+        알림삭제
+      </Button>
       {alarm !== null &&
         alarm.map((element, i) => (
-          <AlarmList key={i}>{element.content}</AlarmList>
+          <AlarmList key={i} read={element.read.toString()}>
+            {element.content}
+          </AlarmList>
         ))}
+    </AlarmWrapper>
+  ) : (
+    <AlarmWrapper>
+      <AlarmList read={"false"} className="nonetitle">
+        알림이 없습니다
+      </AlarmList>
     </AlarmWrapper>
   );
 };
@@ -32,17 +63,24 @@ const AlarmWrapper = styled.ul`
   box-shadow: 4px 4px 16px rgba(0, 0, 0, 0.1);
   backdrop-filter: blur(16px);
   border-radius: 16px;
-  padding: 1rem 0 0 0;
+  padding: 1rem;
+
+  .nonetitle {
+    font-size: 1.3rem;
+    text-align: center;
+    text-decoration: underline;
+    text-underline-position: under;
+  }
 `;
 
 const AlarmList = styled.li`
   width: 100%;
-  text-align: center;
+  text-align: flex-start;
   font-size: 1.3rem;
   border-bottom: 0.05rem black;
   padding-bottom: 0.8rem;
   border-bottom: 0.05rem solid black;
-
+  color: ${({ read }) => (read === "true" ? "gray" : "black")};
   &:last-child {
     border-bottom: none;
   }

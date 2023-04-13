@@ -6,6 +6,11 @@ export const loginModalState = atom({
   default: true,
 });
 
+export const signinModalState = atom({
+  key: `state${v4()}`,
+  default: true,
+});
+
 export const partyRegistModalState = atom({
   key: `state${v4()}`,
   default: false,
@@ -22,18 +27,6 @@ export const partyInfoState = atom({
 export const userInfoState = atom({
   key: `state${v4()}`,
   default: "",
-});
-
-export const markdownState = atom({
-  key: `state${v4()}`,
-  default: "",
-});
-
-export const markdownInfoState = atom({
-  key: `state${v4()}`,
-  default: {
-    title: "",
-  },
 });
 
 export const chatModalState = atom({
@@ -57,10 +50,10 @@ export const editorState = atom({
     title: "",
     subtitle: "",
     content: "",
-    category: "게시글",
+    category: "board",
     important: 0,
     hashtagList: "",
-    expirationDate: 0,
+    expirationDate: "",
     optionList: "",
   },
 });
