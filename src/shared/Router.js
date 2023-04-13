@@ -24,7 +24,7 @@ const Router = () => {
         <Route element={<Home />} path="/" />
         <Route element={<Main />} path={`/${path.MAIN}`} />
         <Route element={<Party />} path={`/${path.PARTY}`} />
-        <Route element={<PartyDetail />} path={`/${path.PARTYDEATAIL}`} />
+        <Route element={<PartyDetail />} path={`/${path.PARTYDETAIL}`} />
         <Route element={<Profile />} path={`/${path.PROFILE}`} />
         <Route element={<EditPost />} path={`/${path.EDITPOST}`} />
         <Route element={<Admin />} path={`/${path.ADMIN}`} />
