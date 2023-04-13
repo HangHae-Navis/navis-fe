@@ -164,8 +164,13 @@ function PartyDetail() {
   const [surveyDTO, setSurveyDTO] = useState();
 
   const token = getCookie("token");
-  const storedData = JSON.parse(localStorage.getItem('userInfo'));
-  const profileImage = token != null ?storedData.profileImage == null ?profile : storedData.profileImage : profile;
+  const storedData = JSON.parse(localStorage.getItem("userInfo"));
+  const profileImage =
+    token != null
+      ? storedData.profileImage == null
+        ? profile
+        : storedData.profileImage
+      : profile;
 
   useEffect(() => {
     const isUserCookie = getCookie("token");
@@ -340,6 +345,7 @@ function PartyDetail() {
           ...homeWorkInputLink,
           { id: lastVal + 1, type: data },
         ]);
+      } else toast.success("최대 업로드 가능 갯수는 5개 입니다");
     } else if (data == "file") {
       if (homeWorkInputFile.length < 5) {
         const lastVal =
