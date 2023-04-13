@@ -58,10 +58,14 @@ const FloatingButtonsContainer = styled.div`
     color: rgb(88, 85, 133);
   }
   .subtitle {
+    width: 100%;
     cursor: pointer;
     font-weight: 400;
     font-size: 1.15rem;
     color: #9795b5;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 `;
 
