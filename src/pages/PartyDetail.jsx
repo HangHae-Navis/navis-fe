@@ -471,7 +471,15 @@ function PartyDetail() {
           groupCode={groupCode}
         ></FloatingMenu>
         <ContentsWrapper>
-          <MarkdownTitle postInfo={postInfo} dtype={dtype} />
+          <MarkdownTitle
+          postInfo={postInfo}
+          dtype={dtype}
+          role={res?.data?.data?.data?.role}
+          author = {res?.data?.data?.data?.author}
+          authorRole = {res?.data?.data?.data?.authorRole}
+          groupId={groupId}
+          detailId={detailId}
+          />
           <ReactMarkdownWrapper
             children={postInfo.content}
             remarkPlugins={[remarkGfm]}
