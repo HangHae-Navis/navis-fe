@@ -32,11 +32,9 @@ const Checkbox = (props) => {
   };
   useEffect(() => {
     const res = [];
-    console.log(checkedItems);
 
     checkedItems.map((item, index) => {
       if (item === true) {
-        console.log(props.props[index]);
         res.push(props.props[index]);
       }
     });
@@ -62,7 +60,6 @@ const RadioButton = (props) => {
 
   const handleOptionChange = (event) => {
     setSelectedOption(props.props[event.target.value - 1]);
-    console.log(props.props[event.target.value - 1]);
   };
 
   useEffect(() => {
@@ -133,13 +130,6 @@ const Survey = (props) => {
       setValues(props?.list?.map((item) => ({ questionId: item.id, answerList: [''] })));
   }, []);
   */
-  useEffect(() => {
-    //어드민서포터면, 엔서리스트를 돌면서 값 할당
-    if (props?.role != "USER") {
-      console.log("흠...");
-      console.log(props.role);
-    }
-  }, []);
 
   useEffect(() => {
     setIsSubmit(props.res?.data?.data?.data?.submit);
@@ -158,21 +148,18 @@ const Survey = (props) => {
     },
   });
   const changeInputList = ({ value, id, survId, isList }) => {
-    console.log(value);
     let val = [...values];
     //이 에러 또
     isList == true
       ? (val[id].answerList = value)
       : (val[id].answerList = [value]);
     setValues(val);
-    console.log(values);
   };
   //console.log(props)
 
   const IndividualModalOn = (props) => {
     setIndividualModalID({ id: props.id, name: props.name });
     setIndividual(true);
-    console.log(props);
   };
 
   const onPost = () => {
@@ -185,7 +172,6 @@ const Survey = (props) => {
       data: { answerRequestDto: values },
     };
 
-    console.log(payload);
     if (props.submit == true) {
       const res = putsurvey.mutateAsync(payload);
       setIsSubmit(true);

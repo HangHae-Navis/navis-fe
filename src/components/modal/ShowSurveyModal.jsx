@@ -23,11 +23,6 @@ const ShowSurveyModal = (props) => {
   const detailId = searchParams.get("detailId");
   const [inputValue, setInputValue] = useState('');
   const [fileContainer, setFileContainer] = useState([])
-  useEffect(() => {
-    console.log(props)
-    console.log(props.names.id)
-    console.log(props.names.name)
-  }, [])
 
   const ModalClose = (event) => {
     if (event.target === event.currentTarget) {

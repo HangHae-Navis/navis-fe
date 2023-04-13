@@ -13,7 +13,6 @@ const FloatingMenu = (props) => {
 
   const naviToRecent = (data) => {
     queryClient.removeQueries("partyDetail");
-    console.log(data);
     navi(
       `/party/detail?groupId=${props.groupId}&detailId=${data.id}&dtype=${data.dtype}&groupName=${props.groupName}&groupInfo=${props.groupInfo}&groupCode=${props.groupCode}`
     );

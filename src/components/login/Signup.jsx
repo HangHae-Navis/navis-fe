@@ -54,14 +54,11 @@ const Signup = ({ setisSignin }) => {
   });
 
   const onEmailConfirm = async () => {
-    console.log(watch());
     const res = await emailConfirmMutation.mutateAsync(watch().username);
-    console.log(res);
   };
 
   const onVerify = async () => {
     const res = await verifyMutation.mutateAsync(watch().verify);
-    console.log(res);
   };
 
   return (
