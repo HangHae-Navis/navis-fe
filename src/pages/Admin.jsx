@@ -54,7 +54,6 @@ function Board(props) {
   };
 
   const ChangeRoleMember = (data) => {
-    console.log(data);
     const res = roleChangeMember.mutateAsync(data);
   };
 
@@ -157,7 +156,6 @@ const Admin = () => {
     () => getDetailPageForAdmin({ id: pam.id }),
     {
       onSuccess: ({ data }) => {
-        console.log(data.data);
         setUserList(data.data.groupMembers);
         setBannedList(data.data.bannedMembers);
         setPartyInfo({
@@ -197,17 +195,15 @@ const Admin = () => {
   });
 
   const MakeGroupHandler = () => {
-    console.log();
     setIsOpen(true);
   };
 
-  console.log(getDetailPage?.data?.data?.data?.groupMembers[0]);
   if (getDetailPage.isLoading || getDetailPage.isError) {
-    console.log("adaaa");
+
     return <></>;
   }
   //groupMemberRoleEnum={getDetailPage?data?.data?.data?.groupMembers[0].groupMemberRoleEnum}
-  console.log(admin);
+
   return (
     <>
       <PageContainer>
