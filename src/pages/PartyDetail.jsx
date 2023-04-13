@@ -345,6 +345,7 @@ function PartyDetail() {
           ...homeWorkInputLink,
           { id: lastVal + 1, type: data },
         ]);
+      } else toast.success("최대 업로드 가능 갯수는 5개 입니다");
     } else if (data == "file") {
       if (homeWorkInputFile.length < 5) {
         const lastVal =
