@@ -194,6 +194,8 @@ gap: 2rem;
 const SubmitFileContainer = styled.div`
 min-width: 100%;
 min-height: 90%;
+padding-top: 2rem;
+padding-bottom: 2rem;
   display: flex;
   align-items: flex-start;
   flex-direction: column;
