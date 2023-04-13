@@ -115,7 +115,7 @@ const MarkdownEditor = ({ isSmallScreen }) => {
         theme={"dark"}
         onChange={onMarkdownEditorChange}
         width="95%"
-        height={"460px"}
+        height={"500px"}
       />
       <div className="buttonWrapper">
         <Button>게시하기</Button>
