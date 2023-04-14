@@ -101,12 +101,10 @@ const Bar = styled.div`
 `;
 
 const InputComp = (props) => {
-  console.log(props);
   return (
     <InputContainer>
       <input
         type="file"
-        onChange={(e) => console.log(e.target.files[0])}
       ></input>
       <section>X</section>
     </InputContainer>
@@ -197,9 +195,7 @@ function PartyDetail() {
     () => getBoardDetailPage({ groupId, detailId, dtype }),
     {
       onSuccess: ({ data }) => {
-        console.log(data.data);
         if (data.data.expirationTime != null) {
-          console.log(FullDateCheck(data.data.expirationTime));
           setexpirationTime(FullDateCheck(data.data.expirationTime));
           setexpirationTimeOrigin(new Date(data.data.expirationTime).getTime());
         }
@@ -216,11 +212,9 @@ function PartyDetail() {
               maxVal += data.data.optionList[i].count;
             }
             setVoteMax(maxVal);
-            console.log(voteContent);
             break;
           case "homework":
             if (data.data.submitResponseDto != null) {
-              console.log(data.data.submitResponseDto);
               setHomeWorkPostedFileList(data.data.submitResponseDto.fileList);
             }
             if (data.data.role == "ADMIN" || data.data.role == "SUPPORT") {
@@ -250,7 +244,6 @@ function PartyDetail() {
     () => getCommentPage({ groupId, boardId: detailId, page: 1, size: 999 }),
     {
       onSuccess: ({ data }) => {
-        console.log(data.data);
         setCommentList(data.data.content);
       },
     }
@@ -272,7 +265,6 @@ function PartyDetail() {
   });
   const postvote = useMutation(PostVoteDetail, {
     onSuccess: ({ data }) => {
-      console.log("투표 성공");
       toast.success("투표 성공.");
       queryClient.invalidateQueries();
     },
@@ -280,7 +272,6 @@ function PartyDetail() {
 
   const posthomework = useMutation(postHomeWorkData, {
     onSuccess: ({ data }) => {
-      console.log("제출 성공");
       toast.success("제출 성공.");
       setSubmitAgain(false);
       queryClient.invalidateQueries();
@@ -327,7 +318,6 @@ function PartyDetail() {
         voteId: detailId,
         voteOption: voteSelectedOption,
       };
-      console.log(voteSelectedOption);
       setWhereToVoted(voteSelectedOption);
       setVoteMax(voteMax + 1);
       const res = postvote.mutateAsync(payload);
@@ -339,12 +329,6 @@ function PartyDetail() {
   };
 
   const doDeleteVote = (data) => {
-    console.log(
-      voteContent.find(function (data) {
-        return data.optionId == whereToVoted;
-      }).optionId
-    );
-    console.log(data);
     setWhereToVoted(-1);
     setVoteMax(voteMax - 1);
     const res = deleteVote.mutateAsync(data);
@@ -362,7 +346,6 @@ function PartyDetail() {
           { id: lastVal + 1, type: data },
         ]);
       } else toast.success("최대 업로드 가능 갯수는 5개 입니다");
-      console.log(homeWorkInputLink);
     } else if (data == "file") {
       if (homeWorkInputFile.length < 5) {
         const lastVal =
@@ -374,7 +357,6 @@ function PartyDetail() {
           { id: lastVal + 1, type: data },
         ]);
       } else toast.success("최대 업로드 가능 갯수는 5개 입니다");
-      console.log(homeWorkInputFile);
     }
   };
 
@@ -384,8 +366,6 @@ function PartyDetail() {
       ...homeWorkInputFileList,
       file,
     ]);
-    console.log(file);
-    console.log(homeWorkInputFileList);
   };
 
   const deleteInput = (data) => {
@@ -405,11 +385,7 @@ function PartyDetail() {
       }
     }
     for (let i = 0; i < CurrentFileList.length; i++) {
-      console.log(CurrentFileList[i]);
       postData.append("multipartFiles", CurrentFileList[i]);
-    }
-    for (let [key, value] of postData.entries()) {
-      console.log(key, value);
     }
 
     const payload = {

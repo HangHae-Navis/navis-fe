@@ -118,33 +118,27 @@ const Profile = () => {
   const { register, formState: errors, handleSubmit } = useForm();
   const putProfile = useMutation(PutProfile, {
     onSuccess: ({ data }) => {
-      console.log("변경에 성공했습니다");
-      window.alert("변경에 성공했습니다");
+      toast.success("변경에 성공했습니다!");
       window.location.reload();
     },
   });
 
   const ImageHandler = (event) => {
-    console.log("핸들러 발동");
     const file = event.target.files[0];
-    console.log(file);
     const reader = new FileReader();
     reader.onloadend = () => {
       setUserImg(reader.result);
     };
     setPostImages(file);
     if (file != null) {
-      console.log("에베베베베");
       reader.readAsDataURL(file);
     } else {
       setUserImg(Test);
       setPostImages(null);
-      console.log(postImages);
     }
   };
   const getInfo = useQuery(["userInfo"], () => GetProfile(), {
     onSuccess: (data) => {
-      console.log(data.data.data);
       setUserName(data.data.data.username);
       setUserNick(data.data.data.nickname);
       setUserDate(FullDateCheck(data.data.data.createdAt));
@@ -155,7 +149,6 @@ const Profile = () => {
 
   const PostProfile = async (data) => {
     const postRequest = new FormData();
-    console.log(userImg);
     if (postImages != null) {
       postRequest.append("profileImage", postImages);
     }
@@ -165,11 +158,10 @@ const Profile = () => {
     if (data.password != null) {
       postRequest.append("password", data.password);
     }
-    for (const [key, value] of postRequest.entries()) {
+    /*for (const [key, value] of postRequest.entries()) {
       console.log(key, value);
-    }
+    }*/
     const res = putProfile.mutateAsync(postRequest);
-    console.log(data);
   };
 
   if (getInfo.isLoading || getInfo.isError) {

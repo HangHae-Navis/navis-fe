@@ -23,14 +23,10 @@ const ShowSubmitFile = (props) =>{
   const detailId = searchParams.get("detailId");
   const [inputValue, setInputValue] = useState('');
     const [fileContainer, setFileContainer] = useState([])
-    useEffect(() => {
-      console.log(props)
-    }, [])
 
     
   const postfeedback = useMutation(postFeedback, {
     onSuccess: ({data}) => {
-      console.log("피드백 성공")
       toast.success("피드백 성공.");
       props.res.refetch()
       props.setShowModal(false)
@@ -48,10 +44,6 @@ const ShowSubmitFile = (props) =>{
   };
 
     const onFeedback = (data) =>{
-      console.log(data)
-      console.log(inputValue); // 입력한 값 출력
-
-      
     const payload = {
       groupId,
       detailId,
@@ -65,7 +57,6 @@ const ShowSubmitFile = (props) =>{
     useEffect(() => {
         for(let i = 0; i < props.courrentModalContent.fileList.length; i++){
             const a = {file: props.courrentModalContent.fileList[i], name : props.courrentModalContent.fileName[i] }
-            console.log(a)
             setFileContainer(fileContainer => [...fileContainer, a])
         }
     }, [])

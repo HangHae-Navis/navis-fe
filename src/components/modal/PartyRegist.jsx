@@ -32,7 +32,6 @@ const PartyRegist = () => {
   const resetRecoModal = useResetRecoilState(partyRegistModalState);
   const postgroup = useMutation(postGroup, {
     onSuccess: ({ data }) => {
-      console.log(data);
       toast.success("등록 성공!");
       setIsOpen(false);
       resetRecoInfo();
@@ -63,9 +62,6 @@ const PartyRegist = () => {
   useEffect(() => {
     setCurrentPage(window.location.pathname);
     currentPage == "/main" ? setIsPut(false) : setIsPut(true);
-    console.log(partyInfos);
-    console.log(partyInfos.groupName);
-    console.log(partyInfos.groupInfo);
     setTitleState(partyInfos.groupName);
     setInfoState(partyInfos.groupInfo);
   }, []);
@@ -79,9 +75,7 @@ const PartyRegist = () => {
   };
 
   const ImageHandler = (event) => {
-    console.log("핸들러 발동");
     const file = event.target.files[0];
-    console.log(file);
     const reader = new FileReader();
     reader.onloadend = () => {
       setImages(reader.result);
@@ -106,10 +100,6 @@ const PartyRegist = () => {
     if (postImages != null) {
       postRequest.append("groupImage", postImages);
     }
-    console.log(postRequest);
-    for (const [key, value] of postRequest.entries()) {
-      console.log(key, value);
-    }
     if (currentPage == "/main") {
       const res = await postgroup.mutateAsync(postRequest);
     } else {
@@ -120,7 +110,6 @@ const PartyRegist = () => {
       const match = url.match(regex); // 문자열과 정규식을 비교하여 매치되는 부분 추출
 
       const partyId = match[1]; // 매치된 부분 중 첫 번째 괄호 안에 있는 숫자 추출
-      console.log(partyId); // 44 출력
       const payload = {
         ID: partyId,
         form: postRequest,
