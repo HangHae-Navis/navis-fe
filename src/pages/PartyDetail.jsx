@@ -147,6 +147,7 @@ function PartyDetail() {
   const [voteMax, setVoteMax] = useState("");
   const [whereToVoted, setWhereToVoted] = useState();
   const [voteContent, setVoteContent] = useState([]);
+  //링크 추가는 없으니 삭제해도 됨
   const [homeWorkInputLink, setHomeWorkInputLink] = useState([]);
   const [homeWorkInputFile, setHomeWorkInputFile] = useState([]);
   const [homeWorkSubmmiter, setHomeWorkSubmmiter] = useState([]);
