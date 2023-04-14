@@ -23,14 +23,10 @@ const ShowSubmitFile = (props) =>{
   const detailId = searchParams.get("detailId");
   const [inputValue, setInputValue] = useState('');
     const [fileContainer, setFileContainer] = useState([])
-    useEffect(() => {
-      console.log(props)
-    }, [])
 
     
   const postfeedback = useMutation(postFeedback, {
     onSuccess: ({data}) => {
-      console.log("피드백 성공")
       toast.success("피드백 성공.");
       props.res.refetch()
       props.setShowModal(false)
@@ -48,10 +44,6 @@ const ShowSubmitFile = (props) =>{
   };
 
     const onFeedback = (data) =>{
-      console.log(data)
-      console.log(inputValue); // 입력한 값 출력
-
-      
     const payload = {
       groupId,
       detailId,
@@ -65,7 +57,6 @@ const ShowSubmitFile = (props) =>{
     useEffect(() => {
         for(let i = 0; i < props.courrentModalContent.fileList.length; i++){
             const a = {file: props.courrentModalContent.fileList[i], name : props.courrentModalContent.fileName[i] }
-            console.log(a)
             setFileContainer(fileContainer => [...fileContainer, a])
         }
     }, [])
@@ -102,6 +93,7 @@ const ShowSubmitFile = (props) =>{
               :<h1 className="buttontitle">내가 남긴 피드백 (반려)</h1>
               }
               <h1 className="infocontent">{props.courrentModalContent.feedbackList[0]}</h1>
+              
               </FeedbackBox>
               <FeedbackInput type="text" value={inputValue} onChange={handleInputChange}></FeedbackInput>
               <FeedbackInputBox>
@@ -111,14 +103,11 @@ const ShowSubmitFile = (props) =>{
               </>
               :
               <FeedbackBox>
-                {props.courrentModalContent.submitCheck == true
-                ?<h1 className="buttontitle">내가 남긴 피드백 (확정)</h1>
-              :<h1 className="buttontitle">내가 남긴 피드백 (반려)</h1>
-              }
-              <h1 className="infocontent">{props.courrentModalContent.feedbackList[0]}</h1>
+              <h1 className="buttontitle">내가 남긴 피드백</h1>
+              {props.courrentModalContent.feedbackList.map((item, index) => (
+                <h1 key = {item + index} className="infocontent">{index + 1}번 : {item}</h1>
+              ))}
               </FeedbackBox>
-
-
               }
         </FeedbackContainer>
         </SubmitFileModalWrapper>

@@ -59,6 +59,9 @@ const EditCommon = ({ reset, setPage }) => {
             }
           />
         </InputWrapper>
+        
+        {editor.category != "survey"
+        ?
         <InputWrapper>
           <span>부제</span>
           <input
@@ -70,6 +73,7 @@ const EditCommon = ({ reset, setPage }) => {
             }
           />
         </InputWrapper>
+        :null}
         <InputWrapper>
           <span>해시태그</span>
           <input
@@ -135,7 +139,7 @@ const InputWrapper = styled.section`
 const CommonInfoWrapper = styled(motion.section)`
   z-index: 999;
   max-width: 60rem;
-  width: 90vw;
+  width: 100vw;
   height: 45rem;
   background-color: #eeeeee;
   border-radius: 2.5rem;

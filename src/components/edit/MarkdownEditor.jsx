@@ -36,8 +36,6 @@ const MarkdownEditor = ({ isSmallScreen }) => {
     },
   });
 
-  console.log(editorInfo);
-
   const noticeMutation = useMutation((data) => postNotice(id, data), {
     onSuccess: () => {
       toast.success("공지가 등록되었습니다", {
@@ -117,7 +115,7 @@ const MarkdownEditor = ({ isSmallScreen }) => {
         theme={"dark"}
         onChange={onMarkdownEditorChange}
         width="95%"
-        height={"460px"}
+        height={"500px"}
       />
       <div className="buttonWrapper">
         <Button>게시하기</Button>
