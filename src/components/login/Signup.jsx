@@ -102,7 +102,7 @@ const Signup = ({ setisSignin }) => {
           <Input
             type="password"
             label="비밀번호"
-            placeholder="비밀번호를 입력하세요."
+            placeholder="영문, 숫자, 특수기호가 1개 이상 포함된 8~15자여야 합니다."
             register={register}
             name="password"
             width={"50rem"}

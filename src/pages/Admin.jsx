@@ -15,7 +15,7 @@ import {
 import { partyRegistModalState, partyInfoState } from "../store/atom";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
-import Test from "../assets/d65d5952-d801-4225-ab16-8720733b499a.png";
+import Test from "./../assets/Image Placeholder.svg";
 import Pagination from "react-js-pagination";
 import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { useEffect, useState } from "react";
@@ -32,6 +32,7 @@ function Board(props) {
     },
   });
 
+  console.log(props)
   const undoDeletePartyMember = useMutation(undoDeletePagemembers, {
     onSuccess: (data) => {
       window.alert("해당 멤버는 이제 재가입할 수 있습니다.");
@@ -88,7 +89,7 @@ function Board(props) {
               추방하기
             </Button>
           )}
-          {props.groupMemberRoleEnum === "USER" && props.bannedAt === null ? (
+          {props.groupMemberRoleEnum === "USER" ? (
             <Button
               onClick={() =>
                 ChangeRoleMember({ pam: props.pam, memberId: props.id })
@@ -156,6 +157,7 @@ const Admin = () => {
     () => getDetailPageForAdmin({ id: pam.id }),
     {
       onSuccess: ({ data }) => {
+        console.log(data.data)
         setUserList(data.data.groupMembers);
         setBannedList(data.data.bannedMembers);
         setPartyInfo({

@@ -8,6 +8,8 @@ import write from "../../assets/ic24/write.svg";
 import remove from "../../assets/ic24/delete.svg";
 import { useSetRecoilState } from "recoil";
 import { editReadyState } from "../../store/atom";
+import { useMutation } from "react-query";
+import { deletePageMembers } from "../../utils/api/api";
 
 const PartyInfo = (props) => {
   const navi = useNavigate();
@@ -16,6 +18,18 @@ const PartyInfo = (props) => {
       toastId: "withdrawal",
     });
   };
+  const deletePartyMember = useMutation(deletePageMembers, {
+    onSuccess: (data) => {
+      toast.error("그룹을 탈퇴했습니다.", {
+        toastId: "withdrawal",
+      });
+      navi("/")
+    },
+  });
+  const doDeleteGroupOut = (data) => {
+    const res = deletePartyMember.mutateAsync(data);
+  };
+
   const setIsOpen = useSetRecoilState(editReadyState);
   return (
     <PartyInfoWrapper>
@@ -70,7 +84,7 @@ const PartyInfo = (props) => {
             </div>
           </>
         ) : (
-          <button className="button" onClick={onWithdrawal}>
+          <button className="button" onClick={() => doDeleteGroupOut({pam : props.groupId})}>
             <img src={remove} alt="탈퇴" />
             <span>탈퇴하기</span>
           </button>

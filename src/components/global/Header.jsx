@@ -32,7 +32,7 @@ const Header = () => {
   const [isCallBool, setIsCallBool] = useState(false);
   const token = getCookie("token");
   const storedData = JSON.parse(localStorage.getItem('userInfo'));
-  const profileImage = token != null ?storedData.profileImage == null ?profile : storedData.profileImage : profile;
+  const profileImage = token != null ?storedData?.profileImage == null ?profile : storedData?.profileImage : profile;
 
   const getCode = useQuery(
     ["getCode", currentPam],
@@ -95,8 +95,8 @@ const Header = () => {
   const onLogout = () => {
     removeCookie("token");
     removeLocalStorage("userInfo");
-    navi("/");
     toast.success("정상적으로 로그아웃 되었습니다.");
+    navi("/");
     onModal();
     window.location.reload();
   };
