@@ -26,7 +26,10 @@ const MarkdownTitle = ({ postInfo, dtype, author, role, authorRole, groupId, det
   });
 
   const onclick = () =>{
+    const keepGoing = window.confirm("정말 이 게시글을 삭제하시겠습니까?")
+    if(keepGoing == true){
     const res = deleteHomework.mutateAsync({ groupId, dtype, detailId });
+    }
   }
 
   return (
@@ -50,29 +53,32 @@ const MarkdownTitle = ({ postInfo, dtype, author, role, authorRole, groupId, det
           {postInfo?.nickname} | {`${date.toLocaleDateString()}`}
         </span>
       </TitleBottomWrapper>
-      {author == "ADMIN"
+      
+      {role == "ADMIN"
       ?<ButtonBox>
       <Button onClick={() => onclick()}>삭제하기</Button>
       <Button onClick={() => navi(`/party/${groupId}`)}>목록으로</Button>
       </ButtonBox>
       :role == "SUPPORT"
         ?authorRole == "USER"
-          ?<ButtonBox>
-          <Button onClick={() => onclick()}>삭제하기</Button>
-          <Button onClick={() => navi(`/party/${groupId}`)}>목록으로</Button>
-          </ButtonBox>
-          :author == true
             ?<ButtonBox>
             <Button onClick={() => onclick()}>삭제하기</Button>
-            <Button onClick={() =>navi(`/party/${groupId}`)}>목록으로</Button>
+            <Button onClick={() => navi(`/party/${groupId}`)}>목록으로</Button>
             </ButtonBox>
-            :<Button onClick={() => navi(`/party/${groupId}`)}>목록으로</Button>
-        :author == true
-          ?<ButtonBox>
-          <Button onClick={() => onclick()}>삭제하기</Button>
-          <Button onClick={() => navi(`/party/${groupId}`)}>목록으로</Button>
-          </ButtonBox>
-          :<Button onClick={() => navi(`/party/${groupId}`)}>목록으로</Button>
+            :author === true
+                ?<ButtonBox>
+                <Button onClick={() => onclick()}>삭제하기</Button>
+                <Button onClick={() =>navi(`/party/${groupId}`)}>목록으로</Button>
+                </ButtonBox>
+                :<Button onClick={() => navi(`/party/${groupId}`)}>목록으로</Button>
+        :author === true
+            ?<ButtonBox>
+            <Button onClick={() => onclick()}>삭제하기</Button>
+            <Button onClick={() => navi(`/party/${groupId}`)}>목록으로</Button>
+            </ButtonBox>
+            :<ButtonBox>
+            <Button onClick={() => navi(`/party/${groupId}`)}>목록으로</Button>
+            </ButtonBox>
       }
       </BottomBox>
     </TitleRenderContent>

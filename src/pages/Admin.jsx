@@ -41,16 +41,22 @@ function Board(props) {
 
   const roleChangeMember = useMutation(PutMemberRole, {
     onSuccess: (data) => {
-      window.alert("해당 멤버의 권환이 수정되었습니다.");
+      window.alert("해당 멤버의 권한이 수정되었습니다.");
       window.location.reload();
     },
   });
   const doDeleteMember = (data) => {
+    const keepGoing = window.confirm("해당 회원을 퇴출시키겠습니까?")
+    if(keepGoing == true){
     const res = deletePartyMember.mutateAsync(data);
+    }
   };
 
   const undoDeleteMember = (data) => {
+    const keepGoing = window.confirm("해당 회원의 재가입을 허용하시겠습니까?")
+    if(keepGoing == true){
     const res = undoDeletePartyMember.mutateAsync(data);
+    }
   };
 
   const ChangeRoleMember = (data) => {
@@ -184,7 +190,10 @@ const Admin = () => {
   );
 
   const doDeletePage = () => {
-    const res = deletePageForAdmin.mutateAsync(pam.id);
+    const keepGoing = window.confirm("정말 그룹을 삭제하시겠습니까?")
+    if(keepGoing == true){
+      const res = deletePageForAdmin.mutateAsync(pam.id);
+    }
   };
 
   const deletePageForAdmin = useMutation(deletePage, {

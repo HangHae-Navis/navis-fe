@@ -27,7 +27,10 @@ const PartyInfo = (props) => {
     },
   });
   const doDeleteGroupOut = (data) => {
-    const res = deletePartyMember.mutateAsync(data);
+    const keepGoing = window.confirm("정말 그룹을 탈퇴하시겠습니까?")
+    if(keepGoing == true){
+      deletePartyMember.mutateAsync(data)
+    }
   };
 
   const setIsOpen = useSetRecoilState(editReadyState);
