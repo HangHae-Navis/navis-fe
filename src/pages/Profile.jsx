@@ -272,9 +272,12 @@ const Profile = () => {
             <h1 className="title">보유 중인 그룹</h1>
           </GroupTitleBox>
           <BottomContentContainer>
-            {userGroup?.map((item) => {
+            {userGroup?.length != 0
+            ?userGroup?.map((item) => {
               return <GroupList key={item.groupId} item={item} res = {getInfo} />;
-            })}
+            })
+            : <h1>보유 중인 그룹이 없습니다</h1>
+            }
           </BottomContentContainer>
         </RightTotalContainer>
       </PageContainer>
@@ -310,11 +313,22 @@ const BottomContentContainer = styled.div`
   width: 100%;
   height: 100%;
   display: flex;
+  text-align: center;
   flex-direction: column;
   border-radius: 4rem;
   border: 0.1rem solid #d4d2e3;
   padding: 5rem;
   gap: 2rem;
+  h1 {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    font-size: 3rem;
+    font-weight: 600;
+    color : rgb(88, 85, 133, 0.5)
+  }
 `;
 const GroupInfoBox = styled.div`
   display: flex;
