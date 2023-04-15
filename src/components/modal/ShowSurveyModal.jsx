@@ -18,7 +18,6 @@ import { toast } from "react-toastify";
 import { useSearchParams } from "react-router-dom";
 
 const ShowSurveyModal = (props) => {
-  console.log(props)
   const [searchParams, setSearchParams] = useSearchParams();
   const groupId = searchParams.get("groupId");
   const detailId = searchParams.get("detailId");
@@ -43,7 +42,6 @@ const ShowSurveyModal = (props) => {
     return <></>;
   }
 
-  console.log(getDetail.data)
   return (<RegistModalBackGround onClick={ModalClose}>
 
     <SubmitFileModalWrapper>
