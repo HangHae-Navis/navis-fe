@@ -14,6 +14,10 @@ function Comment(props) {
       });
     },
   });
+  const profileImage = 
+    props.profileImage != null
+      ? props.profileImage
+      : profile;
 
   // const putComment = useMutation(putCommentPage, {
   //   onSuccess: (data) => {
@@ -47,7 +51,7 @@ function Comment(props) {
 
   return (
     <CommentBox>
-      <img src={props.profileImage} alt="profile" />
+      <img src={profileImage} alt="profile" />
       <div className="comment">
         <span>{props.nickname}</span>
         <p>{props.content}</p>
