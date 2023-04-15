@@ -60,7 +60,7 @@ const RadioButton = (props) => {
   const [selectedOption, setSelectedOption] = useState("");
 
   const handleOptionChange = (event) => {
-    setSelectedOption(props.props[event.target.value - 1] + props.survId);
+    setSelectedOption(props.props[event.target.value - 1]);
   };
 
   useEffect(() => {
@@ -77,7 +77,7 @@ const RadioButton = (props) => {
             type="radio"
             name={item + props.survId}
             value={index + 1}
-            checked={selectedOption === props.props[index] + props.survId}
+            checked={selectedOption === props.props[index]}
             onChange={handleOptionChange}
           />
           <span className="smallname"> {item}</span>
@@ -100,6 +100,7 @@ const StyledCheckbox = styled.input.attrs({ type: "checkbox" })`
 `;
 //props.res?.data?.data?.data?.questionResponseDto?.
 const Survey = (props) => {
+  console.log(props)
   //console.log(props)
   //console.log(props.res)
   //console.log(props.res0)
