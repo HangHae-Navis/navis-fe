@@ -10,10 +10,9 @@ import { useEffect } from "react";
 import EditSpecial from "./EditSpecial";
 import EditSurvey from "./EditSurvey";
 
-const EditReady = () => {
+const EditReady = (props) => {
   const reset = useResetRecoilState(editorState);
   const [page, setPage] = useState(1);
-
   const setIsOpen = useSetRecoilState(editReadyState);
   const modal = useRef();
   const onModalClose = (event) => {
@@ -32,7 +31,7 @@ const EditReady = () => {
 
   return (
     <ModalWrapper ref={modal} onClick={onModalClose}>
-      {page === 1 && <EditCommon setPage={setPage} reset={reset} />}
+      {page === 1 && <EditCommon setPage={setPage} reset={reset} role={props.role} />}
       {page === 2 && <EditSpecial setPage={setPage} />}
       {page === 3 && <EditSurvey setPage={setPage} />}
     </ModalWrapper>

@@ -7,19 +7,21 @@ import { useRecoilState, useSetRecoilState } from "recoil";
 import { editorState } from "../../store/atom";
 import { modalVariants } from "../../utils/variants/variants";
 import { toast } from "react-toastify";
+import { useParams } from "react-router-dom";
 
-const EditCommon = ({ reset, setPage }) => {
+const EditCommon = ({ reset, setPage, role }) => {
   const setIsOpen = useSetRecoilState(editReadyState);
   const [editor, setEditorState] = useRecoilState(editorState);
+  const pam = useParams();
   const nextPage = () => {
-    if (editor.title === "") {
-      toast.error("게시글의 제목을 입력해주세요", {
-        toastId: "nextError",
-      });
-    } else {
-      setPage(2);
+    //그룹 아이디가 20이 아닌데,
+    pam.id != 20 ?
+    editor.category != "게시글" ?role == "USER"
+    ?toast.error("권한이 없습니다.")
+    :editor.title === "" ?toast.error("게시글의 제목을 입력해주세요", {toastId: "nextError",}) :setPage(2)
+    :editor.title === "" ?toast.error("게시글의 제목을 입력해주세요", {toastId: "nextError",}) : setPage(2)
+    :toast.error("가이드 그룹에서는 게시글을 작성하실 수 없습니다.")
     }
-  };
 
   const onCancel = () => {
     setIsOpen(false);
