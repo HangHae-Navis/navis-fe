@@ -127,7 +127,7 @@ const InfoWrapper = styled.section`
 const ReactMarkdownWrapper = styled(ReactMarkdown)`
   * {
     font-size: 1.4rem;
-    font-family: "Roboto Mono", monospace;
+    font-family: Pretendard !important;
   }
   padding: 2.5rem 0;
   display: flex;
