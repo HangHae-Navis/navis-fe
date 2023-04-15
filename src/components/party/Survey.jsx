@@ -55,8 +55,6 @@ const Checkbox = (props) => {
   ));
 };
 const RadioButton = (props) => {
-  console.log(props)
-  console.log(props.props)
   const [selectedOption, setSelectedOption] = useState("");
 
   const handleOptionChange = (event) => {
@@ -100,7 +98,6 @@ const StyledCheckbox = styled.input.attrs({ type: "checkbox" })`
 `;
 //props.res?.data?.data?.data?.questionResponseDto?.
 const Survey = (props) => {
-  console.log(props)
   //console.log(props)
   //console.log(props.res)
   //console.log(props.res0)
