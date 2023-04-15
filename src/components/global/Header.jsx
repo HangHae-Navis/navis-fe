@@ -32,7 +32,7 @@ const Header = () => {
   const [isCallBool, setIsCallBool] = useState(false);
   const token = getCookie("token");
   const storedData = JSON.parse(localStorage.getItem('userInfo'));
-  const profileImage = token != null ?storedData.profileImage == null ?profile : storedData.profileImage : profile;
+  const profileImage = token != null ?storedData?.profileImage == null ?profile : storedData?.profileImage : profile;
 
   const getCode = useQuery(
     ["getCode", currentPam],
