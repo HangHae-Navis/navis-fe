@@ -117,7 +117,7 @@ export const deletePageMembers = async (payload) => {
     );
     return res;
   } else {
-    const res = await axios.delete(`api/groups/${payload}`);
+    const res = await axios.delete(`api/groups/${payload.pam}`);
     return res;
   }
 };

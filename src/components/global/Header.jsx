@@ -95,8 +95,8 @@ const Header = () => {
   const onLogout = () => {
     removeCookie("token");
     removeLocalStorage("userInfo");
-    navi("/");
     toast.success("정상적으로 로그아웃 되었습니다.");
+    navi("/");
     onModal();
     window.location.reload();
   };

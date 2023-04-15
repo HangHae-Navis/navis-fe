@@ -19,6 +19,15 @@ const Input = ({
     e.stopPropagation();
     setPasswordVisible(!passwordVisible);
   };
+
+  const passwordRules = {
+    required: "값을 입력해주세요.",
+    pattern: {
+      value: /^(?=.*[A-Za-z])(?=.*\d)(?=.*[!@#$%^&*()_+])[A-Za-z\d!@#$%^&*()_+]{8,15}$/,
+      message: "영문, 숫자, 특수기호를 포함하여 8~15자로 입력해주세요.",
+    },
+  };
+  
   return (
     <>
       {type !== "password" ? (
@@ -43,9 +52,7 @@ const Input = ({
             <InputCustom
               placeholder={placeholder}
               type={passwordVisible ? "text" : type}
-              {...register(name, {
-                required: "값을 입력해주세요.",
-              })}
+              {...register(name, passwordRules)}
               defaultValue={defaultValue}
             />
             <IconsWrapper onClick={onVisible}>
