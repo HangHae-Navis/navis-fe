@@ -14,6 +14,7 @@ import {
   putHomeWorkData,
 } from "../utils/api/api";
 import "react-loading-skeleton/dist/skeleton.css";
+import EditReady from "../components/edit/EditReady";
 import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import PartyInfo from "../components/party/PartyInfo";
@@ -37,6 +38,8 @@ import { async } from "q";
 import ShowSubmitFile from "../components/modal/ShowSubmitFile";
 import FloatingMenu from "../components/party/FloatingMenu";
 import Survey from "../components/party/Survey";
+import { useRecoilState } from "recoil";
+import { editReadyState } from "../store/atom";
 
 export const SlideChart = (props) => {
   const value = props.voteMax == 0 ? 0 : props.count / props.voteMax;
@@ -147,6 +150,7 @@ function PartyDetail() {
   const [voteMax, setVoteMax] = useState("");
   const [whereToVoted, setWhereToVoted] = useState();
   const [voteContent, setVoteContent] = useState([]);
+  const [isOpen, setIsOpen] = useRecoilState(editReadyState);
   //링크 추가는 없으니 삭제해도 됨
   const [homeWorkInputLink, setHomeWorkInputLink] = useState([]);
   const [homeWorkInputFile, setHomeWorkInputFile] = useState([]);
@@ -794,6 +798,7 @@ function PartyDetail() {
             </form>
           </CommentInputWrapper>
         </Commentcontainer>
+        {isOpen === true && <EditReady role = {res?.data?.data?.data?.role}/>}
       </PageContainer>
     </>
   );

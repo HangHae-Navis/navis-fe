@@ -242,7 +242,7 @@ const Party = () => {
           </RightContainer>
         </RightTotalContainer>
         <Chat />
-        {isOpen === true && <EditReady />}
+        {isOpen === true && <EditReady role = {partyRes?.data?.data?.data?.groupRole}/>}
       </PageContainer>
     </>
   );
