@@ -15,6 +15,46 @@ import NavBar from "../components/party/NavBar";
 import { getCookie } from "../utils/infos/cookie";
 import { HourCheck } from "../element/DateCheck";
 
+const EmptyText = () =>{
+  return(<EmptyTextBox>
+    <h1>가입한 그룹이 없습니다.</h1>
+    <h2>가이드 그룹 코드 : jkljosgyvm</h2>
+  </EmptyTextBox>)
+  
+}
+
+const EmptyTextBox = styled.div`
+  width: 110vw;
+  height: 40rem;
+  align-items: center;
+  justify-content: center;
+  background-color: ${(props) => props.theme.color.zeroOne};
+  border-radius: 0.8rem;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  h1 {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    font-size: 8rem;
+    font-weight: 600;
+    color : rgb(88, 85, 133, 0.5)
+  }
+  h2 {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    font-size: 3rem;
+    font-weight: 600;
+    color : rgb(88, 85, 133, 0.5)
+  }
+`;
+
 const GroupBoxComp = (props) => {
   const navigate = useNavigate();
   const [onDeadLine, setOnDeadLine] = useState(false);
@@ -136,7 +176,10 @@ const Main = () => {
           </Button>
         </GroupHeaderWrapper>
         <GroupContainer>
-          {isLoading === false ? (
+          {groupList?.length == 0
+          ? <EmptyText></EmptyText>
+          :
+          isLoading === false ? (
             groupList?.map((item) => {
               return (
                 <GroupBoxComp
