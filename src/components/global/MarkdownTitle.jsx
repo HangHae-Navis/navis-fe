@@ -51,21 +51,41 @@ const MarkdownTitle = ({ postInfo, dtype, author, role, authorRole, groupId, det
         </span>
       </TitleBottomWrapper>
       {author == "ADMIN"
-      ?<Button onClick={() => onclick()}>삭제하기</Button>
+      ?<ButtonBox>
+      <Button onClick={() => onclick()}>삭제하기</Button>
+      <Button onClick={() => navi(`/party/${groupId}`)}>목록으로</Button>
+      </ButtonBox>
       :role == "SUPPORT"
         ?authorRole == "USER"
-          ?<Button onClick={() => onclick()}>삭제하기</Button>
+          ?<ButtonBox>
+          <Button onClick={() => onclick()}>삭제하기</Button>
+          <Button onClick={() => navi(`/party/${groupId}`)}>목록으로</Button>
+          </ButtonBox>
           :author == true
-            ?<Button onClick={() => onclick()}>삭제하기</Button>
-            :null
+            ?<ButtonBox>
+            <Button onClick={() => onclick()}>삭제하기</Button>
+            <Button onClick={() =>navi(`/party/${groupId}`)}>목록으로</Button>
+            </ButtonBox>
+            :<Button onClick={() => navi(`/party/${groupId}`)}>목록으로</Button>
         :author == true
-          ?<Button onClick={() => onclick()}>삭제하기</Button>
-          :null
+          ?<ButtonBox>
+          <Button onClick={() => onclick()}>삭제하기</Button>
+          <Button onClick={() => navi(`/party/${groupId}`)}>목록으로</Button>
+          </ButtonBox>
+          :<Button onClick={() => navi(`/party/${groupId}`)}>목록으로</Button>
       }
       </BottomBox>
     </TitleRenderContent>
   );
 };
+
+const ButtonBox = styled.div`
+display : flex;
+align-items: center;
+  justify-content: space-between;
+  flex-direction: row;
+  gap : 1rem;
+`
 
 const BottomBox = styled.div`
   display: flex;

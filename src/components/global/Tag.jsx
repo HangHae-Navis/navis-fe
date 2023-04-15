@@ -3,6 +3,8 @@ import styled from "styled-components";
 import impo from "../../assets/ic20/importance.svg";
 import vote from "../../assets/ic20/vote.svg";
 import task from "../../assets/ic20/task.svg";
+import board from "../../assets/ic24/screen.svg";
+import survey from "../../assets/ic24/write.svg";
 
 const Tag = ({ dtype }) => {
   return (
@@ -17,6 +19,18 @@ const Tag = ({ dtype }) => {
         <TagWrapper>
           <img src={impo} alt="공지" />
           <span>공지</span>
+        </TagWrapper>
+      )}
+      {dtype === "survey" && (
+        <TagWrapper>
+          <img src={survey} alt="설문" />
+          <span>설문</span>
+        </TagWrapper>
+      )}
+      {dtype === "board" && (
+        <TagWrapper>
+          <img src={board} alt="게시글" />
+          <span>게시글</span>
         </TagWrapper>
       )}
       {dtype === "vote" && (
