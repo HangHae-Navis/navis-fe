@@ -32,7 +32,6 @@ function Board(props) {
     },
   });
 
-  console.log(props)
   const undoDeletePartyMember = useMutation(undoDeletePagemembers, {
     onSuccess: (data) => {
       window.alert("해당 멤버는 이제 재가입할 수 있습니다.");
@@ -62,7 +61,7 @@ function Board(props) {
     <>
       <BoardBox>
         <BoardBoxTitleBox>
-          <h1 className="name">{props.nickName}</h1>
+          <h1 className="name">{props.nickName} ( {props.username})</h1>
           {props.joinedAt != null ? (
             <span className="date">{DayCheck(props.joinedAt)} 가입</span>
           ) : (
@@ -157,7 +156,6 @@ const Admin = () => {
     () => getDetailPageForAdmin({ id: pam.id }),
     {
       onSuccess: ({ data }) => {
-        console.log(data.data)
         setUserList(data.data.groupMembers);
         setBannedList(data.data.bannedMembers);
         setPartyInfo({
@@ -265,6 +263,7 @@ const Admin = () => {
               nickName={
                 getDetailPage?.data?.data?.data?.groupMembers[0].nickname
               }
+              username = {getDetailPage?.data?.data?.data?.groupMembers[0].username}
               id={getDetailPage?.data?.data?.data?.groupMembers[0].id}
               pam={pam.id}
               MakeGroupHandler={MakeGroupHandler}
@@ -278,6 +277,7 @@ const Admin = () => {
                   groupMemberRoleEnum={item.groupMemberRoleEnum}
                   joinedAt={item.joinedAt}
                   nickName={item.nickname}
+                  username = {item.username}
                   id={item.id}
                   pam={pam.id}
                   MakeGroupHandler={MakeGroupHandler}
@@ -293,6 +293,7 @@ const Admin = () => {
                   groupMemberRoleEnum={item.groupMemberRoleEnum}
                   joinedAt={item.joinedAt}
                   nickName={item.nickname}
+                  username = {item.username}
                   id={item.id}
                   pam={pam.id}
                   MakeGroupHandler={MakeGroupHandler}
@@ -307,6 +308,7 @@ const Admin = () => {
                   key={item.bannedAt}
                   bannedAt={item.bannedAt}
                   nickName={item.nickname}
+                  username = {item.username}
                   id={item.id}
                   pam={pam.id}
                   MakeGroupHandler={MakeGroupHandler}
