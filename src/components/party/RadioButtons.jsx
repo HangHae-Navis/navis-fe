@@ -32,6 +32,10 @@ const RadioButtons = ({
           categoryValue("board");
           partyRes.refetch();
           break;
+          case 5:
+            categoryValue("survey");
+            partyRes.refetch();
+            break;
         default:
           break;
       }

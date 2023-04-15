@@ -28,7 +28,7 @@ const Party = () => {
   const [selectedSecond, setSelectedSecond] = useState(0);
   const [categoryValue, setCategoryValue] = useState("all");
   const [categoryValueSecond, setCategoryValueSecond] = useState("id");
-  const options = ["전체", "공지", "투표", "과제", "게시글"];
+  const options = ["전체", "공지", "투표", "과제", "게시글", "설문"];
   const optionsSecond = ["최신순", "중요도순"];
   const [carouselList, setCarouselList] = useState([]);
   const [groupList, setGroupList] = useState([]);
