@@ -98,7 +98,6 @@ const StyledCheckbox = styled.input.attrs({ type: "checkbox" })`
 `;
 //props.res?.data?.data?.data?.questionResponseDto?.
 const Survey = (props) => {
-  //console.log(props)
   //console.log(props.res)
   //console.log(props.res0)
   //console.log(props.list)

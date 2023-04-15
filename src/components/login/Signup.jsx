@@ -9,6 +9,7 @@ import {
   getEmailVerify,
   postSignUp,
 } from "../../utils/api/api";
+import { toast } from "react-toastify";
 
 const Signup = ({ setisSignin }) => {
   const { register, handleSubmit, formState: errors, watch } = useForm();
@@ -28,18 +29,22 @@ const Signup = ({ setisSignin }) => {
   const emailConfirmMutation = useMutation(postEmailConfirm, {
     onSuccess: ({ data }) => {
       setEmailConfirm(true);
+      toast.success("인증을 보냈습니다. 해당 이메일에 접속해 확인해주세요.")
     },
     onError: (error) => {
       console.log(error);
+      toast.success("인증을 보내는데 실패했습니다.")
     },
   });
 
   const verifyMutation = useMutation(getEmailVerify, {
     onSuccess: ({ data }) => {
       setVerify(true);
+      toast.success("인증에 성공했습니다.")
     },
     onError: ({ error }) => {
       console.log(error);
+      toast.success("인증에 실패했습니다.")
     },
   });
 
