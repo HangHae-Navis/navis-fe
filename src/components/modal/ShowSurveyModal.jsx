@@ -4,8 +4,8 @@ import styled from "styled-components";
 import { flexCenter } from "../../utils/style/mixins";
 import { modalVariants } from "../../utils/variants/variants";
 import { useForm } from "react-hook-form";
-import { useMutation } from "react-query";
-import { postFeedback, postGroup, postGroupApply, PutGroup, putHomeWorkData } from "../../utils/api/api";
+import { useMutation, useQuery } from "react-query";
+import { getSurveyForAdmin, postFeedback, postGroup, postGroupApply, PutGroup, putHomeWorkData } from "../../utils/api/api";
 import Input from "../../element/Input";
 import Button from "../../element/Button";
 import Test from "../../assets/d65d5952-d801-4225-ab16-8720733b499a.png";
@@ -24,11 +24,23 @@ const ShowSurveyModal = (props) => {
   const [inputValue, setInputValue] = useState('');
   const [fileContainer, setFileContainer] = useState([])
 
+  const getDetail = useQuery(
+    ["adminsurveyget", { id: props.id , groupId, detailId}],
+    () => getSurveyForAdmin({ id: props.names.id , groupId, detailId})
+  );
+
   const ModalClose = (event) => {
     if (event.target === event.currentTarget) {
       props.setShowModal(false)
     }
   };
+  
+  if (
+    getDetail.isLoading ||
+    getDetail.isError
+  ) {
+    return <></>;
+  }
   return (<RegistModalBackGround onClick={ModalClose}>
 
     <SubmitFileModalWrapper>
@@ -38,30 +50,30 @@ const ShowSurveyModal = (props) => {
         {props.DTO.map((item, index) => {
           switch (item.type) {
             case 'CHECKBOX':
-              return (<SurveyAnswerBox>
+              return (<SurveyAnswerBox key = {item + index}>
                 <h1 className="buttontitle">{index+1}번. {item.question}</h1>
-                {item.options.split(", ").map((iteminoption, index) => (
-                  item.answerCount.split(", ")[index] == 1
+                {item.options.split(", ").map((iteminoption, indexdetail) => (
+                  getDetail?.data?.data?.data[index]?.answers.split(", ").indexOf(iteminoption) !== -1
                 ?
-                <h1 key = {iteminoption + index} className="rejecttext">{index + 1}. {iteminoption} (선택함)</h1>
+                <h1 key = {iteminoption + indexdetail} className="rejecttext">{indexdetail + 1}. {iteminoption} (선택함)</h1>
                 :
-                <h1 key = {iteminoption + index} className="infocontent">{index + 1}. {iteminoption} </h1>
-                ))}
+                <h1 key = {iteminoption + indexdetail} className="infocontent">{indexdetail + 1}. {iteminoption} </h1>
+        ))}
               </SurveyAnswerBox>)
             case 'DESCRIPTIVE':
-              return (<SurveyAnswerBox>
+              return (<SurveyAnswerBox key = {item + index}>
                 <h1 className="buttontitle">{index+1}번. {item.question}</h1>
-                <h1 className="rejecttext">응답 : {item.answerCount}</h1>
+                <h1 className="rejecttext">응답 : {getDetail?.data?.data?.data[index].answers}</h1>
               </SurveyAnswerBox>)
             case "OBJECTIVE":
-              return (<SurveyAnswerBox>
+              return (<SurveyAnswerBox key = {item + index}>
                 <h1 className="buttontitle">{index+1}번. {item.question}</h1>
-                {item.options.split(", ").map((iteminoption, index) => (
-                  item.answerCount.split(", ")[index] == 1
+                {item.options.split(", ").map((iteminoption, indexdeatil0) => (
+                  iteminoption == getDetail?.data?.data?.data[index].answers
                 ?
-                <h1 key = {iteminoption + index} className="rejecttext">{index + 1}. {iteminoption} (선택함)</h1>
+                <h1 key = {iteminoption + indexdeatil0} className="rejecttext">{indexdeatil0 + 1}. {iteminoption} (선택함)</h1>
                 :
-                <h1 key = {iteminoption + index} className="infocontent">{index + 1}. {iteminoption} </h1>
+                <h1 key = {iteminoption + indexdeatil0} className="infocontent">{indexdeatil0 + 1}. {iteminoption} </h1>
                 ))}
               </SurveyAnswerBox>)
             default:
@@ -166,7 +178,7 @@ const RegistModalBackGround = styled.div`
 }
 
 .rejecttext{
-  font-weight: 400;
+  font-weight: 500;
   font-size: 1.8rem;
   color: #5D5A88
 }
@@ -189,20 +201,19 @@ gap: 2rem;
 const SubmitFileContainer = styled.div`
 min-width: 100%;
 min-height: 90%;
-padding-top: 2rem;
 padding-bottom: 2rem;
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   flex-direction: column;
-  justify-content: center;
+  justify-content: flex-start;
   gap: 2rem;
 `;
 
 const SubmitFileModalWrapper = styled(motion.section)`
   width: 40vw;
-  min-height: 30vw;
+  min-height: 40vw;
   overflow-y: auto;  /* 세로축 스크롤을 사용합니다. */
-  max-height: 80vh;  /* 최대 높이를 지정합니다. */
+  max-height: 90vh;  /* 최대 높이를 지정합니다. */
   display: flex;
 align-items: flex-start;
   flex-direction: column;
