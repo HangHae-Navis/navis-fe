@@ -20,12 +20,12 @@ const Footer = () => {
 };
 
 const FooterWrapper = styled.section`
-  position: fixed;
+  position: absolute;
   display: flex;
   justify-content: space-around;
-  bottom: 0;
   width: 100vw;
   height: 5rem;
+  margin-top: 5rem;
 
   ${(props) =>
     props.pathname === "/"
