@@ -159,6 +159,12 @@ export const postSurveyData = async (data) => {
   return res;
 };
 
+
+export const getSurveyForAdmin = async (payload) => {
+  const res = await axios.get(`api/${payload.groupId}/surveys/${payload.detailId}/surveyStatDetails/${payload.id}`);
+  return res;
+};
+
 export const putSurveyData = async (data) => {
   const payload = data.data;
   const res = await axios.put(
