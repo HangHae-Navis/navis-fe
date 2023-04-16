@@ -11,6 +11,10 @@ export const GlobalStyle = createGlobalStyle`
         font-family: Pretendard;
     }
 
+    body {
+        overflow-x: hidden;
+    }
+
 `;
 
 export default GlobalStyle;
