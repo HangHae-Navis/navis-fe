@@ -29,22 +29,22 @@ const Signup = ({ setisSignin }) => {
   const emailConfirmMutation = useMutation(postEmailConfirm, {
     onSuccess: ({ data }) => {
       setEmailConfirm(true);
-      toast.success("인증을 보냈습니다. 해당 이메일에 접속해 확인해주세요.")
+      toast.success("이메일에서 인증 코드를 확인해주세요.");
     },
     onError: (error) => {
       console.log(error);
-      toast.success("인증을 보내는데 실패했습니다.")
+      toast.success("인증을 보내는데 실패했습니다.");
     },
   });
 
   const verifyMutation = useMutation(getEmailVerify, {
     onSuccess: ({ data }) => {
       setVerify(true);
-      toast.success("인증에 성공했습니다.")
+      toast.success("인증에 성공했습니다.");
     },
     onError: ({ error }) => {
       console.log(error);
-      toast.success("인증에 실패했습니다.")
+      toast.success("인증에 실패했습니다.");
     },
   });
 
@@ -88,7 +88,9 @@ const Signup = ({ setisSignin }) => {
             name="username"
             width={"50rem"}
           />
-          <Button onClick={onEmailConfirm} width={"8rem"} height={"3rem"}>인증</Button>
+          <Button onClick={onEmailConfirm} width={"8rem"} height={"3rem"}>
+            인증
+          </Button>
         </InputWrapper>
         {emailConfirm === true && (
           <InputWrapper>
@@ -100,7 +102,9 @@ const Signup = ({ setisSignin }) => {
               placeholder="인증번호를 입력하세요."
               width={"50rem"}
             />
-            <Button onClick={onVerify}  width={"8rem"} height={"3rem"}>확인</Button>
+            <Button onClick={onVerify} width={"8rem"} height={"3rem"}>
+              확인
+            </Button>
           </InputWrapper>
         )}
         <InputWrapper>
@@ -125,13 +129,18 @@ const Signup = ({ setisSignin }) => {
           />
         </InputWrapper>
         <SubmitBox>
-        <Button disabled={verify === false ? true : false} font={"2.3rem"} width={"50rem"} height={"4.7rem"}>
-          회원가입
-        </Button>
-        <p>
-          계정이 존재하신가요?{" "}
-          <span onClick={() => setisSignin(true)}>로그인</span>
-        </p>
+          <Button
+            disabled={verify === false ? true : false}
+            font={"2.3rem"}
+            width={"50rem"}
+            height={"4.7rem"}
+          >
+            회원가입
+          </Button>
+          <p>
+            계정이 존재하신가요?{" "}
+            <span onClick={() => setisSignin(true)}>로그인</span>
+          </p>
         </SubmitBox>
       </SignUpForm>
     </SignUpWrapper>
@@ -144,7 +153,7 @@ const SubmitBox = styled.div`
   align-items: center;
   width: 100%;
   gap: 3rem;
-`
+`;
 
 const SignUpWrapper = styled.div`
   width: 50%;
@@ -155,9 +164,9 @@ const SignUpWrapper = styled.div`
   @media (max-width: 750px) {
     width: 100%;
   }
-  
+
   input {
-    @media (max-width: 750px){
+    @media (max-width: 750px) {
       width: 100%;
     }
   }

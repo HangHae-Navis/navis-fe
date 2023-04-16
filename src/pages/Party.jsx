@@ -365,6 +365,7 @@ const PageContainer = styled.div`
   margin: 0 auto;
   padding: 2rem 0 3rem 0;
   margin-top: 14rem;
+  min-height: 100vh;
 `;
 
 const LeftContainer = styled.div`

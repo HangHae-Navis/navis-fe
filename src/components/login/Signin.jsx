@@ -17,7 +17,13 @@ import { toast } from "react-toastify";
 const Signin = ({ setisSignin }) => {
   const navigate = useNavigate();
   const setLoginModalState = useSetRecoilState(loginModalState);
-  const { register, formState: errors, handleSubmit, reset } = useForm();
+  const {
+    register,
+    formState: { errors },
+    handleSubmit,
+    reset,
+  } = useForm();
+  console.log(errors);
   const [disable, setDisable] = useState(false);
   const signinMutation = useMutation(postSignIn, {
     onSuccess: ({ data }) => {
@@ -61,6 +67,7 @@ const Signin = ({ setisSignin }) => {
           type="text"
           label="이메일 주소"
           width={"47rem"}
+          error={errors?.username?.message}
         />
         <Input
           placeholder="비밀번호를 입력하세요."
@@ -69,9 +76,16 @@ const Signin = ({ setisSignin }) => {
           type="password"
           label="비밀번호"
           width={"47rem"}
+          error={errors?.password?.message}
         />
         <ButtonBox>
-          <Button disabled={false} className = {"buttontext"}  font={"2.3rem"} width={"47rem"} height={"4.7rem"}>
+          <Button
+            disabled={false}
+            className={"buttontext"}
+            font={"2.3rem"}
+            width={"47rem"}
+            height={"4.7rem"}
+          >
             로그인
           </Button>
           <div className="kakao" onClick={responseKakao}>
@@ -97,19 +111,19 @@ const ButtonBox = styled.div`
   align-items: center;
   padding-bottom: 3rem;
   gap: 2rem;
-  
-    font-size: 2rem;
+
+  font-size: 2rem;
   @media (max-height: 750px) {
     padding-top: 1rem;
-  padding-bottom: 1rem;
+    padding-bottom: 1rem;
   }
   @media (max-height: 850px) {
     padding-top: 3rem;
-  padding-bottom: 2rem;
+    padding-bottom: 2rem;
   }
 `;
 const SignInWrapper = styled.div`
-height: 40vh;
+  height: 40vh;
   width: 50%;
   @media (max-width: 750px) {
     width: 100%;
@@ -124,7 +138,7 @@ height: 40vh;
   gap: 0.6rem;
 
   input {
-    @media (max-width: 550px){
+    @media (max-width: 550px) {
       width: 40rem;
     }
   }
@@ -163,7 +177,7 @@ height: 40vh;
 `;
 
 const SigninForm = styled.form`
-height: 40vh;
+  height: 40vh;
   display: flex;
   flex-direction: column;
   justify-content: center;
