@@ -14,10 +14,8 @@ function Comment(props) {
       });
     },
   });
-  const profileImage = 
-    props.profileImage != null
-      ? props.profileImage
-      : profile;
+  const profileImage =
+    props.profileImage != null ? props.profileImage : profile;
 
   // const putComment = useMutation(putCommentPage, {
   //   onSuccess: (data) => {
@@ -85,11 +83,11 @@ const CommentBox = styled.li`
   height: 5rem;
 
   span {
-    font-size: 1.1rem;
+    font-size: 1.12rem;
   }
 
   p {
-    font-size: 1rem;
+    font-size: 1.25rem;
   }
   .center {
     display: flex;
@@ -135,6 +133,7 @@ const CommentBox = styled.li`
   }
 
   img {
+    object-fit: cover;
     width: 3.2rem;
     height: 3.2rem;
     border-radius: 50%;

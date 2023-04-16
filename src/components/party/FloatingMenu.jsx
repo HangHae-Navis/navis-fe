@@ -1,10 +1,5 @@
-import Tag from "../global/Tag";
-import { useState } from "react";
-import { useEffect } from "react";
 import { useNavigate } from "react-router";
 import styled from "styled-components";
-import { FullDateCheck } from "../../element/DateCheck";
-import StarTag from "../global/StarTag";
 import { useQueryClient } from "react-query";
 
 const FloatingMenu = (props) => {

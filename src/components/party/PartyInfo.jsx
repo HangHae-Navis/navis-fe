@@ -13,11 +13,6 @@ import { deletePageMembers } from "../../utils/api/api";
 
 const PartyInfo = (props) => {
   const navi = useNavigate();
-  const onWithdrawal = () => {
-    toast.error("그룹을 탈퇴했습니다.", {
-      toastId: "withdrawal",
-    });
-  };
   const deletePartyMember = useMutation(deletePageMembers, {
     onSuccess: (data) => {
       toast.error("그룹을 탈퇴했습니다.", {
