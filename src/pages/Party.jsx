@@ -327,7 +327,7 @@ const RadioBox = styled.div`
 `;
 
 const CarouselContainer = styled.div`
-  width: 60vw;
+  width: 70vw;
   height: 30.2rem;
   overflow-x: hidden;
   margin-bottom: 5.6rem;
