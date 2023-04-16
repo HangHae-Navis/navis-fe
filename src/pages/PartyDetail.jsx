@@ -303,7 +303,11 @@ function PartyDetail() {
     getComment.isLoading ||
     getComment.isError
   ) {
-    return <></>;
+    return <>
+    <PageContainer>
+      
+    </PageContainer>
+    </>;
   }
   return (
     <>
@@ -314,8 +318,8 @@ function PartyDetail() {
           res={res}
         ></ShowSubmitFile>
       ) : null}
-      <PageContainer>
-        <PartyInfo
+      
+      <PartyInfo
           groupName={groupName}
           groupInfo={groupInfo}
           groupCode={groupCode}
@@ -330,6 +334,7 @@ function PartyDetail() {
           groupInfo={groupInfo}
           groupCode={groupCode}
         ></FloatingMenu>
+      <PageContainer>
         <ContentsWrapper>
           <MarkdownTitle
           postInfo={postInfo}
@@ -364,7 +369,7 @@ function PartyDetail() {
             }}
           />
           {/*투표 여부를 판단, 투표지가 있을 경우 투표 관련 컴포넌트 랜더링*/}
-          {dtype =="vote" ? (
+          {dtype == "vote" ? (
             whereToVoted == -1 && now < expirationTimeOrigin ? (
               <VoteContentContainer>
                 <h1 className="smallname">마감시간 : {expirationTime}</h1>
@@ -436,194 +441,91 @@ function PartyDetail() {
           ) : null}
           {/*과제 여부를 판단, 제출한 과제가 없을 경우 과제 관련 컴포넌트 랜더링*/}
           {dtype == "homework" ? (
-            (res?.data?.data?.data?.role == "USER" &&
-              res?.data?.data?.data?.submitResponseDto == null) ||
-            submitAgain == true ? (
-              <form
-                onSubmit={(e) => {
-                  e.preventDefault();
-                  handleSubmit(postOrPutHomeWork);
-                }}
-              >
+            (res?.data?.data?.data?.role == "USER" && res?.data?.data?.data?.submitResponseDto == null) || submitAgain == true
+              ? (<form onSubmit={(e) => {e.preventDefault(); handleSubmit(postOrPutHomeWork);}}>
                 <HomeWorkSubmitContainer>
                   <HomeWorkSubmitButtonBox>
-                    <Button onClick={() => addInput("file")}>
-                      파일 추가하기
-                    </Button>
-                    {/*<Button onClick={()=> addInput("link")}>링크 추가하기</Button>*/}
-                    <Button
-                      onClick={handleSubmit(postOrPutHomeWork)}
-                      transparent={true}
-                      color="rgb(88, 85, 133)"
-                    >
-                      과제 제출하기
-                    </Button>
+                    <Button onClick={() => addInput("file")}>파일 추가하기</Button>
+                    <Button onClick={handleSubmit(postOrPutHomeWork)} transparent={true} color="rgb(88, 85, 133)">과제 제출하기</Button>
                   </HomeWorkSubmitButtonBox>
                   <HomeWorkSubmitButtonBox>
                     <HomeworkContentContainer>
                       <h1 className="name">제출할 파일</h1>
                       {homeWorkInputFile.map((item) => (
                         <InputContainer key={item.id}>
-                          <StyledInput
-                            type="file"
-                            onChange={FileHandler}
-                          ></StyledInput>
-                          <section
-                            className="name"
-                            onClick={() => deleteInput(item.id)}
-                          >
-                            X
-                          </section>
+                          <StyledInput type="file" onChange={FileHandler} />
+                          <section className="name" onClick={() => deleteInput(item.id)}>X</section>
                         </InputContainer>
                       ))}
                     </HomeworkContentContainer>
-                    {/*<HomeworkContentContainer>
-              <h1 className="name">제출할 링크</h1>
-              {homeWorkInputLink.map((item) => (<InputComp key = {item.id} type = {item.type}></InputComp>))}
-        </HomeworkContentContainer>*/}
                   </HomeWorkSubmitButtonBox>
                 </HomeWorkSubmitContainer>
-              </form>
-            ) : res?.data?.data?.data?.role == "USER" &&
-              res?.data?.data?.data?.submitResponseDto != null ? (
-              <>
-                {/*과제 여부를 판단, 제출한 과제가 있을 경우 과제 관련 컴포넌트 랜더링*/}
+              </form>)
+              : res?.data?.data?.data?.role == "USER" && res?.data?.data?.data?.submitResponseDto != null
+              ? (<>{/*과제 여부를 판단, 제출한 과제가 있을 경우 과제 관련 컴포넌트 랜더링*/}
                 <HomeWorkSubmitContainer>
                   <HomeWorkSubmitButtonBox>
-                    {res?.data?.data?.data?.submitResponseDto.submitCheck ==
-                    false ? (
-                      res?.data?.data?.data?.submitResponseDto.feedbackList
+                    {res?.data?.data?.data?.submitResponseDto.submitCheck == false
+                      ? (res?.data?.data?.data?.submitResponseDto.feedbackList
                         ?.length == 0 ? (
-                        <Button
-                          transparent={true}
-                          color="rgb(88, 85, 133)"
-                          onClick={() =>
-                            doDeleteHomework({ groupId, detailId })
-                          }
-                        >
-                          제출 취소하기
-                        </Button>
-                      ) : (
-                        <Button
-                          transparent={true}
-                          onClick={() => setSubmitAgain(true)}
-                          color="rgb(88, 85, 133)"
-                        >
-                          다시 제출하기
-                        </Button>
-                      )
-                    ) : null}
+                        <Button transparent={true} color="rgb(88, 85, 133)" onClick={() => doDeleteHomework({ groupId, detailId })}>제출 취소하기</Button>)
+                        : (<Button transparent={true} onClick={() => setSubmitAgain(true)} color="rgb(88, 85, 133)">다시 제출하기</Button>))
+                      : null}
                   </HomeWorkSubmitButtonBox>
                   <HomeWorkSubmitButtonBox>
                     <HomeworkContentContainer>
                       <PostedHomeWorkFileBox>
                         <h1 className="name">제출한 파일</h1>
                         <h1 className="smallname">
-                          {FullDateCheck(
-                            res?.data?.data?.data?.submitResponseDto.createdAt
-                          )}{" "}
-                          {res?.data?.data?.data?.submitResponseDto.late == true
-                            ? "제출(지각)"
-                            : "제출"}{" "}
+                          {FullDateCheck(res?.data?.data?.data?.submitResponseDto.createdAt)}{" "}{res?.data?.data?.data?.submitResponseDto.late == true ? "제출(지각)" : "제출"}{" "}
                         </h1>
                       </PostedHomeWorkFileBox>
                       {homeWorkPostedFileList?.map((item) => (
-                        <a
-                          key={item}
-                          href={`${item.fileUrl}?download=true`}
-                          className="filename"
-                        >
-                          {" "}
-                          {item.fileName}
-                        </a>
+                        <a key={item} href={`${item.fileUrl}?download=true`} className="filename"> {" "} {item.fileName}</a>
                       ))}
                     </HomeworkContentContainer>
-
-                    {
-                      <HomeworkContentContainer>
-                        {
-                          res?.data?.data?.data?.submitResponseDto.feedbackList
-                            ?.length != 0 ? (
-                            res?.data?.data?.data?.submitResponseDto
-                              .submitCheck == true ? (
-                              <>
-                                <h1 className="name">확정됨</h1>
-                                {res?.data?.data?.data?.submitResponseDto.feedbackList.map(
-                                  (item, index) => (
-                                    <h1 key={item} className="name">
-                                      {index + 1}번째 피드백 : {item}
-                                    </h1>
-                                  )
-                                )}
-                              </>
-                            ) : (
-                              <>
-                                <h1 className="name">반려됨</h1>
-                                {res?.data?.data?.data?.submitResponseDto.feedbackList.map(
-                                  (item, index) => (
-                                    <h1 key={item} className="name">
-                                      {index + 1}번째 사유 : {item}
-                                    </h1>
-                                  )
-                                )}
-                              </>
-                            )
-                          ) : (
-                            <h1 className="name">피드백 대기 중</h1>
-                          )
-                          /*여기다 피드백 대기 중 혹은 반려됨 혹은 받은 피드백 적어놓기 */
-                        }
-
-                      </HomeworkContentContainer>
-                    }
+                    {<HomeworkContentContainer>
+                        {res?.data?.data?.data?.submitResponseDto.feedbackList
+                            ?.length != 0 ? (res?.data?.data?.data?.submitResponseDto.submitCheck == true
+                                ? (<><h1 className="name">확정됨</h1>
+                                  {res?.data?.data?.data?.submitResponseDto.feedbackList.map(
+                                    (item, index) => (<h1 key={item} className="name">{index + 1}번째 피드백 : {item}</h1>)
+                                  )}</>)
+                                : (<><h1 className="name">반려됨</h1>
+                                  {res?.data?.data?.data?.submitResponseDto.feedbackList.map(
+                                    (item, index) => (
+                                      <h1 key={item} className="name">{index + 1}번째 사유 : {item}</h1>)
+                                  )}</>))
+                            : (<h1 className="name">피드백 대기 중</h1>)}
+                      </HomeworkContentContainer>}
                   </HomeWorkSubmitButtonBox>
                 </HomeWorkSubmitContainer>
-              </>
-            ) : (
-              <>
-                <PostedHomeWorkFileBox>
+              </>)
+              : (<><PostedHomeWorkFileBox>
                   <HomeworkContentContainer width="80vw">
                     <h1 className="name">제출완료</h1>
                     {homeWorkSubmmiter.map((item) => (
                       <SubmitterContainer key={item.id}>
                         <h1 className="smallname">{item.nickname}</h1>
                         <SubmitterBox>
-                          <h1 className="smallname">
-                            {ShortCheck(item.createdAt)} 제출
-                          </h1>
-                          <SubmiterButton
-                            onClick={() => CheckUpModal(item)}
-                            className="buttontext"
-                          >
-                            제출 과제
-                          </SubmiterButton>
+                          <h1 className="smallname">{ShortCheck(item.createdAt)} 제출</h1>
+                          <SubmiterButton onClick={() => CheckUpModal(item)} className="buttontext">제출 과제</SubmiterButton>
                         </SubmitterBox>
-                      </SubmitterContainer>
-                    ))}
+                      </SubmitterContainer>))}
                   </HomeworkContentContainer>
                   <HomeworkContentContainer borderColor="#CF5C4C">
                     <h1 className="name">미제출자</h1>
                     {homeWorkUnSubmmiter.map((item) => (
                       <SubmitterContainer key={item.id}>
                         <h1 className="smallname">{item.nickname}</h1>
-                      </SubmitterContainer>
-                    ))}
+                      </SubmitterContainer>))}
                   </HomeworkContentContainer>
-                </PostedHomeWorkFileBox>
-              </>
-            )
-          ) : null}
-          {dtype == "survey" ? (
-            <Survey
-              role={res?.data?.data?.data?.role}
-              submit={submitSurvey}
-              res={res}
-              res0={surveyDTO}
-              groupId={groupId}
-              detailId={detailId}
-              list={questionList}
-            ></Survey>
-          ) : null}
+                </PostedHomeWorkFileBox></>))
+              : null}
+          {/*설문 여부를 판단, 어드민(서포터)일 경우 별도 랜더링*/}
+          {dtype == "survey"
+            ? (<Survey role={res?.data?.data?.data?.role} submit={submitSurvey} res={res} res0={surveyDTO} groupId={groupId} detailId={detailId} list={questionList} />)
+            : null}
         </ContentsWrapper>
         <Commentcontainer>
           <CommentTopWrapper>
@@ -633,8 +535,7 @@ function PartyDetail() {
           <CommentsWrapper />
           <CommentMapWrapper>
             {commentList?.map((comment) => (
-              <Comment
-                key={comment.id}
+              <Comment key={comment.id}
                 id={comment.id}
                 profileImage={comment.profileImage}
                 groupId={groupId}
@@ -643,38 +544,23 @@ function PartyDetail() {
                 nickname={comment.nickname}
                 createAt={comment.createAt}
                 isAdmin={isAdmin}
-                owned={comment.owned}
-              ></Comment>
-            ))}
+                owned={comment.owned}/>))}
           </CommentMapWrapper>
           <CommentInputWrapper>
             <img src={profileImage} alt="프로필" />
-            <form
-              className="form"
-              onSubmit={(e) => {
-                e.preventDefault();
-                onPost(comment);
-              }}
-            >
+            <form className="form" onSubmit={(e) => {e.preventDefault(); onPost(comment);}}>
               <section className="center">
                 <span>{myUserName}</span>
                 <div className="inputLayout">
-                  <textarea
-                    cols="49"
-                    rows="2"
-                    maxLength="98"
-                    placeholder="댓글을 입력해주세요."
-                    value={comment}
-                    onChange={(e) => setComment(e.target.value)}
-                  />
+                  <textarea cols="49" rows="2" maxLength="98" placeholder="댓글을 입력해주세요." value={comment} onChange={(e) => setComment(e.target.value)}/>
                   <button>등록</button>
                 </div>
               </section>
             </form>
           </CommentInputWrapper>
         </Commentcontainer>
-        {isOpen === true && <EditReady role = {res?.data?.data?.data?.role}/>}
       </PageContainer>
+        {isOpen === true && <EditReady role = {res?.data?.data?.data?.role}/>}
     </>
   );
 }
@@ -850,10 +736,12 @@ const Commentcontainer = styled.div`
 
 const PageContainer = styled.div`
   width: 100vw;
+  min-height: 100vh;
   max-width: 128rem;
   display: flex;
   flex-direction: column;
-  ${flexCenter}
+  align-items: center;
+  justify-content: flex-start;
   margin: 0 auto;
   margin-top: 14rem;
 `;
