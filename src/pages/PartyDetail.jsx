@@ -38,17 +38,19 @@ function PartyDetail() {
   const [isOpen, setIsOpen] = useRecoilState(editReadyState);
   const { register, formState: errors, handleSubmit } = useForm();
   const [commentList, setCommentList] = useState();
+  const [comment, setComment] = useState("");
   const [isAdmin, setIsAdmin] = useState();
   const [postInfo, setPostInfo] = useState({});
-  const [comment, setComment] = useState("");
   const [expirationTime, setexpirationTime] = useState("");
   const [expirationTimeOrigin, setexpirationTimeOrigin] = useState("");
   const [voteMax, setVoteMax] = useState("");
   const [whereToVoted, setWhereToVoted] = useState();
   const [voteContent, setVoteContent] = useState([]);
   const [homeWorkInputFile, setHomeWorkInputFile] = useState([]);
+  //이거 2개 객체화 가능?
   const [homeWorkSubmmiter, setHomeWorkSubmmiter] = useState([]);
   const [homeWorkUnSubmmiter, setHomeWorkUnSubmmiter] = useState([]);
+
   const [homeWorkInputFileList, setHomeWorkInputFileList] = useState([]);
   const [homeWorkPostedFileList, setHomeWorkPostedFileList] = useState([]);
   const [questionList, setQuestionList] = useState([]);

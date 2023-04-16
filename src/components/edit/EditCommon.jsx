@@ -16,7 +16,7 @@ const EditCommon = ({ reset, setPage, role }) => {
   const nextPage = () => {
     //그룹 아이디가 20이 아닌데,
     pam.id != 20 ?
-    editor.category != "게시글" ?role == "USER"
+    editor.category != "board" ?role == "USER"
     ?toast.error("권한이 없습니다.")
     :editor.title === "" ?toast.error("게시글의 제목을 입력해주세요", {toastId: "nextError",}) :setPage(2)
     :editor.title === "" ?toast.error("게시글의 제목을 입력해주세요", {toastId: "nextError",}) : setPage(2)
