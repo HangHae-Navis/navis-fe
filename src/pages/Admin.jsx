@@ -67,7 +67,7 @@ function Board(props) {
     <>
       <BoardBox>
         <BoardBoxTitleBox>
-          <h1 className="name">{props.nickName} ( {props.username})</h1>
+          <h1 className="name">{props.nickName} ( {props.username} )</h1>
           {props.joinedAt != null ? (
             <span className="date">{DayCheck(props.joinedAt)} 가입</span>
           ) : (
@@ -162,6 +162,7 @@ const Admin = () => {
     () => getDetailPageForAdmin({ id: pam.id }),
     {
       onSuccess: ({ data }) => {
+        console.log(data.data)
         setUserList(data.data.groupMembers);
         setBannedList(data.data.bannedMembers);
         setPartyInfo({

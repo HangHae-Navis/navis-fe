@@ -13,8 +13,8 @@ import { useMutation } from "react-query";
 import { postSurveyData, putSurveyData } from "../../utils/api/api";
 import axios from "axios";
 import { FullDateCheck } from "../../element/DateCheck";
-import { SlideChart, PartyDetail } from "../../pages/PartyDetail";
 import ShowSurveyModal from "../modal/ShowSurveyModal";
+import SlideChart from "./SlideChart";
 
 const Checkbox = (props) => {
   const [checkedItems, setCheckedItems] = useState(
