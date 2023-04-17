@@ -1,46 +1,25 @@
 import { useMutation, useQuery } from "react-query";
 import styled from "styled-components";
-import PartyRegist from "../components/modal/PartyRegist";
 import Button from "../element/Button";
-import {
-  deletePage,
-  deletePageMembers,
-  getBoardDetailPage,
-  getDetailPage,
-  getDetailPageForAdmin,
-  getPartyBoard,
-  getPartyPage,
-  GetProfile,
-  PutMemberRole,
-  PutProfile,
-  undoDeletePagemembers,
-} from "../utils/api/api";
-import { partyRegistModalState, partyInfoState } from "../store/atom";
-import Skeleton from "react-loading-skeleton";
+import { deletePage, GetProfile, PutProfile } from "../utils/api/api";
 import "react-loading-skeleton/dist/skeleton.css";
 import Test from "./../assets/Image Placeholder.svg";
-import Pagination from "react-js-pagination";
-import { useNavigate, useParams, useSearchParams } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useState } from "react";
 import { FullDateCheck, DayCheck } from "../element/DateCheck";
-import { useSetRecoilState } from "recoil";
-import PartyInfo from "../components/party/PartyInfo";
-import Input from "../element/Input";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
+import { InputStyle } from "../utils/style/mixins";
 
 const GroupList = (props) => {
   const navi = useNavigate();
 
-  
   const deleteGroup = useMutation(deletePage, {
     onSuccess: ({ data }) => {
-      
       toast.success("그룹을 삭제했습니다.");
       props.res.refetch();
     },
   });
-
 
   const doDeletePage = (data) => {
     const res = deleteGroup.mutateAsync(data);
@@ -61,7 +40,13 @@ const GroupList = (props) => {
           <Button onClick={() => navi(`/party/${props.item.groupId}`)}>
             관리하기
           </Button>
-          <Button transparent={true} color="rgb(88, 85, 133)" onClick={()=>doDeletePage(props.item.groupId)}>삭제하기</Button>
+          <Button
+            transparent={true}
+            color="rgb(88, 85, 133)"
+            onClick={() => doDeletePage(props.item.groupId)}
+          >
+            삭제하기
+          </Button>
         </GroupButtonBox>
       </GroupListBox>
     </>
@@ -148,19 +133,19 @@ const Profile = () => {
   });
 
   const PostProfile = async (data) => {
+    console.log(data);
     const postRequest = new FormData();
     if (postImages != null) {
       postRequest.append("profileImage", postImages);
     }
-    if (data.nick != null) {
+    if (data.nick !== userNick) {
       postRequest.append("nickname", data.nick);
+    } else {
+      postRequest.append("nickname", userNick);
     }
     if (data.password != null) {
       postRequest.append("password", data.password);
     }
-    /*for (const [key, value] of postRequest.entries()) {
-      console.log(key, value);
-    }*/
     const res = putProfile.mutateAsync(postRequest);
   };
 
@@ -179,7 +164,7 @@ const Profile = () => {
               </Button>
             ) : (
               <>
-                <Button onClick={handleSubmit(PostProfile)}>수정완료</Button>
+                <Button type="submit">수정완료</Button>
                 <Button onClick={() => setIsPut(!isPut)}>수정취소</Button>
               </>
             )}
@@ -217,9 +202,7 @@ const Profile = () => {
                 <>
                   <ImageTextBox>
                     <label htmlFor="file-upload">
-                      <GroupInfoImage
-                        src={userImg != null ? userImg : Test}
-                      />
+                      <GroupInfoImage src={userImg != null ? userImg : Test} />
                     </label>
                     <h1 className="inputcontent">
                       이미지를 클릭하여 <br />
@@ -240,26 +223,19 @@ const Profile = () => {
                         <p className="infocontent">{userName}</p>
                       </GroupInfoText>
                       <GroupInfoText>
-                        <h1 className="infotitle">닉네임&nbsp;&nbsp;&nbsp;&nbsp;</h1>
-                        <Input
+                        <h1 className="infotitle">
+                          닉네임&nbsp;&nbsp;&nbsp;&nbsp;
+                        </h1>
+                        <input
                           placeholder="변경할 닉네임을 입력하세요."
-                          register={register}
-                          name="nick"
                           type="text"
-                          isput={isPut}
-                          defaultValue={userNick}
-                          width={"20vw"}
                         />
                       </GroupInfoText>
                       <GroupInfoText>
                         <h1 className="infotitle">비밀번호</h1>
-                        <Input
+                        <input
                           placeholder="변경할 비밀번호를 입력하세요."
-                          register={register}
-                          name="password"
                           type="text"
-                          isput={isPut}
-                          width={"20vw"}
                         />
                       </GroupInfoText>
                     </form>
@@ -272,12 +248,15 @@ const Profile = () => {
             <h1 className="title">보유 중인 그룹</h1>
           </GroupTitleBox>
           <BottomContentContainer>
-            {userGroup?.length != 0
-            ?userGroup?.map((item) => {
-              return <GroupList key={item.groupId} item={item} res = {getInfo} />;
-            })
-            : <h1>보유 중인 그룹이 없습니다</h1>
-            }
+            {userGroup?.length !== 0 ? (
+              userGroup?.map((item) => {
+                return (
+                  <GroupList key={item.groupId} item={item} res={getInfo} />
+                );
+              })
+            ) : (
+              <h1>보유 중인 그룹이 없습니다</h1>
+            )}
           </BottomContentContainer>
         </RightTotalContainer>
       </PageContainer>
@@ -327,7 +306,7 @@ const BottomContentContainer = styled.div`
     -webkit-box-orient: vertical;
     font-size: 3rem;
     font-weight: 600;
-    color : rgb(88, 85, 133, 0.5)
+    color: rgb(88, 85, 133, 0.5);
   }
 `;
 const GroupInfoBox = styled.div`
@@ -362,6 +341,9 @@ const GroupInfoTextBox = styled.div`
   align-items: flex-start;
   gap: 3rem;
 
+  input {
+    ${InputStyle}
+  }
 `;
 
 const GroupInfoText = styled.div`
