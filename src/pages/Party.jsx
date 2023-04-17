@@ -18,7 +18,7 @@ import Chat from "../components/global/Chat";
 import FloatingMenu from "../components/party/FloatingMenu";
 import EditReady from "../components/edit/EditReady";
 import { editReadyState } from "../store/atom";
-import { useRecoilState, useResetRecoilState } from "recoil";
+import { useRecoilState } from "recoil";
 
 const EmptyText = (props) => {
   return (

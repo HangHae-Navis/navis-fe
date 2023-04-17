@@ -15,6 +15,7 @@ import { partyInfoState, partyRegistModalState } from "../../store/atom";
 import { InputStyle } from "../../utils/style/mixins";
 import { toast } from "react-toastify";
 import imageCompression from "browser-image-compression";
+import { groupNameRule, groupSubRule } from "../../constants/validate";
 
 const PartyRegist = () => {
   const navi = useNavigate();
@@ -61,6 +62,11 @@ const PartyRegist = () => {
       resetRecoInfo();
       resetRecoModal();
       navi(`/party/${data.data}`);
+    },
+    onError: () => {
+      toast.error("코드가 유효하지 않습니다", {
+        toastId: "postError",
+      });
     },
   });
 
@@ -188,11 +194,6 @@ const PartyRegist = () => {
                         src={images ? images : Test}
                         alt="이미지를 가져와 주십시오"
                         value={images}
-                        style={{
-                          width: "240px",
-                          height: "200px",
-                          borderRadius: "24px",
-                        }}
                       />
                     </label>
                     <input
@@ -208,7 +209,6 @@ const PartyRegist = () => {
                       </h1>
                     </div>
                   </ImageInputBox>
-
                   <RegistInputContainer>
                     <InputWrapper>
                       <h1 className="infotitle">그룹 이름</h1>
@@ -220,6 +220,8 @@ const PartyRegist = () => {
                         isput={isPut}
                         defaultValue={titleState}
                         width={"35vw"}
+                        rule={groupNameRule}
+                        error={errors?.groupname?.message}
                       />
                     </InputWrapper>
                     <InputWrapper>
@@ -232,6 +234,8 @@ const PartyRegist = () => {
                         isput={isPut}
                         defaultValue={infoState}
                         width={"35vw"}
+                        error={errors?.groupinfo?.message}
+                        rule={groupSubRule}
                       />
                     </InputWrapper>
                   </RegistInputContainer>
@@ -330,11 +334,14 @@ const InputWrapper = styled.section`
     color: #5d5a88;
   }
   input {
-    width: 85% !important;
+    width: 70% !important;
+    @media (max-width: 800px) {
+      font-size: 1.3rem;
+    }
     ${InputStyle}
   }
   .vote {
-    width: 45% !important;
+    width: 55% !important;
   }
   select {
     width: 8rem;
@@ -378,6 +385,9 @@ const TopButtonBox = styled.div`
   align-items: center;
   gap: 5rem;
   position: relative;
+  h1 {
+    font-size: 1.2rem;
+  }
   &::before {
     content: "";
     position: absolute;
@@ -396,6 +406,8 @@ const ImageInputBox = styled.div`
   gap: 1rem;
 
   img {
+    width: 20vw;
+    max-width: 25rem;
     object-fit: cover;
     object-position: center;
   }
@@ -413,17 +425,27 @@ const RegistModalBackGround = styled.div`
   .buttontitle {
     cursor: pointer;
     font-weight: 700;
-    font-size: 2.5rem;
+    font-size: 1.5vw;
     color: #5d5a88;
+    @media (max-width: 850px) {
+      font-size: 1.8em;
+    }
   }
   .buttontitleoff {
     font-weight: 700;
-    font-size: 2.5rem;
+    font-size: 1.5vw;
     color: #9795b5;
+    @media (max-width: 850px) {
+      font-size: 1.8rem;
+    }
   }
   .infotitle {
     font-weight: 700;
-    font-size: 2.4rem;
+    font-size: 1.5vw;
+
+    @media (max-width: 850px) {
+      font-size: 2rem;
+    }
     color: #5d5a88;
   }
   .infocontent {
