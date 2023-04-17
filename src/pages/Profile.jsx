@@ -1,46 +1,30 @@
 import { useMutation, useQuery } from "react-query";
 import styled from "styled-components";
-import PartyRegist from "../components/modal/PartyRegist";
 import Button from "../element/Button";
-import {
-  deletePage,
-  deletePageMembers,
-  getBoardDetailPage,
-  getDetailPage,
-  getDetailPageForAdmin,
-  getPartyBoard,
-  getPartyPage,
-  GetProfile,
-  PutMemberRole,
-  PutProfile,
-  undoDeletePagemembers,
-} from "../utils/api/api";
-import { partyRegistModalState, partyInfoState } from "../store/atom";
-import Skeleton from "react-loading-skeleton";
+import { deletePage, GetProfile, PutProfile } from "../utils/api/api";
 import "react-loading-skeleton/dist/skeleton.css";
 import Test from "./../assets/Image Placeholder.svg";
-import Pagination from "react-js-pagination";
-import { useNavigate, useParams, useSearchParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { FullDateCheck, DayCheck } from "../element/DateCheck";
-import { useSetRecoilState } from "recoil";
-import PartyInfo from "../components/party/PartyInfo";
-import Input from "../element/Input";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
+import Input from "../element/Input";
+import {
+  nicknameRules,
+  passwordRules,
+  userNameRules,
+} from "../constants/validate";
+import { getCookie } from "../utils/infos/cookie";
 
 const GroupList = (props) => {
   const navi = useNavigate();
-
-  
   const deleteGroup = useMutation(deletePage, {
     onSuccess: ({ data }) => {
-      
       toast.success("그룹을 삭제했습니다.");
       props.res.refetch();
     },
   });
-
 
   const doDeletePage = (data) => {
     const res = deleteGroup.mutateAsync(data);
@@ -51,17 +35,25 @@ const GroupList = (props) => {
       <GroupListBox>
         <GroupListTitleBox>
           <h1 className="name">{props.item.groupName} </h1>
+          <GroupListTitleBoxRight>
           <span className="date">{DayCheck(props.item.createdAt)} 생성</span>
-          <span className="date">| 그룹 코드 : {props.item.groupCode}</span>
-          <span className="date">
-            | 멤버 수 : {props.item.groupMemberCount}
-          </span>
+          <span className="date">|</span>
+          <span className="date">그룹 코드 : {props.item.groupCode}</span>
+          <span className="date">|</span>
+          <span className="date">멤버 수 : {props.item.groupMemberCount}</span>
+          </GroupListTitleBoxRight>
         </GroupListTitleBox>
         <GroupButtonBox>
-          <Button onClick={() => navi(`/party/${props.item.groupId}`)}>
+          <Button width={"110px"} onClick={() => navi(`/party/${props.item.groupId}`)}>
             관리하기
           </Button>
-          <Button transparent={true} color="rgb(88, 85, 133)" onClick={()=>doDeletePage(props.item.groupId)}>삭제하기</Button>
+          <Button width={"110px"}
+            transparent={true}
+            color="rgb(88, 85, 133)"
+            onClick={() => doDeletePage(props.item.groupId)}
+          >
+            삭제하기
+          </Button>
         </GroupButtonBox>
       </GroupListBox>
     </>
@@ -71,7 +63,7 @@ const GroupButtonBox = styled.div`
   display: flex;
   flex-direction: row;
   align-items: center;
-  gap: 1rem;
+  gap: 0.5rem;
 `;
 
 const GroupListBox = styled.div`
@@ -82,13 +74,26 @@ const GroupListBox = styled.div`
   justify-content: space-between;
   border-radius: 2rem;
   width: 100%;
+  @media (max-width: 1230px) {
+    flex-direction: column;
+  align-items: flex-start;
+  }
 `;
+
+const GroupListTitleBoxRight = styled.div`
+width: 100%;
+display: flex;
+flex-direction: row;
+justify-content: flex-end;
+align-items: center;
+gap: 0.5rem;
+`
 const GroupListTitleBox = styled.div`
-  width: 75%;
+  width: 100%;
   padding: 2rem;
   display: flex;
   flex-direction: row;
-  justify-content: flex-start;
+  justify-content: space-between;
   align-items: center;
   gap: 0.5rem;
   .name {
@@ -96,13 +101,14 @@ const GroupListTitleBox = styled.div`
     font-weight: 400;
     font-size: 2.2rem;
     color: #5d5a88;
+  }
+  .date {
+    text-align: left;
+    font-weight: 400;
+    font-size: 1.8rem;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-  }
-  .date {
-    font-weight: 400;
-    font-size: 1.8rem;
     color: #9795b5;
   }
 `;
@@ -115,13 +121,29 @@ const Profile = () => {
   const [postImages, setPostImages] = useState(null);
   const [userDate, setUserDate] = useState();
   const [userGroup, setUserGroup] = useState();
-  const { register, formState: errors, handleSubmit } = useForm();
+  const {
+    register,
+    formState: { errors },
+    watch,
+  } = useForm();
   const putProfile = useMutation(PutProfile, {
     onSuccess: ({ data }) => {
       toast.success("변경에 성공했습니다!");
       window.location.reload();
     },
   });
+
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const isUserCookie = getCookie("token");
+    if (isUserCookie === undefined) {
+      navigate("/");
+      toast.error("로그인이 다시 필요합니다.", {
+        toastId: "rollback",
+      });
+    }
+  }, []);
 
   const ImageHandler = (event) => {
     const file = event.target.files[0];
@@ -147,20 +169,20 @@ const Profile = () => {
     },
   });
 
-  const PostProfile = async (data) => {
+  const PostProfile = async () => {
     const postRequest = new FormData();
+    console.log(watch().password);
     if (postImages != null) {
       postRequest.append("profileImage", postImages);
     }
-    if (data.nick != null) {
-      postRequest.append("nickname", data.nick);
+    if (watch().nick !== userNick) {
+      postRequest.append("nickname", watch().nick);
+    } else {
+      postRequest.append("nickname", userNick);
     }
-    if (data.password != null) {
-      postRequest.append("password", data.password);
+    if (watch().password !== null) {
+      postRequest.append("password", watch().password);
     }
-    /*for (const [key, value] of postRequest.entries()) {
-      console.log(key, value);
-    }*/
     const res = putProfile.mutateAsync(postRequest);
   };
 
@@ -179,7 +201,7 @@ const Profile = () => {
               </Button>
             ) : (
               <>
-                <Button onClick={handleSubmit(PostProfile)}>수정완료</Button>
+                <Button onClick={() => PostProfile()}>수정완료</Button>
                 <Button onClick={() => setIsPut(!isPut)}>수정취소</Button>
               </>
             )}
@@ -217,17 +239,15 @@ const Profile = () => {
                 <>
                   <ImageTextBox>
                     <label htmlFor="file-upload">
-                      <GroupInfoImage
-                        src={userImg != null ? userImg : Test}
-                      />
+                      <GroupInfoImage src={userImg != null ? userImg : Test} />
                     </label>
                     <h1 className="inputcontent">
                       이미지를 클릭하여 <br />
                       프로필 이미지를 바꾸세요
                     </h1>
                   </ImageTextBox>
+                    <form onSubmit={PostProfile}>
                   <GroupInfoTextBox>
-                    <form onSubmit={handleSubmit(PostProfile)}>
                       <input
                         id="file-upload"
                         type="file"
@@ -240,7 +260,9 @@ const Profile = () => {
                         <p className="infocontent">{userName}</p>
                       </GroupInfoText>
                       <GroupInfoText>
-                        <h1 className="infotitle">닉네임&nbsp;&nbsp;&nbsp;&nbsp;</h1>
+                        <h1 className="infotitle">
+                          닉네임&nbsp;&nbsp;&nbsp;&nbsp;
+                        </h1>
                         <Input
                           placeholder="변경할 닉네임을 입력하세요."
                           register={register}
@@ -248,7 +270,8 @@ const Profile = () => {
                           type="text"
                           isput={isPut}
                           defaultValue={userNick}
-                          width={"20vw"}
+                          width={"18vw"}
+                          rule={nicknameRules}
                         />
                       </GroupInfoText>
                       <GroupInfoText>
@@ -259,11 +282,12 @@ const Profile = () => {
                           name="password"
                           type="text"
                           isput={isPut}
-                          width={"20vw"}
+                          width={"18vw"}
+                          rule={passwordRules}
                         />
                       </GroupInfoText>
-                    </form>
                   </GroupInfoTextBox>
+                    </form>
                 </>
               )}
             </GroupInfoBox>
@@ -272,12 +296,15 @@ const Profile = () => {
             <h1 className="title">보유 중인 그룹</h1>
           </GroupTitleBox>
           <BottomContentContainer>
-            {userGroup?.length != 0
-            ?userGroup?.map((item) => {
-              return <GroupList key={item.groupId} item={item} res = {getInfo} />;
-            })
-            : <h1>보유 중인 그룹이 없습니다</h1>
-            }
+            {userGroup?.length !== 0 ? (
+              userGroup?.map((item) => {
+                return (
+                  <GroupList key={item.groupId} item={item} res={getInfo} />
+                );
+              })
+            ) : (
+              <h1>보유 중인 그룹이 없습니다</h1>
+            )}
           </BottomContentContainer>
         </RightTotalContainer>
       </PageContainer>
@@ -291,6 +318,7 @@ const ImageTextBox = styled.div`
   display: flex;
   flex-direction: column;
   align-items: flex-start;
+  justify-content: flex-start;
 `;
 
 const GroupTitleBox = styled.div`
@@ -302,7 +330,7 @@ const GroupTitleBox = styled.div`
 `;
 
 const TopContentContainer = styled.div`
-  width: 100%;
+  width: 60vw;
   height: 100%;
   border-radius: 4rem;
   border: 0.1rem solid #d4d2e3;
@@ -327,7 +355,7 @@ const BottomContentContainer = styled.div`
     -webkit-box-orient: vertical;
     font-size: 3rem;
     font-weight: 600;
-    color : rgb(88, 85, 133, 0.5)
+    color: rgb(88, 85, 133, 0.5);
   }
 `;
 const GroupInfoBox = styled.div`
@@ -341,8 +369,10 @@ const GroupInfoBox = styled.div`
 `;
 const GroupInfoImage = styled.img`
   border-radius: 2rem;
-  width: 18rem;
-  height: 18rem;
+  width: 100%;
+  height: 100%;
+  max-width: 18rem;
+  max-height: 18rem;
   object-fit: cover;
 `;
 
@@ -360,12 +390,13 @@ const GroupInfoTextBox = styled.div`
   display: flex;
   flex-direction: column;
   align-items: flex-start;
+  width: 20vw;
   gap: 3rem;
-
 `;
 
 const GroupInfoText = styled.div`
   display: flex;
+  width: 30vw;
   flex-direction: row;
   align-items: center;
   gap: 2rem;
@@ -385,6 +416,9 @@ const PageContainer = styled.div`
     font-weight: 700;
     font-size: 3.2rem;
     color: #5d5a88;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
   .infotitle {
     font-weight: 700;
@@ -394,6 +428,9 @@ const PageContainer = styled.div`
   .infocontent {
     font-weight: 400;
     font-size: 2.4rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
     color: #9795b5;
   }
   .inputcontent {

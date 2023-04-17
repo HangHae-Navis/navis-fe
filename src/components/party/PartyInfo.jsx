@@ -110,7 +110,7 @@ const PartyInfoWrapper = styled.section`
   gap: 0.3rem;
   position: fixed;
   top: 17rem;
-  left: 6vw;
+  left: 4vw;
 
   .code {
     cursor: pointer;
