@@ -75,5 +75,4 @@ const FloatingButtonsList = styled.ul`
   padding: 1rem;
   min-height: 5rem;
   border-radius: 2rem;
-  background: #ffffff;
 `;

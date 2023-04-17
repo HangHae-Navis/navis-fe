@@ -14,10 +14,15 @@ import { useRecoilState, useResetRecoilState } from "recoil";
 import { partyInfoState, partyRegistModalState } from "../../store/atom";
 import { InputStyle } from "../../utils/style/mixins";
 import { toast } from "react-toastify";
+import imageCompression from "browser-image-compression";
 
 const PartyRegist = () => {
   const navi = useNavigate();
-  const { register, formState: errors, handleSubmit } = useForm();
+  const {
+    register,
+    formState: { errors },
+    handleSubmit,
+  } = useForm();
   const [images, setImages] = useState(Test);
   const [postImages, setPostImages] = useState(null);
   const [titleState, setTitleState] = useState(null);
@@ -74,15 +79,21 @@ const PartyRegist = () => {
     }
   };
 
-  const ImageHandler = (event) => {
+  const ImageHandler = async (event) => {
+    const options = {
+      maxSizeMB: 20,
+      maxWidthOrHeight: 100,
+    };
     const file = event.target.files[0];
+    const compressedFile = await imageCompression(file, options);
+    console.log(file, compressedFile);
     const reader = new FileReader();
     reader.onloadend = () => {
       setImages(reader.result);
     };
-    setPostImages(file);
-    if (file != null) {
-      reader.readAsDataURL(file);
+    setPostImages(compressedFile);
+    if (compressedFile != null) {
+      reader.readAsDataURL(compressedFile);
     } else {
       setImages(Test);
       setPostImages(null);
@@ -100,15 +111,13 @@ const PartyRegist = () => {
     if (postImages != null) {
       postRequest.append("groupImage", postImages);
     }
-    if (currentPage == "/main") {
+    if (currentPage === "/main") {
       const res = await postgroup.mutateAsync(postRequest);
     } else {
       //const url = "/party/44/admin";
       const url = currentPage;
       const regex = /\/party\/(\d+)\/admin/; // 정규식
-
       const match = url.match(regex); // 문자열과 정규식을 비교하여 매치되는 부분 추출
-
       const partyId = match[1]; // 매치된 부분 중 첫 번째 괄호 안에 있는 숫자 추출
       const payload = {
         ID: partyId,
@@ -131,9 +140,9 @@ const PartyRegist = () => {
         exit="exit"
       >
         <TopButtonBox>
-          {currentPage == "/main" ? (
+          {currentPage === "/main" ? (
             <>
-              {modalChange == true ? (
+              {modalChange === true ? (
                 <h1
                   className="buttontitle"
                   onClick={() => setModalChange(true)}
@@ -149,7 +158,7 @@ const PartyRegist = () => {
                 </h1>
               )}
 
-              {modalChange == false ? (
+              {modalChange === false ? (
                 <h1
                   className="buttontitle"
                   onClick={() => setModalChange(false)}
@@ -189,7 +198,7 @@ const PartyRegist = () => {
                     <input
                       id="file-upload"
                       type="file"
-                      accept="image/jpeg, image/png"
+                      accept="image/*"
                       onChange={ImageHandler}
                       style={{ display: "none" }}
                     ></input>
@@ -227,10 +236,14 @@ const PartyRegist = () => {
                     </InputWrapper>
                   </RegistInputContainer>
                 </ModalContentBox>
-                {currentPage == "/main" ? (
+                {currentPage === "/main" ? (
                   <ModalButtonBox>
                     <Button>그룹 생성하기</Button>
-                    <Button transparent={true} color="rgb(88, 85, 133)" onClick={ModalClose}>
+                    <Button
+                      transparent={true}
+                      color="rgb(88, 85, 133)"
+                      onClick={ModalClose}
+                    >
                       취소하기
                     </Button>
                   </ModalButtonBox>

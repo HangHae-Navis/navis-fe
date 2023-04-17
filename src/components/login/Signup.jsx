@@ -10,9 +10,15 @@ import {
   postSignUp,
 } from "../../utils/api/api";
 import { toast } from "react-toastify";
+import { passwordRules, userNameRules } from "../../constants/validate";
 
 const Signup = ({ setisSignin }) => {
-  const { register, handleSubmit, formState: errors, watch } = useForm();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    watch,
+  } = useForm();
   const [verify, setVerify] = useState(false);
   const [emailConfirm, setEmailConfirm] = useState(false);
 
@@ -29,32 +35,42 @@ const Signup = ({ setisSignin }) => {
   const emailConfirmMutation = useMutation(postEmailConfirm, {
     onSuccess: ({ data }) => {
       setEmailConfirm(true);
-      toast.success("이메일에서 인증 코드를 확인해주세요.");
+      toast.success("이메일에서 인증 코드를 확인해주세요.", {
+        toastId: "emailSuccess",
+      });
     },
     onError: (error) => {
-      console.log(error);
-      toast.success("인증을 보내는데 실패했습니다.");
+      toast.success("인증 메일을 보내는데 실패했습니다.", {
+        toastId: "emailError",
+      });
     },
   });
 
   const verifyMutation = useMutation(getEmailVerify, {
     onSuccess: ({ data }) => {
       setVerify(true);
-      toast.success("인증에 성공했습니다.");
+      toast.success("인증에 성공했습니다.", {
+        toastId: "verifySuccess",
+      });
     },
     onError: ({ error }) => {
-      console.log(error);
-      toast.success("인증에 실패했습니다.");
+      toast.success("인증에 실패했습니다.", {
+        toastId: "verifyFail",
+      });
     },
   });
 
   const signupMutation = useMutation(postSignUp, {
     onSuccess: ({ data }) => {
       setisSignin(true);
+      toast.success("회원가입에 성공했습니다, 로그인 해주세요.", {
+        toastId: "signupSuccess",
+      });
     },
     onError: (error) => {
-      alert("에러");
-      console.log(error);
+      toast.error("오류가 발생했습니다.", {
+        toastId: "signupError",
+      });
     },
   });
 
@@ -87,6 +103,8 @@ const Signup = ({ setisSignin }) => {
             register={register}
             name="username"
             width={"50rem"}
+            error={errors?.username?.message}
+            rule={userNameRules}
           />
           <Button onClick={onEmailConfirm} width={"8rem"} height={"3rem"}>
             인증
@@ -101,6 +119,7 @@ const Signup = ({ setisSignin }) => {
               label="인증번호"
               placeholder="인증번호를 입력하세요."
               width={"50rem"}
+              error={errors?.username?.message}
             />
             <Button onClick={onVerify} width={"8rem"} height={"3rem"}>
               확인
@@ -115,6 +134,7 @@ const Signup = ({ setisSignin }) => {
             register={register}
             name="password"
             width={"50rem"}
+            rule={passwordRules}
           />
         </InputWrapper>
         <InputWrapper>
@@ -124,6 +144,7 @@ const Signup = ({ setisSignin }) => {
             placeholder="비밀번호 확인을 입력하세요."
             register={register}
             name="passwordConfirm"
+            rule={passwordRules}
             full={true}
             width={"50rem"}
           />

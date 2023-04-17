@@ -13,6 +13,7 @@ import { flexCenter } from "../../utils/style/mixins";
 import Kakao from "../../assets/kakao.webp";
 import { setLocalStorage } from "../../utils/infos/localStorage";
 import { toast } from "react-toastify";
+import { passwordRules, userNameRules } from "../../constants/validate";
 
 const Signin = ({ setisSignin }) => {
   const navigate = useNavigate();
@@ -66,6 +67,7 @@ const Signin = ({ setisSignin }) => {
           label="이메일 주소"
           width={"47rem"}
           error={errors?.username?.message}
+          rule={userNameRules}
         />
         <Input
           placeholder="비밀번호를 입력하세요."
@@ -75,6 +77,7 @@ const Signin = ({ setisSignin }) => {
           label="비밀번호"
           width={"47rem"}
           error={errors?.password?.message}
+          rule={passwordRules}
         />
         <ButtonBox>
           <Button
