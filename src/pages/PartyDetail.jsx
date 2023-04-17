@@ -42,41 +42,35 @@ function PartyDetail() {
   const [isAdmin, setIsAdmin] = useState();
   const [postInfo, setPostInfo] = useState({});
   const [voteMax, setVoteMax] = useState("");
-  const [whereToVoted, setWhereToVoted] = useState();
-  const [voteContent, setVoteContent] = useState([]);
-  const [homeWorkInputFile, setHomeWorkInputFile] = useState([]);
 
   const [database, setDatabase] = useState();
+  const [databaseList_0, setDatabaseList_0] = useState();
+  const [databaseList_1, setDatabaseList_1] = useState();
+  const [submitAgain, setSubmitAgain] = useState(false);
 
   //투표에서 사용하는 스테이트
-  //공백 :  setWhereToVoted,
+  //공백 :  setDatabase,
   //공백배열 : setVoteContent, 
   //공백 문자열 : setVoteMax
 
   //과제에서 사용하는 스테이트
   //공백 :  setHomeWorkPostedFileList,
-  //공백배열 : setHomeWorkSubmmiter, setHomeWorkUnSubmmiter
+  //공백배열 : 
   //공백 문자열 : 
 
   //설문에서 사용하는 스테이트
-  //공백 :  setSurveyDTO,
-  //공백배열 : setVoteContent, 
+  //공백 :  setDatabase,
+  //공백배열 : , 
   //공백 문자열 : 
   //공백 bool : setSubmitSurvey,
   
-  //이거 2개 객체화 가능?
-  const [homeWorkSubmmiter, setHomeWorkSubmmiter] = useState([]);
-  const [homeWorkUnSubmmiter, setHomeWorkUnSubmmiter] = useState([]);
-
+  const [homeWorkInputFile, setHomeWorkInputFile] = useState([]);
   const [homeWorkInputFileList, setHomeWorkInputFileList] = useState([]);
   const [homeWorkPostedFileList, setHomeWorkPostedFileList] = useState([]);
-  const [questionList, setQuestionList] = useState([]);
   const [voteSelectedOption, setVoteSelectedOption] = useState();
-  const [submitAgain, setSubmitAgain] = useState(false);
   const [submitSurvey, setSubmitSurvey] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [courrentModalContent, setCourrentModalContent] = useState();
-  const [surveyDTO, setSurveyDTO] = useState();
 
   const token = getCookie("token");
   const storedData = JSON.parse(localStorage.getItem("userInfo"));
@@ -117,8 +111,7 @@ function PartyDetail() {
         switch (dtype) {
           case "vote":
             let maxVal = 0;
-            setVoteContent(data.data.optionList);
-            setWhereToVoted(data.data.myPick);
+            setDatabase(data.data.myPick);
             for (let i = 0; i < data.data.optionList.length; i++) {
               maxVal += data.data.optionList[i].count;
             }
@@ -128,15 +121,10 @@ function PartyDetail() {
             if (data.data.submitResponseDto != null) {
               setHomeWorkPostedFileList(data.data.submitResponseDto.fileList);
             }
-            if (data.data.role == "ADMIN" || data.data.role == "SUPPORT") {
-              setHomeWorkSubmmiter(data.data.submitMember);
-              setHomeWorkUnSubmmiter(data.data.notSubmitMember);
-            }
             break;
           case "survey":
-            setQuestionList(data.data.questionResponseDto);
             setSubmitSurvey(data.data.submit);
-            setSurveyDTO(data.data);
+            setDatabase(data.data);
             break;
 
           default:
@@ -228,7 +216,7 @@ function PartyDetail() {
         voteId: detailId,
         voteOption: voteSelectedOption,
       };
-      setWhereToVoted(voteSelectedOption);
+      setDatabase(voteSelectedOption);
       setVoteMax(voteMax + 1);
       const res = postvote.mutateAsync(payload);
     } else toast.success("선택지를 골라야 합니다.");
@@ -239,7 +227,7 @@ function PartyDetail() {
   };
 
   const doDeleteVote = (data) => {
-    setWhereToVoted(-1);
+    setDatabase(-1);
     setVoteMax(voteMax - 1);
     const res = deleteVote.mutateAsync(data);
   };
@@ -383,10 +371,10 @@ function PartyDetail() {
           />
           {/*투표 여부를 판단, 투표지가 있을 경우 투표 관련 컴포넌트 랜더링*/}
           {dtype == "vote" ? (
-            whereToVoted == -1 && now < new Date(res?.data.data.data.expirationTime).getTime() ? (
+            database == -1 && now < new Date(res?.data.data.data.expirationTime).getTime() ? (
               <VoteContentContainer>
                 <h1 className="smallname">마감시간 : {FullDateCheck(res?.data.data.data.expirationTime)}</h1>
-                {voteContent?.map((item) => (
+                {res?.data.data.data.optionList?.map((item) => (
                   <label key={item.optionId}>
                     <VoteContainer>
                       <input
@@ -405,7 +393,7 @@ function PartyDetail() {
                   <Button onClick={OnVotePost}>투표하기</Button>
                   <Button
                     transparent={true}
-                    onClick={() => setWhereToVoted(-2)}
+                    onClick={() => setDatabase(-2)}
                     color="rgb(88, 85, 133)"
                   >
                     결과보기
@@ -415,7 +403,7 @@ function PartyDetail() {
             ) : (
               <VoteContentContainer>
                 <h1 className="smallname">마감시간 : {FullDateCheck(res?.data.data.data.expirationTime)}</h1>
-                {voteContent?.map((item) => (
+                {res?.data.data.data.optionList?.map((item) => (
                   <SlideChart
                     key={item.optionId}
                     option={item.option}
@@ -424,15 +412,15 @@ function PartyDetail() {
                   ></SlideChart>
                 ))}
                 <VoteButtonBox>
-                  {whereToVoted == -2 ? (
+                  {database == -2 ? (
                     <Button
                       transparent={true}
-                      onClick={() => setWhereToVoted(-1)}
+                      onClick={() => setDatabase(-1)}
                       color="rgb(88, 85, 133)"
                     >
                       투표하기
                     </Button>
-                  ) : now < new Date(res?.data.data.expirationTime).getTime() ? (
+                  ) : now < new Date(res?.data.data.data.expirationTime).getTime() ? (
                     <Button
                       transparent={true}
                       onClick={() =>
@@ -493,7 +481,7 @@ function PartyDetail() {
                           {FullDateCheck(res?.data?.data?.data?.submitResponseDto.createdAt)}{" "}{res?.data?.data?.data?.submitResponseDto.late == true ? "제출(지각)" : "제출"}{" "}
                         </h1>
                       </PostedHomeWorkFileBox>
-                      {homeWorkPostedFileList?.map((item) => (
+                      {res?.data.data.data.submitResponseDto.fileListmap((item) => (
                         <a key={item} href={`${item.fileUrl}?download=true`} className="filename"> {" "} {item.fileName}</a>
                       ))}
                     </HomeworkContentContainer>
@@ -517,7 +505,7 @@ function PartyDetail() {
               : (<><PostedHomeWorkFileBox>
                   <HomeworkContentContainer width="80vw">
                     <h1 className="name">제출완료</h1>
-                    {homeWorkSubmmiter.map((item) => (
+                    {res?.data.data.data.submitMember.map((item) => (
                       <SubmitterContainer key={item.id}>
                         <h1 className="smallname">{item.nickname}</h1>
                         <SubmitterBox>
@@ -528,7 +516,7 @@ function PartyDetail() {
                   </HomeworkContentContainer>
                   <HomeworkContentContainer borderColor="#CF5C4C">
                     <h1 className="name">미제출자</h1>
-                    {homeWorkUnSubmmiter.map((item) => (
+                    {res?.data.data.data.notSubmitMember.map((item) => (
                       <SubmitterContainer key={item.id}>
                         <h1 className="smallname">{item.nickname}</h1>
                       </SubmitterContainer>))}
@@ -537,7 +525,7 @@ function PartyDetail() {
               : null}
           {/*설문 여부를 판단, 어드민(서포터)일 경우 별도 랜더링*/}
           {dtype == "survey"
-            ? (<Survey role={res?.data?.data?.data?.role} submit={submitSurvey} res={res} res0={surveyDTO} groupId={groupId} detailId={detailId} list={questionList} />)
+            ? (<Survey role={res?.data?.data?.data?.role} submit={submitSurvey} res={res} res0={database} groupId={groupId} detailId={detailId} list={res?.data.data.data.questionResponseDto} />)
             : null}
         </ContentsWrapper>
         <Commentcontainer>
