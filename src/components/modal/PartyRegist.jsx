@@ -63,6 +63,11 @@ const PartyRegist = () => {
       resetRecoModal();
       navi(`/party/${data.data}`);
     },
+    onError: () => {
+      toast.error("코드가 유효하지 않습니다", {
+        toastId: "postError",
+      });
+    },
   });
 
   useEffect(() => {
@@ -216,6 +221,7 @@ const PartyRegist = () => {
                         defaultValue={titleState}
                         width={"35vw"}
                         rule={groupNameRule}
+                        error={errors?.groupname?.message}
                       />
                     </InputWrapper>
                     <InputWrapper>
@@ -228,6 +234,7 @@ const PartyRegist = () => {
                         isput={isPut}
                         defaultValue={infoState}
                         width={"35vw"}
+                        error={errors?.groupinfo?.message}
                         rule={groupSubRule}
                       />
                     </InputWrapper>
