@@ -79,15 +79,21 @@ const PartyRegist = () => {
     }
   };
 
-  const ImageHandler = (event) => {
+  const ImageHandler = async (event) => {
+    const options = {
+      maxSizeMB: 20,
+      maxWidthOrHeight: 100,
+    };
     const file = event.target.files[0];
+    const compressedFile = await imageCompression(file, options);
+    console.log(file, compressedFile);
     const reader = new FileReader();
     reader.onloadend = () => {
       setImages(reader.result);
     };
-    setPostImages(file);
-    if (file != null) {
-      reader.readAsDataURL(file);
+    setPostImages(compressedFile);
+    if (compressedFile != null) {
+      reader.readAsDataURL(compressedFile);
     } else {
       setImages(Test);
       setPostImages(null);
@@ -192,7 +198,7 @@ const PartyRegist = () => {
                     <input
                       id="file-upload"
                       type="file"
-                      accept="image/jpeg, image/png"
+                      accept="image/*"
                       onChange={ImageHandler}
                       style={{ display: "none" }}
                     ></input>
