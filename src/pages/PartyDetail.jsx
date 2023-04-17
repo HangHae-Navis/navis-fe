@@ -1,23 +1,13 @@
 import { useMutation, useQuery, useQueryClient } from "react-query";
 import styled from "styled-components";
-import {
-  deleteHomeWorkData,
-  deletePageMembers,
-  DeleteVoteDetail,
-  getBoardDetailPage,
-  getCommentPage,
-  postComment,
-  postFeedback,
-  postHomeWorkData,
-  postHomeworkDetail,
-  PostVoteDetail,
-  putHomeWorkData,
+import {deleteHomeWorkData,deletePageMembers,DeleteVoteDetail,getBoardDetailPage,getCommentPage,postComment,postFeedback,postHomeWorkData,postHomeworkDetail,PostVoteDetail,putHomeWorkData,
 } from "../utils/api/api";
 import "react-loading-skeleton/dist/skeleton.css";
 import EditReady from "../components/edit/EditReady";
 import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import PartyInfo from "../components/party/PartyInfo";
+import SlideChart from "../components/party/SlideChart";
 import { flexCenter } from "../utils/style/mixins";
 import { ReactMarkdown } from "react-markdown/lib/react-markdown";
 import SyntaxHighlighter from "react-syntax-highlighter/dist/esm/default-highlight";
@@ -41,121 +31,26 @@ import Survey from "../components/party/Survey";
 import { useRecoilState } from "recoil";
 import { editReadyState } from "../store/atom";
 
-export const SlideChart = (props) => {
-  const value = props.voteMax == 0 ? 0 : props.count / props.voteMax;
-  return (
-    <ChartContainer>
-      <BarText>
-        <h1 className="votename">{props.option}</h1>
-        <h1 className="votename">{props.count}</h1>
-      </BarText>
-      <Bar width={value * 100}></Bar>
-    </ChartContainer>
-  );
-};
-
-const ChartContainer = styled.div`
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
-  text-align: center;
-  height: 3rem;
-  width: 30vw;
-  max-width: 100%;
-  border: 0.1rem solid #d4d2e3;
-  border-radius: 1.7rem;
-
-  .votename {
-    font-weight: 400;
-    font-size: 1.6rem;
-    color: black;
-    white-space: nowrap;
-  }
-`;
-
-const BarText = styled.div`
-  position: absolute;
-  width: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  text-align: center;
-  padding-left: 1rem;
-  padding-right: 1rem;
-`;
-
-const Bar = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  text-align: center;
-  border-radius: 1.7rem;
-  padding-left: 1rem;
-  padding-right: 1rem;
-  width: ${(props) => props.width}%;
-  height: 100%;
-  background-color: #d4d2e3;
-  ${(props) =>
-    props.width == "0" &&
-    `
-    background-color: rgba(212, 210, 227, 0);
-  `}
-`;
-
-const InputComp = (props) => {
-  return (
-    <InputContainer>
-      <input
-        type="file"
-      ></input>
-      <section>X</section>
-    </InputContainer>
-  );
-};
-
-const StyledInput = styled.input`
-  /* 스타일을 정의합니다. */
-  border: none;
-  padding: 10px;
-  background-color: transparent;
-  color: #333;
-  font-size: 16px;
-  border-radius: 4px;
-  cursor: pointer;
-
-  /* :hover 상태일 때 스타일을 정의합니다. */
-  &:hover {
-    background-color: #d4d2e3;
-  }
-`;
-
-const InputContainer = styled.div`
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: space-between;
-`;
-
 function PartyDetail() {
   const [searchParams, setSearchParams] = useSearchParams();
-  const [commentList, setCommentList] = useState();
-  const [isAdmin, setIsAdmin] = useState();
   const navi = useNavigate();
-  const [postInfo, setPostInfo] = useState({});
   const myUserName = JSON.parse(getLocalStorage("userInfo")).nickname;
+  const [isOpen, setIsOpen] = useRecoilState(editReadyState);
+  const { register, formState: errors, handleSubmit } = useForm();
+  const [commentList, setCommentList] = useState();
   const [comment, setComment] = useState("");
+  const [isAdmin, setIsAdmin] = useState();
+  const [postInfo, setPostInfo] = useState({});
   const [expirationTime, setexpirationTime] = useState("");
   const [expirationTimeOrigin, setexpirationTimeOrigin] = useState("");
   const [voteMax, setVoteMax] = useState("");
   const [whereToVoted, setWhereToVoted] = useState();
   const [voteContent, setVoteContent] = useState([]);
-  const [isOpen, setIsOpen] = useRecoilState(editReadyState);
-  //링크 추가는 없으니 삭제해도 됨
-  const [homeWorkInputLink, setHomeWorkInputLink] = useState([]);
   const [homeWorkInputFile, setHomeWorkInputFile] = useState([]);
+  //이거 2개 객체화 가능?
   const [homeWorkSubmmiter, setHomeWorkSubmmiter] = useState([]);
   const [homeWorkUnSubmmiter, setHomeWorkUnSubmmiter] = useState([]);
+
   const [homeWorkInputFileList, setHomeWorkInputFileList] = useState([]);
   const [homeWorkPostedFileList, setHomeWorkPostedFileList] = useState([]);
   const [questionList, setQuestionList] = useState([]);
@@ -164,8 +59,6 @@ function PartyDetail() {
   const [submitSurvey, setSubmitSurvey] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [courrentModalContent, setCourrentModalContent] = useState();
-  const { register, formState: errors, handleSubmit } = useForm();
-  const [surveyInputValues, setSurveyInputValues] = useState([]);
   const [surveyDTO, setSurveyDTO] = useState();
 
   const token = getCookie("token");
@@ -226,7 +119,6 @@ function PartyDetail() {
               setHomeWorkSubmmiter(data.data.submitMember);
               setHomeWorkUnSubmmiter(data.data.notSubmitMember);
             }
-            // do something
             break;
           case "survey":
             setQuestionList(data.data.questionResponseDto);
@@ -340,19 +232,7 @@ function PartyDetail() {
   };
 
   const addInput = (data) => {
-    if (data == "link") {
-      if (homeWorkInputLink.length < 5) {
-        const lastVal =
-          homeWorkInputLink.length > 0
-            ? homeWorkInputLink[homeWorkInputLink.length - 1].id
-            : 0;
-        setHomeWorkInputLink((homeWorkInputLink) => [
-          ...homeWorkInputLink,
-          { id: lastVal + 1, type: data },
-        ]);
-      } else toast.success("최대 업로드 가능 갯수는 5개 입니다");
-    } else if (data == "file") {
-      if (homeWorkInputFile.length < 5) {
+    if (homeWorkInputFile.length < 5) {
         const lastVal =
           homeWorkInputFile.length > 0
             ? homeWorkInputFile[homeWorkInputFile.length - 1].id
@@ -362,7 +242,6 @@ function PartyDetail() {
           { id: lastVal + 1, type: data },
         ]);
       } else toast.success("최대 업로드 가능 갯수는 5개 입니다");
-    }
   };
 
   const FileHandler = (event) => {
@@ -485,7 +364,7 @@ function PartyDetail() {
             }}
           />
           {/*투표 여부를 판단, 투표지가 있을 경우 투표 관련 컴포넌트 랜더링*/}
-          {whereToVoted != null ? (
+          {dtype =="vote" ? (
             whereToVoted == -1 && now < expirationTimeOrigin ? (
               <VoteContentContainer>
                 <h1 className="smallname">마감시간 : {expirationTime}</h1>
@@ -555,7 +434,6 @@ function PartyDetail() {
               </VoteContentContainer>
             )
           ) : null}
-
           {/*과제 여부를 판단, 제출한 과제가 없을 경우 과제 관련 컴포넌트 랜더링*/}
           {dtype == "homework" ? (
             (res?.data?.data?.data?.role == "USER" &&
@@ -696,9 +574,6 @@ function PartyDetail() {
                           /*여기다 피드백 대기 중 혹은 반려됨 혹은 받은 피드백 적어놓기 */
                         }
 
-                        {homeWorkInputLink.map((item) => (
-                          <InputComp key={item.id} type={item.type}></InputComp>
-                        ))}
                       </HomeworkContentContainer>
                     }
                   </HomeWorkSubmitButtonBox>
@@ -803,6 +678,26 @@ function PartyDetail() {
     </>
   );
 }
+
+const StyledInput = styled.input`
+  border: none;
+  padding: 10px;
+  background-color: transparent;
+  color: #333;
+  font-size: 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  &:hover {
+    background-color: #d4d2e3;
+  }
+`;
+
+const InputContainer = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+`;
 
 const SubmiterButton = styled.button`
   width: 8rem;

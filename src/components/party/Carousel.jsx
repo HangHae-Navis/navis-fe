@@ -62,14 +62,10 @@ const BottomInfoWrapper = styled.section`
 `;
 
 const CarouselItem = styled.div`
-  width: 95%;
+  width: 100%;
   height: 15rem;
   border-radius: 1rem;
   background-color: #ffffff;
-
-  @media (max-width: 600px) {
-    width: 98%;
-  }
 `;
 
 const BoardBoxTitleBox = styled.div`
