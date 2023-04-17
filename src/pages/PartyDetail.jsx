@@ -63,9 +63,7 @@ function PartyDetail() {
   const storedData = JSON.parse(localStorage.getItem("userInfo"));
   const profileImage =
     token != null
-      ? storedData.profileImage == null
-        ? profile
-        : storedData.profileImage
+      ? storedData.profileImage == null ? profile : storedData.profileImage
       : profile;
 
   useEffect(() => {
@@ -184,7 +182,11 @@ function PartyDetail() {
   });
 
   const onPost = async (data) => {
+<<<<<<< HEAD
     const payload = { groupId, detailId, comment: data };
+=======
+    const payload = {groupId, detailId, comment: data,};
+>>>>>>> 4e566fa (Fix : 안쓰는 import 정리)
     const res = await post.mutateAsync(payload);
     setComment("");
   };
@@ -214,6 +216,7 @@ function PartyDetail() {
 
   const addInput = (data) => {
     if (homeWorkInputFile.length < 5) {
+<<<<<<< HEAD
       const lastVal =
         homeWorkInputFile.length > 0
           ? homeWorkInputFile[homeWorkInputFile.length - 1].id
@@ -223,6 +226,12 @@ function PartyDetail() {
         { id: lastVal + 1, type: data },
       ]);
     } else toast.success("최대 업로드 가능 갯수는 5개 입니다");
+=======
+        const lastVal = homeWorkInputFile.length > 0 ? homeWorkInputFile[homeWorkInputFile.length - 1].id : 0;
+        setHomeWorkInputFile((homeWorkInputFile) => [...homeWorkInputFile, { id: lastVal + 1, type: data },]);
+      }
+    else toast.success("최대 업로드 가능 갯수는 5개 입니다");
+>>>>>>> 4e566fa (Fix : 안쓰는 import 정리)
   };
 
   const FileHandler = (event) => {

@@ -1,385 +1,1016 @@
-import { useMutation, useQuery } from "react-query";
+import { useMutation, useQuery, useQueryClient } from "react-query";
 import styled from "styled-components";
-import Button from "../element/Button";
-import { deletePage, GetProfile, PutProfile } from "../utils/api/api";
+import {
+  deleteHomeWorkData,
+  deletePageMembers,
+  DeleteVoteDetail,
+  getBoardDetailPage,
+  getCommentPage,
+  postComment,
+  postFeedback,
+  postHomeWorkData,
+  postHomeworkDetail,
+  PostVoteDetail,
+  putHomeWorkData,
+} from "../utils/api/api";
 import "react-loading-skeleton/dist/skeleton.css";
-import Test from "./../assets/Image Placeholder.svg";
-import { useNavigate } from "react-router-dom";
-import { useState } from "react";
-import { FullDateCheck, DayCheck } from "../element/DateCheck";
-import { useForm } from "react-hook-form";
+import EditReady from "../components/edit/EditReady";
+import { useNavigate, useParams, useSearchParams } from "react-router-dom";
+import { useEffect, useState } from "react";
+import PartyInfo from "../components/party/PartyInfo";
+import SlideChart from "../components/party/SlideChart";
+import { ReactMarkdown } from "react-markdown/lib/react-markdown";
+import SyntaxHighlighter from "react-syntax-highlighter/dist/esm/default-highlight";
+import remarkGfm from "remark-gfm";
+import { a11yDark } from "react-syntax-highlighter/dist/esm/styles/prism";
+import MarkdownTitle from "../components/global/MarkdownTitle";
+import { getCookie } from "../utils/infos/cookie";
 import { toast } from "react-toastify";
-import { InputStyle } from "../utils/style/mixins";
+import conver from "../assets/ic24/conversation.svg";
+import profile from "../assets/ic54/profile.svg";
+import { getLocalStorage } from "../utils/infos/localStorage";
+import Comment from "../element/Comment";
+import Button from "../element/Button";
+import { FullDateCheck, ShortCheck } from "../element/DateCheck";
+import { useForm } from "react-hook-form";
+import ShowSubmitFile from "../components/modal/ShowSubmitFile";
+import FloatingMenu from "../components/party/FloatingMenu";
+import Survey from "../components/party/Survey";
+import { useRecoilState } from "recoil";
+import { editReadyState } from "../store/atom";
 
-const GroupList = (props) => {
+function PartyDetail() {
+  const [searchParams, setSearchParams] = useSearchParams();
   const navi = useNavigate();
-  const deleteGroup = useMutation(deletePage, {
+  const myUserName = JSON.parse(getLocalStorage("userInfo")).nickname;
+  const [isOpen, setIsOpen] = useRecoilState(editReadyState);
+  const { register, formState: errors, handleSubmit } = useForm();
+  const [commentList, setCommentList] = useState();
+  const [comment, setComment] = useState("");
+  const [isAdmin, setIsAdmin] = useState();
+  const [postInfo, setPostInfo] = useState({});
+  const [voteMax, setVoteMax] = useState("");
+  const [database, setDatabase] = useState();
+  const [submitAgain, setSubmitAgain] = useState(false);
+  const [homeWorkInputFile, setHomeWorkInputFile] = useState([]);
+  const [homeWorkInputFileList, setHomeWorkInputFileList] = useState([]);
+  const [voteSelectedOption, setVoteSelectedOption] = useState();
+  const [submitSurvey, setSubmitSurvey] = useState(false);
+  const [showModal, setShowModal] = useState(false);
+  const [courrentModalContent, setCourrentModalContent] = useState();
+
+  const token = getCookie("token");
+  const storedData = JSON.parse(localStorage.getItem("userInfo"));
+  const profileImage =
+    token != null
+      ? storedData.profileImage == null
+        ? profile
+        : storedData.profileImage
+      : profile;
+
+  useEffect(() => {
+    const isUserCookie = getCookie("token");
+    if (isUserCookie === undefined) {
+      navi("/");
+      toast.error("로그인 정보가 만료되었습니다.", {
+        toastId: "postDetailLoginErr",
+      });
+    }
+  }, []);
+  const now = new Date().getTime();
+  const pam = useParams();
+  const groupId = searchParams.get("groupId");
+  const detailId = searchParams.get("detailId");
+  const dtype = searchParams.get("dtype");
+  const queryClient = useQueryClient();
+  const groupName = searchParams.get("groupName");
+  const groupInfo = searchParams.get("groupInfo");
+  const groupCode = searchParams.get("groupCode");
+  const res = useQuery(
+    ["partyDetail", { id: pam.id }],
+    () => getBoardDetailPage({ groupId, detailId, dtype }),
+    {
+      onSuccess: ({ data }) => {
+        setPostInfo(data.data);
+        if (data.data.role === "ADMIN") {
+          setIsAdmin(true);
+        }
+        switch (dtype) {
+          case "vote":
+            let maxVal = 0;
+            setDatabase(data.data.myPick);
+            for (let i = 0; i < data.data.optionList.length; i++) {
+              maxVal += data.data.optionList[i].count;
+            }
+            setVoteMax(maxVal);
+            break;
+          case "homework":
+            break;
+          case "survey":
+            setSubmitSurvey(data.data.submit);
+            setDatabase(data.data);
+            break;
+
+          default:
+            break;
+        }
+      },
+    }
+  );
+
+  useEffect(() => {
+    queryClient.invalidateQueries();
+  }, [detailId]);
+  const getComment = useQuery(
+    ["comment", { groupId, boardId: detailId, page: 1, size: 999 }],
+    () => getCommentPage({ groupId, boardId: detailId, page: 1, size: 999 }),
+    {
+      onSuccess: ({ data }) => {
+        setCommentList(data.data.content);
+      },
+    }
+  );
+  const post = useMutation(postComment, {
     onSuccess: ({ data }) => {
-      toast.success("그룹을 삭제했습니다.");
-      props.res.refetch();
+      queryClient.invalidateQueries("comment");
+      toast.success("댓글이 작성되었습니다.");
     },
   });
 
-  const doDeletePage = (data) => {
-    const res = deleteGroup.mutateAsync(data);
+  const putSubjects = useMutation(putHomeWorkData, {
+    onSuccess: ({ data }) => {
+      queryClient.invalidateQueries("comment");
+      toast.success("과제물이 수정되었습니다.");
+      setSubmitAgain(false);
+      queryClient.invalidateQueries();
+    },
+  });
+  const postvote = useMutation(PostVoteDetail, {
+    onSuccess: ({ data }) => {
+      toast.success("투표 성공.");
+      queryClient.invalidateQueries();
+    },
+  });
+
+  const posthomework = useMutation(postHomeWorkData, {
+    onSuccess: ({ data }) => {
+      toast.success("제출 성공.");
+      setSubmitAgain(false);
+      queryClient.invalidateQueries();
+    },
+    onError: (error) => {
+      toast.error("오류 발생.");
+    },
+  });
+
+  const deleteHomework = useMutation(deleteHomeWorkData, {
+    onSuccess: ({ data }) => {
+      toast.success("제출을 취소했습니다.");
+      queryClient.invalidateQueries();
+    },
+  });
+
+  const deleteVote = useMutation(DeleteVoteDetail, {
+    onSuccess: ({ data }) => {
+      queryClient.invalidateQueries();
+      toast.success("투표를 취소했습니다.");
+    },
+  });
+  const deletePartyMember = useMutation(deletePageMembers, {
+    onSuccess: (data) => {
+      window.alert("해당 멤버가 퇴출되었습니다");
+      navi("/");
+    },
+  });
+
+  const onPost = async (data) => {
+    const payload = { groupId, detailId, comment: data };
+    const res = await post.mutateAsync(payload);
+    setComment("");
   };
 
+  const OnVotePost = async () => {
+    if (voteSelectedOption != null) {
+      const payload = {
+        groupId,
+        voteId: detailId,
+        voteOption: voteSelectedOption,
+      };
+      setDatabase(voteSelectedOption);
+      setVoteMax(voteMax + 1);
+      const res = postvote.mutateAsync(payload);
+    } else toast.success("선택지를 골라야 합니다.");
+  };
+
+  const doDeleteHomework = (data) => {
+    const res = deleteHomework.mutateAsync(data);
+  };
+
+  const doDeleteVote = (data) => {
+    setDatabase(-1);
+    setVoteMax(voteMax - 1);
+    const res = deleteVote.mutateAsync(data);
+  };
+
+  const addInput = (data) => {
+    if (homeWorkInputFile.length < 5) {
+      const lastVal =
+        homeWorkInputFile.length > 0
+          ? homeWorkInputFile[homeWorkInputFile.length - 1].id
+          : 0;
+      setHomeWorkInputFile((homeWorkInputFile) => [
+        ...homeWorkInputFile,
+        { id: lastVal + 1, type: data },
+      ]);
+    } else toast.success("최대 업로드 가능 갯수는 5개 입니다");
+  };
+
+  const FileHandler = (event) => {
+    const file = event.target.files[0];
+    setHomeWorkInputFileList((homeWorkInputFileList) => [
+      ...homeWorkInputFileList,
+      file,
+    ]);
+  };
+
+  const deleteInput = (data) => {
+    setHomeWorkInputFile(homeWorkInputFile.filter((item) => item.id != data));
+  };
+
+  const postOrPutHomeWork = async (data) => {
+    const postData = new FormData();
+    const CurrentFile = [];
+    const CurrentFileList = [];
+    for (let i = 0; i < homeWorkInputFile.length; i++) {
+      CurrentFile.push(homeWorkInputFile[i].id - 1);
+    }
+    for (let i = 0; i < CurrentFile.length; i++) {
+      if (homeWorkInputFileList[CurrentFile[i]] != null) {
+        CurrentFileList.push(homeWorkInputFileList[CurrentFile[i]]);
+      }
+    }
+    for (let i = 0; i < CurrentFileList.length; i++) {
+      postData.append("multipartFiles", CurrentFileList[i]);
+    }
+
+    const payload = {
+      groupId,
+      detailId,
+      data: postData,
+    };
+    if (postData.length != 0) {
+      if (submitAgain == false) {
+        const res = posthomework.mutateAsync(payload);
+      } else {
+        const res = putSubjects.mutateAsync(payload);
+      }
+    } else {
+      toast.success("파일이 있어야 합니다.");
+    }
+  };
+
+  const doDelete = (data) => {
+    const res = deletePartyMember.mutateAsync(data);
+  };
+
+  const CheckUpModal = (props) => {
+    setCourrentModalContent(props);
+    setShowModal(!showModal);
+  };
+
+  if (
+    res.isLoading ||
+    res.isError ||
+    getComment.isLoading ||
+    getComment.isError
+  ) {
+    return (
+      <>
+        <PageContainer></PageContainer>
+      </>
+    );
+  }
   return (
     <>
-      <GroupListBox>
-        <GroupListTitleBox>
-          <h1 className="name">{props.item.groupName} </h1>
-          <span className="date">{DayCheck(props.item.createdAt)} 생성</span>
-          <span className="date">| 그룹 코드 : {props.item.groupCode}</span>
-          <span className="date">
-            | 멤버 수 : {props.item.groupMemberCount}
-          </span>
-        </GroupListTitleBox>
-        <GroupButtonBox>
-          <Button onClick={() => navi(`/party/${props.item.groupId}`)}>
-            관리하기
-          </Button>
-          <Button
-            transparent={true}
-            color="rgb(88, 85, 133)"
-            onClick={() => doDeletePage(props.item.groupId)}
-          >
-            삭제하기
-          </Button>
-        </GroupButtonBox>
-      </GroupListBox>
+      {showModal == true ? (
+        <ShowSubmitFile
+          setShowModal={setShowModal}
+          courrentModalContent={courrentModalContent}
+          res={res}
+        ></ShowSubmitFile>
+      ) : null}
+
+      <PartyInfo
+        groupName={groupName}
+        groupInfo={groupInfo}
+        groupCode={groupCode}
+        vote
+        groupId={groupId}
+        isAdmin={isAdmin}
+      />
+      <FloatingMenu
+        props={res?.data?.data?.data?.recentlyViewed}
+        groupId={groupId}
+        groupName={groupName}
+        groupInfo={groupInfo}
+        groupCode={groupCode}
+      ></FloatingMenu>
+      <PageContainer>
+        <ContentsWrapper>
+          <MarkdownTitle
+            postInfo={postInfo}
+            dtype={dtype}
+            role={res?.data?.data?.data?.role}
+            author={res?.data?.data?.data?.author}
+            authorRole={res?.data?.data?.data?.authorRole}
+            groupId={groupId}
+            detailId={detailId}
+          />
+          <ReactMarkdownWrapper
+            children={postInfo.content}
+            remarkPlugins={[remarkGfm]}
+            style={a11yDark}
+            components={{
+              code({ inline, className, children, ...props }) {
+                const match = /language-(\w+)/.exec(className || "");
+                return !inline && match ? (
+                  <SyntaxHighlighter
+                    children={String(children).replace(/\n$/, "")}
+                    language={match[1]}
+                    PreTag="div"
+                    style={a11yDark}
+                    {...props}
+                  />
+                ) : (
+                  <code className={className} {...props}>
+                    {children}
+                  </code>
+                );
+              },
+            }}
+          />
+          {/*투표 여부를 판단, 투표지가 있을 경우 투표 관련 컴포넌트 랜더링*/}
+          {dtype == "vote" ? (
+            database == -1 &&
+            now < new Date(res?.data.data.data.expirationTime).getTime() ? (
+              <VoteContentContainer>
+                <h1 className="smallname">
+                  마감시간 : {FullDateCheck(res?.data.data.data.expirationTime)}
+                </h1>
+                {res?.data.data.data.optionList?.map((item) => (
+                  <label key={item.optionId}>
+                    <VoteContainer>
+                      <input
+                        type="radio"
+                        value={item.optionId}
+                        checked={voteSelectedOption == item.optionId}
+                        onChange={(event) =>
+                          setVoteSelectedOption(event.target.value)
+                        }
+                      />
+                      <h1 className="name">{item.option}</h1>
+                    </VoteContainer>
+                  </label>
+                ))}
+                <VoteButtonBox>
+                  <Button onClick={OnVotePost}>투표하기</Button>
+                  <Button
+                    transparent={true}
+                    onClick={() => setDatabase(-2)}
+                    color="rgb(88, 85, 133)"
+                  >
+                    결과보기
+                  </Button>
+                </VoteButtonBox>
+              </VoteContentContainer>
+            ) : (
+              <VoteContentContainer>
+                <h1 className="smallname">
+                  마감시간 : {FullDateCheck(res?.data.data.data.expirationTime)}
+                </h1>
+                {res?.data.data.data.optionList?.map((item) => (
+                  <SlideChart
+                    key={item.optionId}
+                    option={item.option}
+                    voteMax={voteMax}
+                    count={item.count}
+                  ></SlideChart>
+                ))}
+                <VoteButtonBox>
+                  {database == -2 ? (
+                    <Button
+                      transparent={true}
+                      onClick={() => setDatabase(-1)}
+                      color="rgb(88, 85, 133)"
+                    >
+                      투표하기
+                    </Button>
+                  ) : now <
+                    new Date(res?.data.data.data.expirationTime).getTime() ? (
+                    <Button
+                      transparent={true}
+                      onClick={() =>
+                        doDeleteVote({
+                          groupId,
+                          voteId: res?.data?.data?.data?.id,
+                        })
+                      }
+                      color="rgb(88, 85, 133)"
+                    >
+                      다시하기
+                    </Button>
+                  ) : null}
+
+                  <h1 className="smallname"> {voteMax}명 투표함</h1>
+                </VoteButtonBox>
+              </VoteContentContainer>
+            )
+          ) : null}
+          {/*과제 여부를 판단, 제출한 과제가 없을 경우 과제 관련 컴포넌트 랜더링*/}
+          {dtype == "homework" ? (
+            (res?.data?.data?.data?.role == "USER" &&
+              res?.data?.data?.data?.submitResponseDto == null) ||
+            submitAgain == true ? (
+              <form
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  handleSubmit(postOrPutHomeWork);
+                }}
+              >
+                <HomeWorkSubmitContainer>
+                  <HomeWorkSubmitButtonBox>
+                    <Button onClick={() => addInput("file")}>
+                      파일 추가하기
+                    </Button>
+                    <Button
+                      onClick={handleSubmit(postOrPutHomeWork)}
+                      transparent={true}
+                      color="rgb(88, 85, 133)"
+                    >
+                      과제 제출하기
+                    </Button>
+                  </HomeWorkSubmitButtonBox>
+                  <HomeWorkSubmitButtonBox>
+                    <HomeworkContentContainer>
+                      <h1 className="name">제출할 파일</h1>
+                      {homeWorkInputFile.map((item) => (
+                        <InputContainer key={item.id}>
+                          <StyledInput type="file" onChange={FileHandler} />
+                          <section
+                            className="name"
+                            onClick={() => deleteInput(item.id)}
+                          >
+                            X
+                          </section>
+                        </InputContainer>
+                      ))}
+                    </HomeworkContentContainer>
+                  </HomeWorkSubmitButtonBox>
+                </HomeWorkSubmitContainer>
+              </form>
+            ) : res?.data?.data?.data?.role == "USER" &&
+              res?.data?.data?.data?.submitResponseDto != null ? (
+              <>
+                {/*과제 여부를 판단, 제출한 과제가 있을 경우 과제 관련 컴포넌트 랜더링*/}
+                <HomeWorkSubmitContainer>
+                  <HomeWorkSubmitButtonBox>
+                    {res?.data?.data?.data?.submitResponseDto.submitCheck ==
+                    false ? (
+                      res?.data?.data?.data?.submitResponseDto.feedbackList
+                        ?.length == 0 ? (
+                        <Button
+                          transparent={true}
+                          color="rgb(88, 85, 133)"
+                          onClick={() =>
+                            doDeleteHomework({ groupId, detailId })
+                          }
+                        >
+                          제출 취소하기
+                        </Button>
+                      ) : (
+                        <Button
+                          transparent={true}
+                          onClick={() => setSubmitAgain(true)}
+                          color="rgb(88, 85, 133)"
+                        >
+                          다시 제출하기
+                        </Button>
+                      )
+                    ) : null}
+                  </HomeWorkSubmitButtonBox>
+                  <HomeWorkSubmitButtonBox>
+                    <HomeworkContentContainer>
+                      <PostedHomeWorkFileBox>
+                        <h1 className="name">제출한 파일</h1>
+                        <h1 className="smallname">
+                          {FullDateCheck(
+                            res?.data?.data?.data?.submitResponseDto.createdAt
+                          )}{" "}
+                          {res?.data?.data?.data?.submitResponseDto.late == true
+                            ? "제출(지각)"
+                            : "제출"}{" "}
+                        </h1>
+                      </PostedHomeWorkFileBox>
+                      {res?.data.data.data.submitResponseDto.fileListmap(
+                        (item) => (
+                          <a
+                            key={item}
+                            href={`${item.fileUrl}?download=true`}
+                            className="filename"
+                          >
+                            {" "}
+                            {item.fileName}
+                          </a>
+                        )
+                      )}
+                    </HomeworkContentContainer>
+                    {
+                      <HomeworkContentContainer>
+                        {res?.data?.data?.data?.submitResponseDto.feedbackList
+                          ?.length != 0 ? (
+                          res?.data?.data?.data?.submitResponseDto
+                            .submitCheck == true ? (
+                            <>
+                              <h1 className="name">확정됨</h1>
+                              {res?.data?.data?.data?.submitResponseDto.feedbackList.map(
+                                (item, index) => (
+                                  <h1 key={item} className="name">
+                                    {index + 1}번째 피드백 : {item}
+                                  </h1>
+                                )
+                              )}
+                            </>
+                          ) : (
+                            <>
+                              <h1 className="name">반려됨</h1>
+                              {res?.data?.data?.data?.submitResponseDto.feedbackList.map(
+                                (item, index) => (
+                                  <h1 key={item} className="name">
+                                    {index + 1}번째 사유 : {item}
+                                  </h1>
+                                )
+                              )}
+                            </>
+                          )
+                        ) : (
+                          <h1 className="name">피드백 대기 중</h1>
+                        )}
+                      </HomeworkContentContainer>
+                    }
+                  </HomeWorkSubmitButtonBox>
+                </HomeWorkSubmitContainer>
+              </>
+            ) : (
+              <>
+                <PostedHomeWorkFileBox>
+                  <HomeworkContentContainer width="80vw">
+                    <h1 className="name">제출완료</h1>
+                    {res?.data.data.data.submitMember.map((item) => (
+                      <SubmitterContainer key={item.id}>
+                        <h1 className="smallname">{item.nickname}</h1>
+                        <SubmitterBox>
+                          <h1 className="smallname">
+                            {ShortCheck(item.createdAt)} 제출
+                          </h1>
+                          <SubmiterButton
+                            onClick={() => CheckUpModal(item)}
+                            className="buttontext"
+                          >
+                            제출 과제
+                          </SubmiterButton>
+                        </SubmitterBox>
+                      </SubmitterContainer>
+                    ))}
+                  </HomeworkContentContainer>
+                  <HomeworkContentContainer borderColor="#CF5C4C">
+                    <h1 className="name">미제출자</h1>
+                    {res?.data.data.data.notSubmitMember.map((item) => (
+                      <SubmitterContainer key={item.id}>
+                        <h1 className="smallname">{item.nickname}</h1>
+                      </SubmitterContainer>
+                    ))}
+                  </HomeworkContentContainer>
+                </PostedHomeWorkFileBox>
+              </>
+            )
+          ) : null}
+          {/*설문 여부를 판단, 어드민(서포터)일 경우 별도 랜더링*/}
+          {dtype == "survey" ? (
+            <Survey
+              role={res?.data?.data?.data?.role}
+              submit={submitSurvey}
+              res={res}
+              res0={database}
+              groupId={groupId}
+              detailId={detailId}
+              list={res?.data.data.data.questionResponseDto}
+            />
+          ) : null}
+        </ContentsWrapper>
+        <Commentcontainer>
+          <CommentTopWrapper>
+            <span>댓글 {getComment?.data?.data?.data?.content.length}</span>
+            <img src={conver} alt="댓글" />
+          </CommentTopWrapper>
+          <CommentsWrapper />
+          <CommentMapWrapper>
+            {commentList?.map((comment) => (
+              <Comment
+                key={comment.id}
+                id={comment.id}
+                profileImage={comment.profileImage}
+                groupId={groupId}
+                detailId={detailId}
+                content={comment.content}
+                nickname={comment.nickname}
+                createAt={comment.createAt}
+                isAdmin={isAdmin}
+                owned={comment.owned}
+              />
+            ))}
+          </CommentMapWrapper>
+          <CommentInputWrapper>
+            <img src={profileImage} alt="프로필" />
+            <form
+              className="form"
+              onSubmit={(e) => {
+                e.preventDefault();
+                onPost(comment);
+              }}
+            >
+              <section className="center">
+                <span>{myUserName}</span>
+                <div className="inputLayout">
+                  <textarea
+                    cols="49"
+                    rows="2"
+                    maxLength="98"
+                    placeholder="댓글을 입력해주세요."
+                    value={comment}
+                    onChange={(e) => setComment(e.target.value)}
+                  />
+                  <button>등록</button>
+                </div>
+              </section>
+            </form>
+          </CommentInputWrapper>
+        </Commentcontainer>
+      </PageContainer>
+      {isOpen === true && <EditReady role={res?.data?.data?.data?.role} />}
     </>
   );
-};
-const GroupButtonBox = styled.div`
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  gap: 1rem;
+}
+
+const StyledInput = styled.input`
+  border: none;
+  padding: 10px;
+  background-color: transparent;
+  color: #333;
+  font-size: 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  &:hover {
+    background-color: #d4d2e3;
+  }
 `;
 
-const GroupListBox = styled.div`
+const InputContainer = styled.div`
   display: flex;
-  padding-right: 2rem;
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
-  border-radius: 2rem;
-  width: 100%;
 `;
-const GroupListTitleBox = styled.div`
-  width: 75%;
-  padding: 2rem;
+
+const SubmiterButton = styled.button`
+  width: 8rem;
+  height: 3rem;
+  background-color: transparent;
+  border-radius: 2.4rem;
+  border: 0.1rem solid #5d5a88;
+`;
+
+const SubmitterBox = styled.div`
+  gap: 1rem;
   display: flex;
   flex-direction: row;
-  justify-content: flex-start;
   align-items: center;
-  gap: 0.5rem;
+  justify-content: flex-end;
+`;
+
+const SubmitterContainer = styled.div`
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+`;
+
+const PostedHomeWorkFileBox = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 2rem;
+  text-align: center;
+`;
+const HomeworkContentContainer = styled.div`
+  width: ${({ width }) => width || "50vw"};
+  max-width: 100%;
+  height: 100%;
+  align-items: flex-start;
+  display: flex;
+  flex-direction: column;
+  border-radius: 4rem;
+  border: 0.2rem solid ${({ borderColor }) => borderColor || "#D4D2E3"};
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: normal;
+  padding: 5rem;
+  gap: 2rem;
+  .buttontext {
+    font-weight: 400;
+    font-size: 1.4rem;
+    color: #5d5a88;
+  }
+  .filename {
+    font-weight: 400;
+    font-size: 1.6rem;
+    color: #9795b5;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+  }
   .name {
-    width: 35%;
     font-weight: 400;
     font-size: 2.2rem;
     color: #5d5a88;
-    white-space: nowrap;
-    overflow: hidden;
     text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .smallname {
+    font-weight: 400;
+    font-size: 1.8rem;
+    color: #9795b5;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
   .date {
+    font-weight: 400;
+    font-size: 2rem;
+    color: #9795b5;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+  }
+`;
+const HomeWorkSubmitContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 1.5rem;
+`;
+
+const HomeWorkSubmitButtonBox = styled.div`
+  display: flex;
+  max-width: 100%;
+  flex-direction: row;
+  align-items: flex-start;
+  gap: 1.5rem;
+`;
+
+const VoteButtonBox = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 1.5rem;
+`;
+const VoteContainer = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 2rem;
+  text-align: center;
+`;
+
+const VoteContentContainer = styled.div`
+  width: fit-content;
+  max-width: 50%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  border-radius: 4rem;
+  border: 0.1rem solid #d4d2e3;
+  padding: 5rem;
+  gap: 2rem;
+  .name {
+    font-weight: 400;
+    font-size: 2.2rem;
+    color: #5d5a88;
+  }
+  .smallname {
     font-weight: 400;
     font-size: 1.8rem;
     color: #9795b5;
   }
-`;
-
-const Profile = () => {
-  const [isPut, setIsPut] = useState(false);
-  const [userName, setUserName] = useState();
-  const [userNick, setUserNick] = useState();
-  const [userImg, setUserImg] = useState();
-  const [postImages, setPostImages] = useState(null);
-  const [userDate, setUserDate] = useState();
-  const [userGroup, setUserGroup] = useState();
-  const { register, formState: errors, handleSubmit } = useForm();
-  const putProfile = useMutation(PutProfile, {
-    onSuccess: ({ data }) => {
-      toast.success("변경에 성공했습니다!");
-      window.location.reload();
-    },
-  });
-
-  const ImageHandler = (event) => {
-    const file = event.target.files[0];
-    const reader = new FileReader();
-    reader.onloadend = () => {
-      setUserImg(reader.result);
-    };
-    setPostImages(file);
-    if (file != null) {
-      reader.readAsDataURL(file);
-    } else {
-      setUserImg(Test);
-      setPostImages(null);
-    }
-  };
-  const getInfo = useQuery(["userInfo"], () => GetProfile(), {
-    onSuccess: (data) => {
-      setUserName(data.data.data.username);
-      setUserNick(data.data.data.nickname);
-      setUserDate(FullDateCheck(data.data.data.createdAt));
-      setUserGroup(data.data.data.groupInfo);
-      setUserImg(data.data.data.profileImage);
-    },
-  });
-
-  const PostProfile = async (data) => {
-    console.log(data);
-    const postRequest = new FormData();
-    if (postImages != null) {
-      postRequest.append("profileImage", postImages);
-    }
-    if (data.nick !== userNick) {
-      postRequest.append("nickname", data.nick);
-    } else {
-      postRequest.append("nickname", userNick);
-    }
-    if (data.password != null) {
-      postRequest.append("password", data.password);
-    }
-    const res = putProfile.mutateAsync(postRequest);
-  };
-
-  if (getInfo.isLoading || getInfo.isError) {
-    return <></>;
-  }
-  return (
-    <>
-      <PageContainer>
-        <RightTotalContainer>
-          <GroupTitleBox>
-            <h1 className="title">내 정보</h1>
-            {!isPut ? (
-              <Button onClick={() => setIsPut(!isPut)}>
-                개인정보 수정하기
-              </Button>
-            ) : (
-              <>
-                <Button type="submit">수정완료</Button>
-                <Button onClick={() => setIsPut(!isPut)}>수정취소</Button>
-              </>
-            )}
-          </GroupTitleBox>
-          <TopContentContainer>
-            <GroupInfoBox>
-              {/*프로필 이미지 노출할 부위, 없으면 기본 이미지로*/}
-              {!isPut ? (
-                <>
-                  <ImageTextBox>
-                    <GroupInfoImage
-                      src={
-                        getInfo.data.data.data.profileImage != null
-                          ? getInfo.data.data.data.profileImage
-                          : Test
-                      }
-                    ></GroupInfoImage>
-                  </ImageTextBox>
-                  <GroupInfoTextBox>
-                    <GroupInfoText>
-                      <h1 className="infotitle">계정명</h1>
-                      <p className="infocontent">{userName}</p>
-                    </GroupInfoText>
-                    <GroupInfoText>
-                      <h1 className="infotitle">닉네임</h1>
-                      <p className="infocontent">{userNick}</p>
-                    </GroupInfoText>
-                    <GroupInfoText>
-                      <h1 className="infotitle">가입일자</h1>
-                      <p className="infocontent">{userDate}</p>
-                    </GroupInfoText>
-                  </GroupInfoTextBox>
-                </>
-              ) : (
-                <>
-                  <ImageTextBox>
-                    <label htmlFor="file-upload">
-                      <GroupInfoImage src={userImg != null ? userImg : Test} />
-                    </label>
-                    <h1 className="inputcontent">
-                      이미지를 클릭하여 <br />
-                      프로필 이미지를 바꾸세요
-                    </h1>
-                  </ImageTextBox>
-                  <GroupInfoTextBox>
-                    <form onSubmit={handleSubmit(PostProfile)}>
-                      <input
-                        id="file-upload"
-                        type="file"
-                        accept="image/jpeg, image/png"
-                        style={{ display: "none" }}
-                        onChange={ImageHandler}
-                      ></input>
-                      <GroupInfoText>
-                        <h1 className="infotitle">계정명</h1>
-                        <p className="infocontent">{userName}</p>
-                      </GroupInfoText>
-                      <GroupInfoText>
-                        <h1 className="infotitle">
-                          닉네임&nbsp;&nbsp;&nbsp;&nbsp;
-                        </h1>
-                        <input
-                          placeholder="변경할 닉네임을 입력하세요."
-                          type="text"
-                        />
-                      </GroupInfoText>
-                      <GroupInfoText>
-                        <h1 className="infotitle">비밀번호</h1>
-                        <input
-                          placeholder="변경할 비밀번호를 입력하세요."
-                          type="text"
-                        />
-                      </GroupInfoText>
-                    </form>
-                  </GroupInfoTextBox>
-                </>
-              )}
-            </GroupInfoBox>
-          </TopContentContainer>
-          <GroupTitleBox>
-            <h1 className="title">보유 중인 그룹</h1>
-          </GroupTitleBox>
-          <BottomContentContainer>
-            {userGroup?.length !== 0 ? (
-              userGroup?.map((item) => {
-                return (
-                  <GroupList key={item.groupId} item={item} res={getInfo} />
-                );
-              })
-            ) : (
-              <h1>보유 중인 그룹이 없습니다</h1>
-            )}
-          </BottomContentContainer>
-        </RightTotalContainer>
-      </PageContainer>
-    </>
-  );
-};
-
-export default Profile;
-
-const ImageTextBox = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-`;
-
-const GroupTitleBox = styled.div`
-  display: flex;
-  flex-direction: row;
-  justify-content: flex-start;
-  align-items: center;
-  gap: 2rem;
-`;
-
-const TopContentContainer = styled.div`
-  width: 100%;
-  height: 100%;
-  border-radius: 4rem;
-  border: 0.1rem solid #d4d2e3;
-  padding: 5rem;
-`;
-
-const BottomContentContainer = styled.div`
-  width: 100%;
-  height: 100%;
-  display: flex;
-  text-align: center;
-  flex-direction: column;
-  border-radius: 4rem;
-  border: 0.1rem solid #d4d2e3;
-  padding: 5rem;
-  gap: 2rem;
-  h1 {
-    overflow: hidden;
-    text-overflow: ellipsis;
-    display: -webkit-box;
-    -webkit-line-clamp: 1;
-    -webkit-box-orient: vertical;
-    font-size: 3rem;
-    font-weight: 600;
-    color: rgb(88, 85, 133, 0.5);
-  }
-`;
-const GroupInfoBox = styled.div`
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  gap: 11rem;
-  @media (max-width: 960px) {
-    gap: 4rem;
-  }
-`;
-const GroupInfoImage = styled.img`
-  border-radius: 2rem;
-  width: 18rem;
-  height: 18rem;
-  object-fit: cover;
-`;
-
-const RightTotalContainer = styled.div`
-  flex-direction: column;
-  justify-content: flex-start;
-  align-items: center;
-  width: 60vw;
-  > * {
-    margin-bottom: 2rem;
-  }
-`;
-
-const GroupInfoTextBox = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 3rem;
-
-  input {
-    ${InputStyle}
-  }
-`;
-
-const GroupInfoText = styled.div`
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  gap: 2rem;
-`;
-
-const PageContainer = styled.div`
-  margin-top: 14rem;
-
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  width: 100vw;
-  padding-bottom: 3rem;
-
-  .title {
-    font-weight: 700;
-    font-size: 3.2rem;
-    color: #5d5a88;
-  }
-  .infotitle {
-    font-weight: 700;
-    font-size: 2.4rem;
-    color: #5d5a88;
-  }
-  .infocontent {
-    font-weight: 400;
-    font-size: 2.4rem;
-    color: #9795b5;
-  }
-  .inputcontent {
+  .date {
     font-weight: 400;
     font-size: 2rem;
     color: #9795b5;
   }
 `;
+
+const Commentcontainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  max-width: 128rem;
+  width: 60vw;
+  background-color: ${(props) => props.theme.color.zeroOne};
+  padding: 3.2rem;
+  margin-left: 5rem;
+  border-radius: 0.8rem;
+`;
+
+const PageContainer = styled.div`
+  width: 100vw;
+  min-height: 100vh;
+  max-width: 128rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  margin: 0 auto;
+  margin-top: 14rem;
+`;
+
+const ReactMarkdownWrapper = styled(ReactMarkdown)`
+  * {
+    font-size: 1.4rem;
+    font-family: "Roboto Mono", monospace;
+  }
+  padding: 2.5rem 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  p {
+    word-wrap: break-word;
+  }
+  h1 {
+    padding: 2rem 0;
+    font-size: 2.1rem;
+    line-height: 1.45;
+    &::after {
+      content: "";
+      display: block;
+      position: relative;
+      top: 0.33em;
+      border-bottom: 1px solid hsla(0, 0%, 50%, 0.33);
+    }
+  }
+
+  h2 {
+    padding: 2rem 0;
+    font-size: 1.9rem;
+    line-height: 1.45;
+    &::after {
+      content: "";
+      display: block;
+      position: relative;
+      top: 0.33em;
+      border-bottom: 1px solid hsla(0, 0%, 50%, 0.33);
+    }
+  }
+  h3 {
+    padding: 2rem 0;
+    font-size: 1.7rem;
+    line-height: 1.45;
+    &::after {
+      content: "";
+      display: block;
+      position: relative;
+      top: 0.33em;
+      border-bottom: 1px solid hsla(0, 0%, 50%, 0.33);
+    }
+  }
+
+  h4 {
+    font-size: 1.5rem;
+    line-height: 1.45;
+  }
+
+  img {
+    width: 100%;
+    object-fit: cover;
+    object-position: center;
+  }
+
+  blockquote {
+    width: 100%;
+    padding-left: 1.25rem;
+    border-left: 5px solid rgba(0, 0, 0, 0.1);
+    p {
+      line-height: 1.4;
+    }
+  }
+
+  ul {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    li {
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+      line-height: 1.2;
+    }
+  }
+`;
+
+const ContentsWrapper = styled.section`
+  display: flex;
+  flex-direction: column;
+  width: 60vw;
+  margin-left: 6rem;
+  margin-bottom: 2rem;
+  gap: 1rem;
+`;
+
+const CommentsWrapper = styled.section`
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  justify-content: center;
+
+  img {
+    width: 3.2rem;
+    height: 3.2rem;
+    border-radius: 50%;
+  }
+`;
+
+const CommentMapWrapper = styled.ul`
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+`;
+
+const CommentInputWrapper = styled.section`
+  display: flex;
+  gap: 1rem;
+
+  .center {
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+  }
+
+  .form {
+    width: 100%;
+    button {
+      cursor: pointer;
+      width: 5rem;
+      height: 5rem;
+      border-radius: 1.6rem;
+      border: none;
+      color: ${(props) => props.theme.color.zeroOne};
+      background-color: ${(props) => props.theme.color.zeroThree};
+      margin-left: 0.8rem;
+      font-size: 1.2rem;
+    }
+    .inputLayout {
+      display: flex;
+      align-items: center;
+      textarea {
+        width: 80%;
+        border-radius: 0.4rem;
+        border: none;
+        font-size: 1.1rem;
+        padding: 0.8rem;
+        resize: none;
+        &:focus {
+          outline: none;
+        }
+      }
+    }
+  }
+
+  img {
+    width: 3.2rem;
+    height: 3.2rem;
+    border-radius: 50%;
+  }
+`;
+
+const CommentTopWrapper = styled.section`
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  color: ${(props) => props.theme.color.zeroFour};
+  span {
+    font-size: 1.3rem;
+  }
+  img {
+    width: 1.8rem;
+  }
+`;
+
+export default PartyDetail;
