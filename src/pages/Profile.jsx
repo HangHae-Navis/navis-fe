@@ -5,11 +5,13 @@ import { deletePage, GetProfile, PutProfile } from "../utils/api/api";
 import "react-loading-skeleton/dist/skeleton.css";
 import Test from "./../assets/Image Placeholder.svg";
 import { useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FullDateCheck, DayCheck } from "../element/DateCheck";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
-import { InputStyle } from "../utils/style/mixins";
+import Input from "../element/Input";
+import { passwordRules, userNameRules } from "../constants/validate";
+import { getCookie } from "../utils/infos/cookie";
 
 const GroupList = (props) => {
   const navi = useNavigate();
@@ -99,13 +101,29 @@ const Profile = () => {
   const [postImages, setPostImages] = useState(null);
   const [userDate, setUserDate] = useState();
   const [userGroup, setUserGroup] = useState();
-  const { register, formState: errors, handleSubmit } = useForm();
+  const {
+    register,
+    formState: { errors },
+    watch,
+  } = useForm();
   const putProfile = useMutation(PutProfile, {
     onSuccess: ({ data }) => {
       toast.success("변경에 성공했습니다!");
       window.location.reload();
     },
   });
+
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const isUserCookie = getCookie("token");
+    if (isUserCookie === undefined) {
+      navigate("/");
+      toast.error("로그인이 다시 필요합니다.", {
+        toastId: "rollback",
+      });
+    }
+  }, []);
 
   const ImageHandler = (event) => {
     const file = event.target.files[0];
@@ -131,19 +149,18 @@ const Profile = () => {
     },
   });
 
-  const PostProfile = async (data) => {
-    console.log(data);
+  const PostProfile = async () => {
     const postRequest = new FormData();
     if (postImages != null) {
       postRequest.append("profileImage", postImages);
     }
-    if (data.nick !== userNick) {
-      postRequest.append("nickname", data.nick);
+    if (watch().nick !== userNick) {
+      postRequest.append("nickname", watch().nick);
     } else {
       postRequest.append("nickname", userNick);
     }
-    if (data.password != null) {
-      postRequest.append("password", data.password);
+    if (watch().password != null) {
+      postRequest.append("password", watch().password);
     }
     const res = putProfile.mutateAsync(postRequest);
   };
@@ -163,7 +180,7 @@ const Profile = () => {
               </Button>
             ) : (
               <>
-                <Button type="submit">수정완료</Button>
+                <Button onClick={() => PostProfile()}>수정완료</Button>
                 <Button onClick={() => setIsPut(!isPut)}>수정취소</Button>
               </>
             )}
@@ -209,7 +226,7 @@ const Profile = () => {
                     </h1>
                   </ImageTextBox>
                   <GroupInfoTextBox>
-                    <form onSubmit={handleSubmit(PostProfile)}>
+                    <form onSubmit={PostProfile}>
                       <input
                         id="file-upload"
                         type="file"
@@ -225,16 +242,27 @@ const Profile = () => {
                         <h1 className="infotitle">
                           닉네임&nbsp;&nbsp;&nbsp;&nbsp;
                         </h1>
-                        <input
+                        <Input
                           placeholder="변경할 닉네임을 입력하세요."
+                          register={register}
+                          name="nick"
                           type="text"
+                          isput={isPut}
+                          defaultValue={userNick}
+                          width={"20vw"}
+                          rule={userNameRules}
                         />
                       </GroupInfoText>
                       <GroupInfoText>
                         <h1 className="infotitle">비밀번호</h1>
-                        <input
+                        <Input
                           placeholder="변경할 비밀번호를 입력하세요."
+                          register={register}
+                          name="password"
                           type="text"
+                          isput={isPut}
+                          width={"20vw"}
+                          rule={passwordRules}
                         />
                       </GroupInfoText>
                     </form>
@@ -339,10 +367,6 @@ const GroupInfoTextBox = styled.div`
   flex-direction: column;
   align-items: flex-start;
   gap: 3rem;
-
-  input {
-    ${InputStyle}
-  }
 `;
 
 const GroupInfoText = styled.div`
