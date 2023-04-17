@@ -1,30 +1,12 @@
 import { useMutation, useQuery } from "react-query";
 import styled from "styled-components";
-import PartyRegist from "../components/modal/PartyRegist";
 import Button from "../element/Button";
-import {
-  deletePage,
-  deletePageMembers,
-  getBoardDetailPage,
-  getDetailPage,
-  getDetailPageForAdmin,
-  getPartyBoard,
-  getPartyPage,
-  GetProfile,
-  PutMemberRole,
-  PutProfile,
-  undoDeletePagemembers,
-} from "../utils/api/api";
-import { partyRegistModalState, partyInfoState } from "../store/atom";
-import Skeleton from "react-loading-skeleton";
+import {deletePage, GetProfile,PutProfile,} from "../utils/api/api";
 import "react-loading-skeleton/dist/skeleton.css";
 import Test from "./../assets/Image Placeholder.svg";
-import Pagination from "react-js-pagination";
-import { useNavigate, useParams, useSearchParams } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useState } from "react";
 import { FullDateCheck, DayCheck } from "../element/DateCheck";
-import { useSetRecoilState } from "recoil";
-import PartyInfo from "../components/party/PartyInfo";
 import Input from "../element/Input";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
