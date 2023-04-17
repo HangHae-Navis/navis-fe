@@ -356,11 +356,12 @@ const PageContainer = styled.div`
   flex-direction: row;
   align-items: flex-start;
   width: 100vw;
-  max-width: 128rem;글
+  max-width: 128rem;
   margin: 0 auto;
   padding: 2rem 0 3rem 0;
   margin-top: 14rem;
   min-height: 100vh;
+  gap: 6rem;
 `;
 
 const LeftContainer = styled.div`
