@@ -20,14 +20,22 @@ const Input = ({
     setPasswordVisible(!passwordVisible);
   };
 
+  const userNameRules = {
+    required: "값을 입력해주세요.",
+    pattern: {
+      value: /^[a-zA-Z0-9+-_.]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/,
+      message: "이메일 형식으로 입력해주세요",
+    },
+  };
   const passwordRules = {
     required: "값을 입력해주세요.",
     pattern: {
-      value: /^(?=.*[A-Za-z])(?=.*\d)(?=.*[!@#$%^&*()_+])[A-Za-z\d!@#$%^&*()_+]{8,15}$/,
+      value:
+        /^(?=.*[A-Za-z])(?=.*\d)(?=.*[!@#$%^&*()_+])[A-Za-z\d!@#$%^&*()_+]{8,15}$/,
       message: "영문, 숫자, 특수기호를 포함하여 8~15자로 입력해주세요.",
     },
   };
-  
+
   return (
     <>
       {type !== "password" ? (
@@ -37,13 +45,11 @@ const Input = ({
             <InputCustom
               placeholder={placeholder}
               type={type}
-              {...register(name, {
-                required: "값을 입력해주세요.",
-              })}
+              {...register(name, userNameRules)}
               defaultValue={defaultValue}
             />
-            {error && <ErrorMessage>{error}</ErrorMessage>}
           </InputWrapper>
+          {error && <ErrorMessage>{error}</ErrorMessage>}
         </InputLayout>
       ) : (
         <InputLayout>
@@ -62,8 +68,8 @@ const Input = ({
                 <AiFillEye size={20} />
               )}
             </IconsWrapper>
-            {error && <ErrorMessage>{error}</ErrorMessage>}
           </InputWrapper>
+          {error && <ErrorMessage>{error}</ErrorMessage>}
         </InputLayout>
       )}
     </>
@@ -89,9 +95,12 @@ const InputCustom = styled.input`
 `;
 
 const ErrorMessage = styled.p`
-  font-size: 1.3rem;
-  color: red;
-  align-self: flex-end;
+  font-size: 1.4rem !important;
+  color: #cf5c4c !important;
+  align-self: flex-start !important;
+  text-align: left;
+  padding: 0.25rem 0 0 1.5rem;
+  font-weight: 500;
 `;
 
 const InputWrapper = styled.section`

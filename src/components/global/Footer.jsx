@@ -13,7 +13,6 @@ const Footer = () => {
       ) : (
         <img src={Logo} alt="" />
       )}
-
       <span>Copyright © 2023 NAVIS. All Rights Reserved.</span>
     </FooterWrapper>
   );
@@ -25,7 +24,6 @@ const FooterWrapper = styled.section`
   justify-content: space-around;
   width: 100vw;
   height: 5rem;
-  margin-top: 5rem;
 
   ${(props) =>
     props.pathname === "/"
@@ -34,6 +32,7 @@ const FooterWrapper = styled.section`
         `
       : css`
           background: ${(props) => props.theme.color.zeroOne};
+          margin-top: 5rem;
         `}
   align-items: center;
 
