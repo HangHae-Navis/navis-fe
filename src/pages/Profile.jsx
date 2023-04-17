@@ -10,7 +10,11 @@ import { FullDateCheck, DayCheck } from "../element/DateCheck";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 import Input from "../element/Input";
-import { passwordRules, userNameRules } from "../constants/validate";
+import {
+  nicknameRules,
+  passwordRules,
+  userNameRules,
+} from "../constants/validate";
 import { getCookie } from "../utils/infos/cookie";
 
 const GroupList = (props) => {
@@ -151,6 +155,7 @@ const Profile = () => {
 
   const PostProfile = async () => {
     const postRequest = new FormData();
+    console.log(watch().password);
     if (postImages != null) {
       postRequest.append("profileImage", postImages);
     }
@@ -159,7 +164,7 @@ const Profile = () => {
     } else {
       postRequest.append("nickname", userNick);
     }
-    if (watch().password != null) {
+    if (watch().password !== null) {
       postRequest.append("password", watch().password);
     }
     const res = putProfile.mutateAsync(postRequest);
@@ -250,7 +255,7 @@ const Profile = () => {
                           isput={isPut}
                           defaultValue={userNick}
                           width={"20vw"}
-                          rule={userNameRules}
+                          rule={nicknameRules}
                         />
                       </GroupInfoText>
                       <GroupInfoText>
