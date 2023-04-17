@@ -49,7 +49,7 @@ const EmptyTextBox = styled.div`
     display: -webkit-box;
     -webkit-line-clamp: 1;
     -webkit-box-orient: vertical;
-    font-size: 8rem;
+    font-size: 5rem;
     font-weight: 600;
     color : rgb(88, 85, 133, 0.5)
   }
