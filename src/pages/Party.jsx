@@ -20,18 +20,21 @@ import EditReady from "../components/edit/EditReady";
 import { editReadyState } from "../store/atom";
 import { useRecoilState, useResetRecoilState } from "recoil";
 
-const EmptyText = (props) =>{
-  return(<>
-  {props.type == "board"
-  ?<EmptyTextBox>
-  <h1>게시글이 없습니다.</h1>
-</EmptyTextBox>
-  :<EmptyTextBox style={{width: '57vw', backgroundColor: 'transparent'}}>
-  <h2>마감이 임박한 과제가 없습니다.</h2>
-</EmptyTextBox>}
-  </>)
-  
-}
+const EmptyText = (props) => {
+  return (
+    <>
+      {props.type == "board" ? (
+        <EmptyTextBox>
+          <h1>게시글이 없습니다.</h1>
+        </EmptyTextBox>
+      ) : (
+        <EmptyTextBox style={{ width: "57vw", backgroundColor: "transparent" }}>
+          <h2>마감이 임박한 과제가 없습니다.</h2>
+        </EmptyTextBox>
+      )}
+    </>
+  );
+};
 
 const EmptyTextBox = styled.div`
   width: 60vw;
@@ -51,7 +54,7 @@ const EmptyTextBox = styled.div`
     -webkit-box-orient: vertical;
     font-size: 5rem;
     font-weight: 600;
-    color : rgb(88, 85, 133, 0.5)
+    color: rgb(88, 85, 133, 0.5);
   }
   h2 {
     padding-bottom: 2rem;
@@ -62,12 +65,9 @@ const EmptyTextBox = styled.div`
     -webkit-box-orient: vertical;
     font-size: 3rem;
     font-weight: 600;
-    color : white
+    color: white;
   }
 `;
-
-
-
 
 const Party = () => {
   const queryClient = useQueryClient();
@@ -219,33 +219,34 @@ const Party = () => {
               </svg>
               <h1 className="title">24시간 내 마감</h1>
             </CarouselTitle>
-            {carouselList?.length != 0
-            ?<Slider {...settings}>
-            {carouselList.map((item) => {
-              return (
-                <Carousel
-                  key={item.id}
-                  groupId={pam.id}
-                  createdAt={item.createdAt}
-                  content={item.content}
-                  nickName={item.nickname}
-                  subtitle={item.subtitle}
-                  title={item.title}
-                  id={item.id}
-                  dtype={item.dtype}
-                  important={item.important}
-                  hashtagList={item.hashtagList}
-                  expirationDate={item.expirationDate}
-                  groupName={partyRes.data.data.data.groupName}
-                  groupInfo={partyRes.data.data.data.groupInfo}
-                  groupCode={partyRes.data.data.data.groupCode}
-                  isAdmin={partyRes.data.data.data.admin}
-                />
-              );
-            })}
-          </Slider>
-            :<EmptyText></EmptyText>}
-            
+            {carouselList?.length != 0 ? (
+              <Slider {...settings}>
+                {carouselList.map((item) => {
+                  return (
+                    <Carousel
+                      key={item.id}
+                      groupId={pam.id}
+                      createdAt={item.createdAt}
+                      content={item.content}
+                      nickName={item.nickname}
+                      subtitle={item.subtitle}
+                      title={item.title}
+                      id={item.id}
+                      dtype={item.dtype}
+                      important={item.important}
+                      hashtagList={item.hashtagList}
+                      expirationDate={item.expirationDate}
+                      groupName={partyRes.data.data.data.groupName}
+                      groupInfo={partyRes.data.data.data.groupInfo}
+                      groupCode={partyRes.data.data.data.groupCode}
+                      isAdmin={partyRes.data.data.data.admin}
+                    />
+                  );
+                })}
+              </Slider>
+            ) : (
+              <EmptyText></EmptyText>
+            )}
           </CarouselContainer>
           <RadioBox>
             <RadioButtons
@@ -269,36 +270,38 @@ const Party = () => {
             </RadioBox>
           </RadioBox>
           <RightContainer>
-            {groupList?.length != 0 
-            ?
-            groupList?.map((item) => {
-              return (
-                <Board
-                  key={item.id}
-                  groupId={pam.id}
-                  createdAt={item.createdAt}
-                  content={item.content}
-                  nickName={item.nickname}
-                  subtitle={item.subtitle}
-                  title={item.title}
-                  id={item.id}
-                  dtype={item.dtype}
-                  important={item.important}
-                  hashtagList={item.hashtagList}
-                  expirationDate={item.expirationDate}
-                  groupName={partyRes.data.data.data.groupName}
-                  groupInfo={partyRes.data.data.data.groupInfo}
-                  groupCode={partyRes.data.data.data.groupCode}
-                  isAdmin={partyRes.data.data.data.admin}
-                />
-              );
-            })
-            :<EmptyText type ={"board"}/>
-            }
+            {groupList?.length != 0 ? (
+              groupList?.map((item) => {
+                return (
+                  <Board
+                    key={item.id}
+                    groupId={pam.id}
+                    createdAt={item.createdAt}
+                    content={item.content}
+                    nickName={item.nickname}
+                    subtitle={item.subtitle}
+                    title={item.title}
+                    id={item.id}
+                    dtype={item.dtype}
+                    important={item.important}
+                    hashtagList={item.hashtagList}
+                    expirationDate={item.expirationDate}
+                    groupName={partyRes.data.data.data.groupName}
+                    groupInfo={partyRes.data.data.data.groupInfo}
+                    groupCode={partyRes.data.data.data.groupCode}
+                    isAdmin={partyRes.data.data.data.admin}
+                  />
+                );
+              })
+            ) : (
+              <EmptyText type={"board"} />
+            )}
           </RightContainer>
         </RightTotalContainer>
         <Chat />
-        {isOpen === true && <EditReady role = {partyRes?.data?.data?.data?.groupRole}/>}
+        {isOpen === true && (
+          <EditReady role={partyRes?.data?.data?.data?.groupRole} />
+        )}
       </PageContainer>
     </>
   );
@@ -324,7 +327,7 @@ const RadioBox = styled.div`
 `;
 
 const CarouselContainer = styled.div`
-  width: 60vw;
+  width: 70vw;
   height: 30.2rem;
   overflow-x: hidden;
   margin-bottom: 5.6rem;
@@ -362,6 +365,7 @@ const PageContainer = styled.div`
   margin: 0 auto;
   padding: 2rem 0 3rem 0;
   margin-top: 14rem;
+  min-height: 100vh;
 `;
 
 const LeftContainer = styled.div`
@@ -373,11 +377,7 @@ const LeftContainer = styled.div`
   font-size: 1.45rem;
 `;
 
-const RightTotalContainer = styled.div`
-  @media (max-width: 860px) {
-    margin-left: -8rem;
-  }
-`;
+const RightTotalContainer = styled.div``;
 
 const RightContainer = styled.div`
   margin: 3rem 0;

@@ -13,23 +13,18 @@ import { deletePageMembers } from "../../utils/api/api";
 
 const PartyInfo = (props) => {
   const navi = useNavigate();
-  const onWithdrawal = () => {
-    toast.error("그룹을 탈퇴했습니다.", {
-      toastId: "withdrawal",
-    });
-  };
   const deletePartyMember = useMutation(deletePageMembers, {
     onSuccess: (data) => {
       toast.error("그룹을 탈퇴했습니다.", {
         toastId: "withdrawal",
       });
-      navi("/")
+      navi("/");
     },
   });
   const doDeleteGroupOut = (data) => {
-    const keepGoing = window.confirm("정말 그룹을 탈퇴하시겠습니까?")
-    if(keepGoing == true){
-      deletePartyMember.mutateAsync(data)
+    const keepGoing = window.confirm("정말 그룹을 탈퇴하시겠습니까?");
+    if (keepGoing == true) {
+      deletePartyMember.mutateAsync(data);
     }
   };
 
@@ -60,7 +55,14 @@ const PartyInfo = (props) => {
 
         {props.isAdmin === true ? (
           <>
-            <button className="button" disabled={true}>
+            <button
+              className="button"
+              onClick={() =>
+                toast.error("어드민은 탈퇴할 수 없습니다", {
+                  toastId: "adminError",
+                })
+              }
+            >
               <img src={remove} alt="탈퇴" />
               <span>탈퇴하기</span>
             </button>
@@ -87,7 +89,10 @@ const PartyInfo = (props) => {
             </div>
           </>
         ) : (
-          <button className="button" onClick={() => doDeleteGroupOut({pam : props.groupId})}>
+          <button
+            className="button"
+            onClick={() => doDeleteGroupOut({ pam: props.groupId })}
+          >
             <img src={remove} alt="탈퇴" />
             <span>탈퇴하기</span>
           </button>
