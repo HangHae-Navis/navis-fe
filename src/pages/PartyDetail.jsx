@@ -41,12 +41,29 @@ function PartyDetail() {
   const [comment, setComment] = useState("");
   const [isAdmin, setIsAdmin] = useState();
   const [postInfo, setPostInfo] = useState({});
-  const [expirationTime, setexpirationTime] = useState("");
-  const [expirationTimeOrigin, setexpirationTimeOrigin] = useState("");
   const [voteMax, setVoteMax] = useState("");
   const [whereToVoted, setWhereToVoted] = useState();
   const [voteContent, setVoteContent] = useState([]);
   const [homeWorkInputFile, setHomeWorkInputFile] = useState([]);
+
+  const [database, setDatabase] = useState();
+
+  //투표에서 사용하는 스테이트
+  //공백 :  setWhereToVoted,
+  //공백배열 : setVoteContent, 
+  //공백 문자열 : setVoteMax
+
+  //과제에서 사용하는 스테이트
+  //공백 :  setHomeWorkPostedFileList,
+  //공백배열 : setHomeWorkSubmmiter, setHomeWorkUnSubmmiter
+  //공백 문자열 : 
+
+  //설문에서 사용하는 스테이트
+  //공백 :  setSurveyDTO,
+  //공백배열 : setVoteContent, 
+  //공백 문자열 : 
+  //공백 bool : setSubmitSurvey,
+  
   //이거 2개 객체화 가능?
   const [homeWorkSubmmiter, setHomeWorkSubmmiter] = useState([]);
   const [homeWorkUnSubmmiter, setHomeWorkUnSubmmiter] = useState([]);
@@ -93,10 +110,6 @@ function PartyDetail() {
     () => getBoardDetailPage({ groupId, detailId, dtype }),
     {
       onSuccess: ({ data }) => {
-        if (data.data.expirationTime != null) {
-          setexpirationTime(FullDateCheck(data.data.expirationTime));
-          setexpirationTimeOrigin(new Date(data.data.expirationTime).getTime());
-        }
         setPostInfo(data.data);
         if (data.data.role === "ADMIN") {
           setIsAdmin(true);
@@ -370,9 +383,9 @@ function PartyDetail() {
           />
           {/*투표 여부를 판단, 투표지가 있을 경우 투표 관련 컴포넌트 랜더링*/}
           {dtype == "vote" ? (
-            whereToVoted == -1 && now < expirationTimeOrigin ? (
+            whereToVoted == -1 && now < new Date(res?.data.data.data.expirationTime).getTime() ? (
               <VoteContentContainer>
-                <h1 className="smallname">마감시간 : {expirationTime}</h1>
+                <h1 className="smallname">마감시간 : {FullDateCheck(res?.data.data.data.expirationTime)}</h1>
                 {voteContent?.map((item) => (
                   <label key={item.optionId}>
                     <VoteContainer>
@@ -401,7 +414,7 @@ function PartyDetail() {
               </VoteContentContainer>
             ) : (
               <VoteContentContainer>
-                <h1 className="smallname">마감시간 : {expirationTime}</h1>
+                <h1 className="smallname">마감시간 : {FullDateCheck(res?.data.data.data.expirationTime)}</h1>
                 {voteContent?.map((item) => (
                   <SlideChart
                     key={item.optionId}
@@ -419,7 +432,7 @@ function PartyDetail() {
                     >
                       투표하기
                     </Button>
-                  ) : now < expirationTimeOrigin ? (
+                  ) : now < new Date(res?.data.data.expirationTime).getTime() ? (
                     <Button
                       transparent={true}
                       onClick={() =>
