@@ -1,6 +1,17 @@
 import { useMutation, useQuery, useQueryClient } from "react-query";
 import styled from "styled-components";
-import {deleteHomeWorkData,deletePageMembers,DeleteVoteDetail,getBoardDetailPage,getCommentPage,postComment,postFeedback,postHomeWorkData,postHomeworkDetail,PostVoteDetail,putHomeWorkData,
+import {
+  deleteHomeWorkData,
+  deletePageMembers,
+  DeleteVoteDetail,
+  getBoardDetailPage,
+  getCommentPage,
+  postComment,
+  postFeedback,
+  postHomeWorkData,
+  postHomeworkDetail,
+  PostVoteDetail,
+  putHomeWorkData,
 } from "../utils/api/api";
 import "react-loading-skeleton/dist/skeleton.css";
 import EditReady from "../components/edit/EditReady";
@@ -233,15 +244,15 @@ function PartyDetail() {
 
   const addInput = (data) => {
     if (homeWorkInputFile.length < 5) {
-        const lastVal =
-          homeWorkInputFile.length > 0
-            ? homeWorkInputFile[homeWorkInputFile.length - 1].id
-            : 0;
-        setHomeWorkInputFile((homeWorkInputFile) => [
-          ...homeWorkInputFile,
-          { id: lastVal + 1, type: data },
-        ]);
-      } else toast.success("최대 업로드 가능 갯수는 5개 입니다");
+      const lastVal =
+        homeWorkInputFile.length > 0
+          ? homeWorkInputFile[homeWorkInputFile.length - 1].id
+          : 0;
+      setHomeWorkInputFile((homeWorkInputFile) => [
+        ...homeWorkInputFile,
+        { id: lastVal + 1, type: data },
+      ]);
+    } else toast.success("최대 업로드 가능 갯수는 5개 입니다");
   };
 
   const FileHandler = (event) => {
@@ -332,13 +343,13 @@ function PartyDetail() {
         ></FloatingMenu>
         <ContentsWrapper>
           <MarkdownTitle
-          postInfo={postInfo}
-          dtype={dtype}
-          role={res?.data?.data?.data?.role}
-          author = {res?.data?.data?.data?.author}
-          authorRole = {res?.data?.data?.data?.authorRole}
-          groupId={groupId}
-          detailId={detailId}
+            postInfo={postInfo}
+            dtype={dtype}
+            role={res?.data?.data?.data?.role}
+            author={res?.data?.data?.data?.author}
+            authorRole={res?.data?.data?.data?.authorRole}
+            groupId={groupId}
+            detailId={detailId}
           />
           <ReactMarkdownWrapper
             children={postInfo.content}
@@ -364,7 +375,7 @@ function PartyDetail() {
             }}
           />
           {/*투표 여부를 판단, 투표지가 있을 경우 투표 관련 컴포넌트 랜더링*/}
-          {dtype =="vote" ? (
+          {dtype == "vote" ? (
             whereToVoted == -1 && now < expirationTimeOrigin ? (
               <VoteContentContainer>
                 <h1 className="smallname">마감시간 : {expirationTime}</h1>
@@ -573,7 +584,6 @@ function PartyDetail() {
                           )
                           /*여기다 피드백 대기 중 혹은 반려됨 혹은 받은 피드백 적어놓기 */
                         }
-
                       </HomeworkContentContainer>
                     }
                   </HomeWorkSubmitButtonBox>
@@ -673,7 +683,7 @@ function PartyDetail() {
             </form>
           </CommentInputWrapper>
         </Commentcontainer>
-        {isOpen === true && <EditReady role = {res?.data?.data?.data?.role}/>}
+        {isOpen === true && <EditReady role={res?.data?.data?.data?.role} />}
       </PageContainer>
     </>
   );

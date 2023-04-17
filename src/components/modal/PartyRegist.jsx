@@ -18,7 +18,11 @@ import imageCompression from "browser-image-compression";
 
 const PartyRegist = () => {
   const navi = useNavigate();
-  const { register, formState: errors, handleSubmit } = useForm();
+  const {
+    register,
+    formState: { errors },
+    handleSubmit,
+  } = useForm();
   const [images, setImages] = useState(Test);
   const [postImages, setPostImages] = useState(null);
   const [titleState, setTitleState] = useState(null);
@@ -75,21 +79,15 @@ const PartyRegist = () => {
     }
   };
 
-  const ImageHandler = async (event) => {
-    const options = {
-      maxSizeMB: 20,
-      maxWidthOrHeight: 100,
-    };
+  const ImageHandler = (event) => {
     const file = event.target.files[0];
-    const compressedFile = await imageCompression(file, options);
-    console.log(file, compressedFile);
     const reader = new FileReader();
     reader.onloadend = () => {
       setImages(reader.result);
     };
-    setPostImages(compressedFile);
-    if (compressedFile != null) {
-      reader.readAsDataURL(compressedFile);
+    setPostImages(file);
+    if (file != null) {
+      reader.readAsDataURL(file);
     } else {
       setImages(Test);
       setPostImages(null);
@@ -107,7 +105,7 @@ const PartyRegist = () => {
     if (postImages != null) {
       postRequest.append("groupImage", postImages);
     }
-    if (currentPage == "/main") {
+    if (currentPage === "/main") {
       const res = await postgroup.mutateAsync(postRequest);
     } else {
       //const url = "/party/44/admin";
@@ -136,9 +134,9 @@ const PartyRegist = () => {
         exit="exit"
       >
         <TopButtonBox>
-          {currentPage == "/main" ? (
+          {currentPage === "/main" ? (
             <>
-              {modalChange == true ? (
+              {modalChange === true ? (
                 <h1
                   className="buttontitle"
                   onClick={() => setModalChange(true)}
@@ -154,7 +152,7 @@ const PartyRegist = () => {
                 </h1>
               )}
 
-              {modalChange == false ? (
+              {modalChange === false ? (
                 <h1
                   className="buttontitle"
                   onClick={() => setModalChange(false)}
@@ -194,7 +192,7 @@ const PartyRegist = () => {
                     <input
                       id="file-upload"
                       type="file"
-                      accept="image/*"
+                      accept="image/jpeg, image/png"
                       onChange={ImageHandler}
                       style={{ display: "none" }}
                     ></input>
@@ -232,7 +230,7 @@ const PartyRegist = () => {
                     </InputWrapper>
                   </RegistInputContainer>
                 </ModalContentBox>
-                {currentPage == "/main" ? (
+                {currentPage === "/main" ? (
                   <ModalButtonBox>
                     <Button>그룹 생성하기</Button>
                     <Button

@@ -23,7 +23,7 @@ import { useRecoilState, useResetRecoilState } from "recoil";
 const EmptyText = (props) => {
   return (
     <>
-      {props.type == "board" ? (
+      {props.type === "board" ? (
         <EmptyTextBox>
           <h1>게시글이 없습니다.</h1>
         </EmptyTextBox>
@@ -37,23 +37,18 @@ const EmptyText = (props) => {
 };
 
 const EmptyTextBox = styled.div`
-  width: 60vw;
+  width: 65vw;
   height: 40rem;
   align-items: center;
   justify-content: center;
   background-color: ${(props) => props.theme.color.zeroOne};
   border-radius: 0.8rem;
+  margin-left: 1rem;
   display: flex;
   flex-direction: column;
   gap: 2rem;
   h1 {
-    overflow: hidden;
-    text-overflow: ellipsis;
-    display: -webkit-box;
-    -webkit-line-clamp: 1;
-    -webkit-box-orient: vertical;
-    font-size: 8rem;
-    font-weight: 600;
+    font-size: 3.5rem;
     color: rgb(88, 85, 133, 0.5);
   }
   h2 {
@@ -361,7 +356,7 @@ const PageContainer = styled.div`
   flex-direction: row;
   align-items: flex-start;
   width: 100vw;
-  max-width: 128rem;
+  max-width: 128rem;글
   margin: 0 auto;
   padding: 2rem 0 3rem 0;
   margin-top: 14rem;

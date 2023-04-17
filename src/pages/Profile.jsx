@@ -13,7 +13,6 @@ import { InputStyle } from "../utils/style/mixins";
 
 const GroupList = (props) => {
   const navi = useNavigate();
-
   const deleteGroup = useMutation(deletePage, {
     onSuccess: ({ data }) => {
       toast.success("그룹을 삭제했습니다.");
