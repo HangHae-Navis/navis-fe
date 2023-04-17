@@ -8,7 +8,6 @@ import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import PartyInfo from "../components/party/PartyInfo";
 import SlideChart from "../components/party/SlideChart";
-import { flexCenter } from "../utils/style/mixins";
 import { ReactMarkdown } from "react-markdown/lib/react-markdown";
 import SyntaxHighlighter from "react-syntax-highlighter/dist/esm/default-highlight";
 import remarkGfm from "remark-gfm";
@@ -21,10 +20,8 @@ import profile from "../assets/ic54/profile.svg";
 import { getLocalStorage } from "../utils/infos/localStorage";
 import Comment from "../element/Comment";
 import Button from "../element/Button";
-import Input from "./../element/Input";
-import { FullDateCheck, DayCheck, ShortCheck } from "../element/DateCheck";
+import { FullDateCheck, ShortCheck } from "../element/DateCheck";
 import { useForm } from "react-hook-form";
-import { async } from "q";
 import ShowSubmitFile from "../components/modal/ShowSubmitFile";
 import FloatingMenu from "../components/party/FloatingMenu";
 import Survey from "../components/party/Survey";
@@ -42,31 +39,10 @@ function PartyDetail() {
   const [isAdmin, setIsAdmin] = useState();
   const [postInfo, setPostInfo] = useState({});
   const [voteMax, setVoteMax] = useState("");
-
   const [database, setDatabase] = useState();
-  const [databaseList_0, setDatabaseList_0] = useState();
-  const [databaseList_1, setDatabaseList_1] = useState();
   const [submitAgain, setSubmitAgain] = useState(false);
-
-  //투표에서 사용하는 스테이트
-  //공백 :  setDatabase,
-  //공백배열 : setVoteContent, 
-  //공백 문자열 : setVoteMax
-
-  //과제에서 사용하는 스테이트
-  //공백 :  setHomeWorkPostedFileList,
-  //공백배열 : 
-  //공백 문자열 : 
-
-  //설문에서 사용하는 스테이트
-  //공백 :  setDatabase,
-  //공백배열 : , 
-  //공백 문자열 : 
-  //공백 bool : setSubmitSurvey,
-  
   const [homeWorkInputFile, setHomeWorkInputFile] = useState([]);
   const [homeWorkInputFileList, setHomeWorkInputFileList] = useState([]);
-  const [homeWorkPostedFileList, setHomeWorkPostedFileList] = useState([]);
   const [voteSelectedOption, setVoteSelectedOption] = useState();
   const [submitSurvey, setSubmitSurvey] = useState(false);
   const [showModal, setShowModal] = useState(false);
@@ -76,9 +52,7 @@ function PartyDetail() {
   const storedData = JSON.parse(localStorage.getItem("userInfo"));
   const profileImage =
     token != null
-      ? storedData.profileImage == null
-        ? profile
-        : storedData.profileImage
+      ? storedData.profileImage == null ? profile : storedData.profileImage
       : profile;
 
   useEffect(() => {
@@ -118,9 +92,6 @@ function PartyDetail() {
             setVoteMax(maxVal);
             break;
           case "homework":
-            if (data.data.submitResponseDto != null) {
-              setHomeWorkPostedFileList(data.data.submitResponseDto.fileList);
-            }
             break;
           case "survey":
             setSubmitSurvey(data.data.submit);
@@ -200,11 +171,7 @@ function PartyDetail() {
   });
 
   const onPost = async (data) => {
-    const payload = {
-      groupId,
-      detailId,
-      comment: data,
-    };
+    const payload = {groupId, detailId, comment: data,};
     const res = await post.mutateAsync(payload);
     setComment("");
   };
@@ -234,15 +201,10 @@ function PartyDetail() {
 
   const addInput = (data) => {
     if (homeWorkInputFile.length < 5) {
-        const lastVal =
-          homeWorkInputFile.length > 0
-            ? homeWorkInputFile[homeWorkInputFile.length - 1].id
-            : 0;
-        setHomeWorkInputFile((homeWorkInputFile) => [
-          ...homeWorkInputFile,
-          { id: lastVal + 1, type: data },
-        ]);
-      } else toast.success("최대 업로드 가능 갯수는 5개 입니다");
+        const lastVal = homeWorkInputFile.length > 0 ? homeWorkInputFile[homeWorkInputFile.length - 1].id : 0;
+        setHomeWorkInputFile((homeWorkInputFile) => [...homeWorkInputFile, { id: lastVal + 1, type: data },]);
+      }
+    else toast.success("최대 업로드 가능 갯수는 5개 입니다");
   };
 
   const FileHandler = (event) => {
