@@ -176,10 +176,10 @@ const Main = () => {
           </Button>
         </GroupHeaderWrapper>
         <GroupContainer>
-          {groupList?.length == 0
+          {isLoading === false ? (
+          groupList?.length == 0
           ? <EmptyText></EmptyText>
           :
-          isLoading === false ? (
             groupList?.map((item) => {
               return (
                 <GroupBoxComp
@@ -197,14 +197,12 @@ const Main = () => {
             })
           ) : (
             <>
-              <Skeleton width={350} height={480} />
-              <Skeleton width={350} height={480} />
-              <Skeleton width={350} height={480} />
-              <Skeleton width={350} height={480} />
-              <Skeleton width={350} height={480} />
-              <Skeleton width={350} height={480} />
-              <Skeleton width={350} height={480} />
-              <Skeleton width={350} height={480} />
+              <Skeleton width={380} height={510} />
+              <Skeleton width={380} height={510} />
+              <Skeleton width={380} height={510} />
+              <Skeleton width={380} height={510} />
+              <Skeleton width={380} height={510} />
+              <Skeleton width={380} height={510} />
             </>
           )}
         </GroupContainer>
