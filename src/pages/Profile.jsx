@@ -35,17 +35,19 @@ const GroupList = (props) => {
       <GroupListBox>
         <GroupListTitleBox>
           <h1 className="name">{props.item.groupName} </h1>
+          <GroupListTitleBoxRight>
           <span className="date">{DayCheck(props.item.createdAt)} 생성</span>
-          <span className="date">| 그룹 코드 : {props.item.groupCode}</span>
-          <span className="date">
-            | 멤버 수 : {props.item.groupMemberCount}
-          </span>
+          <span className="date">|</span>
+          <span className="date">그룹 코드 : {props.item.groupCode}</span>
+          <span className="date">|</span>
+          <span className="date">멤버 수 : {props.item.groupMemberCount}</span>
+          </GroupListTitleBoxRight>
         </GroupListTitleBox>
         <GroupButtonBox>
-          <Button onClick={() => navi(`/party/${props.item.groupId}`)}>
+          <Button width={"110px"} onClick={() => navi(`/party/${props.item.groupId}`)}>
             관리하기
           </Button>
-          <Button
+          <Button width={"110px"}
             transparent={true}
             color="rgb(88, 85, 133)"
             onClick={() => doDeletePage(props.item.groupId)}
@@ -61,7 +63,7 @@ const GroupButtonBox = styled.div`
   display: flex;
   flex-direction: row;
   align-items: center;
-  gap: 1rem;
+  gap: 0.5rem;
 `;
 
 const GroupListBox = styled.div`
@@ -72,13 +74,26 @@ const GroupListBox = styled.div`
   justify-content: space-between;
   border-radius: 2rem;
   width: 100%;
+  @media (max-width: 1230px) {
+    flex-direction: column;
+  align-items: flex-start;
+  }
 `;
+
+const GroupListTitleBoxRight = styled.div`
+width: 100%;
+display: flex;
+flex-direction: row;
+justify-content: flex-end;
+align-items: center;
+gap: 0.5rem;
+`
 const GroupListTitleBox = styled.div`
-  width: 75%;
+  width: 100%;
   padding: 2rem;
   display: flex;
   flex-direction: row;
-  justify-content: flex-start;
+  justify-content: space-between;
   align-items: center;
   gap: 0.5rem;
   .name {
@@ -86,13 +101,14 @@ const GroupListTitleBox = styled.div`
     font-weight: 400;
     font-size: 2.2rem;
     color: #5d5a88;
+  }
+  .date {
+    text-align: left;
+    font-weight: 400;
+    font-size: 1.8rem;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-  }
-  .date {
-    font-weight: 400;
-    font-size: 1.8rem;
     color: #9795b5;
   }
 `;
@@ -230,8 +246,8 @@ const Profile = () => {
                       프로필 이미지를 바꾸세요
                     </h1>
                   </ImageTextBox>
-                  <GroupInfoTextBox>
                     <form onSubmit={PostProfile}>
+                  <GroupInfoTextBox>
                       <input
                         id="file-upload"
                         type="file"
@@ -254,7 +270,7 @@ const Profile = () => {
                           type="text"
                           isput={isPut}
                           defaultValue={userNick}
-                          width={"20vw"}
+                          width={"18vw"}
                           rule={nicknameRules}
                         />
                       </GroupInfoText>
@@ -266,12 +282,12 @@ const Profile = () => {
                           name="password"
                           type="text"
                           isput={isPut}
-                          width={"20vw"}
+                          width={"18vw"}
                           rule={passwordRules}
                         />
                       </GroupInfoText>
-                    </form>
                   </GroupInfoTextBox>
+                    </form>
                 </>
               )}
             </GroupInfoBox>
@@ -302,6 +318,7 @@ const ImageTextBox = styled.div`
   display: flex;
   flex-direction: column;
   align-items: flex-start;
+  justify-content: flex-start;
 `;
 
 const GroupTitleBox = styled.div`
@@ -313,7 +330,7 @@ const GroupTitleBox = styled.div`
 `;
 
 const TopContentContainer = styled.div`
-  width: 100%;
+  width: 60vw;
   height: 100%;
   border-radius: 4rem;
   border: 0.1rem solid #d4d2e3;
@@ -352,8 +369,10 @@ const GroupInfoBox = styled.div`
 `;
 const GroupInfoImage = styled.img`
   border-radius: 2rem;
-  width: 18rem;
-  height: 18rem;
+  width: 100%;
+  height: 100%;
+  max-width: 18rem;
+  max-height: 18rem;
   object-fit: cover;
 `;
 
@@ -371,11 +390,13 @@ const GroupInfoTextBox = styled.div`
   display: flex;
   flex-direction: column;
   align-items: flex-start;
+  width: 20vw;
   gap: 3rem;
 `;
 
 const GroupInfoText = styled.div`
   display: flex;
+  width: 30vw;
   flex-direction: row;
   align-items: center;
   gap: 2rem;
@@ -395,6 +416,9 @@ const PageContainer = styled.div`
     font-weight: 700;
     font-size: 3.2rem;
     color: #5d5a88;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
   .infotitle {
     font-weight: 700;
@@ -404,6 +428,9 @@ const PageContainer = styled.div`
   .infocontent {
     font-weight: 400;
     font-size: 2.4rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
     color: #9795b5;
   }
   .inputcontent {
