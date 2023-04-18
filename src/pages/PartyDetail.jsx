@@ -443,7 +443,7 @@ function PartyDetail() {
                           {FullDateCheck(res?.data?.data?.data?.submitResponseDto.createdAt)}{" "}{res?.data?.data?.data?.submitResponseDto.late == true ? "제출(지각)" : "제출"}{" "}
                         </h1>
                       </PostedHomeWorkFileBox>
-                      {res?.data.data.data.submitResponseDto.fileListmap((item) => (
+                      {res?.data.data.data.submitResponseDto.fileList.map((item) => (
                         <a key={item} href={`${item.fileUrl}?download=true`} className="filename"> {" "} {item.fileName}</a>
                       ))}
                     </HomeworkContentContainer>
