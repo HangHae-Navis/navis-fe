@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useQuery } from "react-query";
 import { useNavigate } from "react-router";
-import { useRecoilState, useSetRecoilState } from "recoil";
+import { useSetRecoilState } from "recoil";
 import styled, { css } from "styled-components";
 import { loginModalState, signinModalState } from "../../store/atom";
 import { getKaKaoLogin } from "../../utils/api/api";

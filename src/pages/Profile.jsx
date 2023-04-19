@@ -1,125 +1,24 @@
 import { useMutation, useQuery } from "react-query";
-import styled from "styled-components";
 import Button from "../element/Button";
-import { deletePage, GetProfile, PutProfile } from "../utils/api/api";
+import {GetProfile, PutProfile } from "../utils/api/api";
 import "react-loading-skeleton/dist/skeleton.css";
 import Test from "./../assets/Image Placeholder.svg";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { FullDateCheck, DayCheck } from "../element/DateCheck";
+import { FullDateCheck, } from "../element/DateCheck";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 import Input from "../element/Input";
-import {
-  nicknameRules,
-  passwordRules,
-  userNameRules,
-} from "../constants/validate";
+import {nicknameRules, passwordRules,} from "../constants/validate";
 import { getCookie } from "../utils/infos/cookie";
-
-const GroupList = (props) => {
-  const navi = useNavigate();
-  const deleteGroup = useMutation(deletePage, {
-    onSuccess: ({ data }) => {
-      toast.success("그룹을 삭제했습니다.");
-      props.res.refetch();
-    },
-  });
-
-  const doDeletePage = (data) => {
-    const res = deleteGroup.mutateAsync(data);
-  };
-
-  return (
-    <>
-      <GroupListBox>
-        <GroupListTitleBox>
-          <h1 className="name">{props.item.groupName} </h1>
-          <GroupListTitleBoxRight>
-          <span className="date">{DayCheck(props.item.createdAt)} 생성</span>
-          <span className="date">|</span>
-          <span className="date">그룹 코드 : {props.item.groupCode}</span>
-          <span className="date">|</span>
-          <span className="date">멤버 수 : {props.item.groupMemberCount}</span>
-          </GroupListTitleBoxRight>
-        </GroupListTitleBox>
-        <GroupButtonBox>
-          <Button width={"110px"} onClick={() => navi(`/party/${props.item.groupId}`)}>
-            관리하기
-          </Button>
-          <Button width={"110px"}
-            transparent={true}
-            color="rgb(88, 85, 133)"
-            onClick={() => doDeletePage(props.item.groupId)}
-          >
-            삭제하기
-          </Button>
-        </GroupButtonBox>
-      </GroupListBox>
-    </>
-  );
-};
-const GroupButtonBox = styled.div`
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  gap: 0.5rem;
-`;
-
-const GroupListBox = styled.div`
-  display: flex;
-  padding-right: 2rem;
-  flex-direction: row;
-  align-items: center;
-  justify-content: space-between;
-  border-radius: 2rem;
-  width: 100%;
-  @media (max-width: 1230px) {
-    flex-direction: column;
-  align-items: flex-start;
-  }
-`;
-
-const GroupListTitleBoxRight = styled.div`
-width: 100%;
-display: flex;
-flex-direction: row;
-justify-content: flex-end;
-align-items: center;
-gap: 0.5rem;
-`
-const GroupListTitleBox = styled.div`
-  width: 100%;
-  padding: 2rem;
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  align-items: center;
-  gap: 0.5rem;
-  .name {
-    width: 35%;
-    font-weight: 400;
-    font-size: 2.2rem;
-    color: #5d5a88;
-  }
-  .date {
-    text-align: left;
-    font-weight: 400;
-    font-size: 1.8rem;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    color: #9795b5;
-  }
-`;
+import { useRef } from "react";
+import { GroupList } from "../components/profile/GroupBox";
+import styled from "styled-components";
 
 const Profile = () => {
+  const postImages = useRef(null)
   const [isPut, setIsPut] = useState(false);
-  const [userName, setUserName] = useState();
-  const [userNick, setUserNick] = useState();
   const [userImg, setUserImg] = useState();
-  const [postImages, setPostImages] = useState(null);
-  const [userDate, setUserDate] = useState();
   const [userGroup, setUserGroup] = useState();
   const {
     register,
@@ -151,19 +50,16 @@ const Profile = () => {
     reader.onloadend = () => {
       setUserImg(reader.result);
     };
-    setPostImages(file);
+    postImages.current = file;
     if (file != null) {
       reader.readAsDataURL(file);
     } else {
       setUserImg(Test);
-      setPostImages(null);
+      postImages.current = null;
     }
   };
   const getInfo = useQuery(["userInfo"], () => GetProfile(), {
     onSuccess: (data) => {
-      setUserName(data.data.data.username);
-      setUserNick(data.data.data.nickname);
-      setUserDate(FullDateCheck(data.data.data.createdAt));
       setUserGroup(data.data.data.groupInfo);
       setUserImg(data.data.data.profileImage);
     },
@@ -171,14 +67,13 @@ const Profile = () => {
 
   const PostProfile = async () => {
     const postRequest = new FormData();
-    console.log(watch().password);
-    if (postImages != null) {
-      postRequest.append("profileImage", postImages);
+    if (postImages.current != null) {
+      postRequest.append("profileImage", postImages.current);
     }
-    if (watch().nick !== userNick) {
+    if (watch().nick !== getInfo?.data.data.data.nickname) {
       postRequest.append("nickname", watch().nick);
     } else {
-      postRequest.append("nickname", userNick);
+      postRequest.append("nickname", getInfo?.data.data.data.nickname);
     }
     if (watch().password !== null) {
       postRequest.append("password", watch().password);
@@ -191,9 +86,9 @@ const Profile = () => {
   }
   return (
     <>
-      <PageContainer>
-        <RightTotalContainer>
-          <GroupTitleBox>
+      <ProfilePageContainer>
+        <ProfileRightTotalContainer>
+          <ProfileGroupTitleBox>
             <h1 className="title">내 정보</h1>
             {!isPut ? (
               <Button onClick={() => setIsPut(!isPut)}>
@@ -205,49 +100,49 @@ const Profile = () => {
                 <Button onClick={() => setIsPut(!isPut)}>수정취소</Button>
               </>
             )}
-          </GroupTitleBox>
-          <TopContentContainer>
-            <GroupInfoBox>
+          </ProfileGroupTitleBox>
+          <ProfileTopContentContainer>
+            <ProfileGroupInfoBox>
               {/*프로필 이미지 노출할 부위, 없으면 기본 이미지로*/}
               {!isPut ? (
                 <>
-                  <ImageTextBox>
-                    <GroupInfoImage
+                  <ProfileImageTextBox>
+                    <ProfileGroupInfoImage
                       src={
                         getInfo.data.data.data.profileImage != null
                           ? getInfo.data.data.data.profileImage
                           : Test
                       }
-                    ></GroupInfoImage>
-                  </ImageTextBox>
-                  <GroupInfoTextBox>
-                    <GroupInfoText>
+                    />
+                  </ProfileImageTextBox>
+                  <ProfileGroupInfoTextBox>
+                    <ProfileGroupInfoTextBox>
                       <h1 className="infotitle">계정명</h1>
-                      <p className="infocontent">{userName}</p>
-                    </GroupInfoText>
-                    <GroupInfoText>
+                      <p className="infocontent">{getInfo?.data.data.data.username}</p>
+                    </ProfileGroupInfoTextBox>
+                    <ProfileGroupInfoText>
                       <h1 className="infotitle">닉네임</h1>
-                      <p className="infocontent">{userNick}</p>
-                    </GroupInfoText>
-                    <GroupInfoText>
+                      <p className="infocontent">{getInfo?.data.data.data.nickname}</p>
+                    </ProfileGroupInfoText>
+                    <ProfileGroupInfoText>
                       <h1 className="infotitle">가입일자</h1>
-                      <p className="infocontent">{userDate}</p>
-                    </GroupInfoText>
-                  </GroupInfoTextBox>
+                      <p className="infocontent">{FullDateCheck(getInfo?.data.data.data.createdAt)}</p>
+                    </ProfileGroupInfoText>
+                  </ProfileGroupInfoTextBox>
                 </>
               ) : (
                 <>
-                  <ImageTextBox>
+                  <ProfileImageTextBox>
                     <label htmlFor="file-upload">
-                      <GroupInfoImage src={userImg != null ? userImg : Test} />
+                      <ProfileGroupInfoImage src={userImg != null ? userImg : Test} />
                     </label>
                     <h1 className="inputcontent">
                       이미지를 클릭하여 <br />
                       프로필 이미지를 바꾸세요
                     </h1>
-                  </ImageTextBox>
+                  </ProfileImageTextBox>
                     <form onSubmit={PostProfile}>
-                  <GroupInfoTextBox>
+                  <ProfileGroupInfoTextBox>
                       <input
                         id="file-upload"
                         type="file"
@@ -255,11 +150,11 @@ const Profile = () => {
                         style={{ display: "none" }}
                         onChange={ImageHandler}
                       ></input>
-                      <GroupInfoText>
+                      <ProfileGroupInfoText>
                         <h1 className="infotitle">계정명</h1>
-                        <p className="infocontent">{userName}</p>
-                      </GroupInfoText>
-                      <GroupInfoText>
+                        <p className="infocontent">{getInfo?.data.data.data.username}</p>
+                      </ProfileGroupInfoText>
+                      <ProfileGroupInfoText>
                         <h1 className="infotitle">
                           닉네임&nbsp;&nbsp;&nbsp;&nbsp;
                         </h1>
@@ -269,12 +164,12 @@ const Profile = () => {
                           name="nick"
                           type="text"
                           isput={isPut}
-                          defaultValue={userNick}
+                          defaultValue={getInfo?.data.data.data.nickname}
                           width={"18vw"}
                           rule={nicknameRules}
                         />
-                      </GroupInfoText>
-                      <GroupInfoText>
+                      </ProfileGroupInfoText>
+                      <ProfileGroupInfoText>
                         <h1 className="infotitle">비밀번호</h1>
                         <Input
                           placeholder="변경할 비밀번호를 입력하세요."
@@ -285,17 +180,17 @@ const Profile = () => {
                           width={"18vw"}
                           rule={passwordRules}
                         />
-                      </GroupInfoText>
-                  </GroupInfoTextBox>
+                      </ProfileGroupInfoText>
+                  </ProfileGroupInfoTextBox>
                     </form>
                 </>
               )}
-            </GroupInfoBox>
-          </TopContentContainer>
-          <GroupTitleBox>
+            </ProfileGroupInfoBox>
+          </ProfileTopContentContainer>
+          <ProfileGroupTitleBox>
             <h1 className="title">보유 중인 그룹</h1>
-          </GroupTitleBox>
-          <BottomContentContainer>
+          </ProfileGroupTitleBox>
+          <ProfileBottomContentContainer>
             {userGroup?.length !== 0 ? (
               userGroup?.map((item) => {
                 return (
@@ -305,23 +200,32 @@ const Profile = () => {
             ) : (
               <h1>보유 중인 그룹이 없습니다</h1>
             )}
-          </BottomContentContainer>
-        </RightTotalContainer>
-      </PageContainer>
+          </ProfileBottomContentContainer>
+        </ProfileRightTotalContainer>
+      </ProfilePageContainer>
     </>
   );
 };
 
 export default Profile;
 
-const ImageTextBox = styled.div`
+ const ProfileGroupInfoImage = styled.img`
+  border-radius: 2rem;
+  width: 100%;
+  height: 100%;
+  max-width: 18rem;
+  max-height: 18rem;
+  object-fit: cover;
+`;
+
+const ProfileImageTextBox = styled.div`
   display: flex;
   flex-direction: column;
   align-items: flex-start;
   justify-content: flex-start;
 `;
 
-const GroupTitleBox = styled.div`
+const ProfileGroupTitleBox = styled.div`
   display: flex;
   flex-direction: row;
   justify-content: flex-start;
@@ -329,7 +233,7 @@ const GroupTitleBox = styled.div`
   gap: 2rem;
 `;
 
-const TopContentContainer = styled.div`
+const ProfileTopContentContainer = styled.div`
   width: 60vw;
   height: 100%;
   border-radius: 4rem;
@@ -337,7 +241,7 @@ const TopContentContainer = styled.div`
   padding: 5rem;
 `;
 
-const BottomContentContainer = styled.div`
+const ProfileBottomContentContainer = styled.div`
   width: 100%;
   height: 100%;
   display: flex;
@@ -358,7 +262,7 @@ const BottomContentContainer = styled.div`
     color: rgb(88, 85, 133, 0.5);
   }
 `;
-const GroupInfoBox = styled.div`
+const ProfileGroupInfoBox = styled.div`
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -367,16 +271,8 @@ const GroupInfoBox = styled.div`
     gap: 4rem;
   }
 `;
-const GroupInfoImage = styled.img`
-  border-radius: 2rem;
-  width: 100%;
-  height: 100%;
-  max-width: 18rem;
-  max-height: 18rem;
-  object-fit: cover;
-`;
 
-const RightTotalContainer = styled.div`
+const ProfileRightTotalContainer = styled.div`
   flex-direction: column;
   justify-content: flex-start;
   align-items: center;
@@ -386,7 +282,7 @@ const RightTotalContainer = styled.div`
   }
 `;
 
-const GroupInfoTextBox = styled.div`
+const ProfileGroupInfoTextBox = styled.div`
   display: flex;
   flex-direction: column;
   align-items: flex-start;
@@ -394,7 +290,7 @@ const GroupInfoTextBox = styled.div`
   gap: 3rem;
 `;
 
-const GroupInfoText = styled.div`
+const ProfileGroupInfoText = styled.div`
   display: flex;
   width: 30vw;
   flex-direction: row;
@@ -402,7 +298,7 @@ const GroupInfoText = styled.div`
   gap: 2rem;
 `;
 
-const PageContainer = styled.div`
+const ProfilePageContainer = styled.div`
   margin-top: 14rem;
 
   display: flex;

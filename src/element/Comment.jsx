@@ -17,25 +17,6 @@ function Comment(props) {
   const profileImage =
     props.profileImage != null ? props.profileImage : profile;
 
-  // const putComment = useMutation(putCommentPage, {
-  //   onSuccess: (data) => {
-  //     queryclient.invalidateQueries("comment");
-  //     toast.success("댓글이 수정되었습니다.", {
-  //       toastId: "commentDelete",
-  //     });
-  //   },
-  // });
-
-  // const onPut = async (data) => {
-  //   const payload = {
-  //     groupId: props.groupId,
-  //     detailId: props.detailId,
-  //     commentId: props.id,
-  //     value: data,
-  //   };
-  //   const res = await putComment.mutateAsync(payload);
-  // };
-
   const doDeletComment = () => {
     const res = deleteComment.mutateAsync({
       groupId: props.groupId,
@@ -43,9 +24,6 @@ function Comment(props) {
       commentId: props.id,
     });
   };
-  // const doPutComment = () => {
-  //   //const res = putComment.mutateAsync({groupId: props.groupId, detailId: props.detailId, commentId: props.id, value : })
-  // };
 
   return (
     <CommentBox>
@@ -54,24 +32,9 @@ function Comment(props) {
         <span>{props.nickname}</span>
         <p>{props.content}</p>
       </div>
-      {/* {props.isAdmin === true ? (
-        <Button onClick={() => setIsPut(!isPut)}>수정하기</Button>
-      ) : null} */}
-      {props.isAdmin === true || props.owned === true ? (
+      {props.isAdmin.current === true || props.owned === true ? (
         <section onClick={doDeletComment}>X</section>
       ) : null}
-      {/* {isPut === false ? null : (
-        <form onSubmit={handleSubmit(onPut)}>
-          <Input
-            placeholder="댓글을 수정하시오."
-            register={register}
-            name="content"
-            type="text"
-            label="댓글수정"
-          />
-          <Button>수정 완료</Button>
-        </form>
-      )} */}
     </CommentBox>
   );
 }

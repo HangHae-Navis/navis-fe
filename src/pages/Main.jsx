@@ -14,6 +14,7 @@ import { partyRegistModalState } from "../store/atom";
 import NavBar from "../components/party/NavBar";
 import { getCookie } from "../utils/infos/cookie";
 import { HourCheck } from "../element/DateCheck";
+import { useRef } from "react";
 
 const EmptyText = () =>{
   return(<EmptyTextBox>
@@ -105,21 +106,19 @@ const GroupBoxComp = (props) => {
 };
 
 const Main = () => {
-  const [groupList, setGroupList] = useState([]);
-  const [totalNum, setTotalNum] = useState(0);
-  const [pageNum, setPageNum] = useState(1);
-  const [filterParam, setFilterParam] = useState("all");
+  const totalNum = useRef(0)
+  const filterParam = useRef("all")
   const navigate = useNavigate();
+  const [groupList, setGroupList] = useState([]);
+  const [pageNum, setPageNum] = useState(1);
   const [activeState, setActiveState] = useState("전체그룹");
-  //받아오는 데이터는 content(목록), totalElements(총 갯수), totalPages(총 페이지)를 받아옴
-  //현재 받아오는 response 중 사용 중인 것은 content와 totalelements 둘 뿐, totalPages를 사용하려면 MakeButton의 로직 변경 필요
   const { isLoading } = useQuery(
-    ["getList", { page: pageNum, size: 6, category: filterParam }],
-    () => getPartyPage({ page: pageNum, size: 6, category: filterParam }),
+    ["getList", { page: pageNum, size: 6, category: filterParam.current}],
+    () => getPartyPage({ page: pageNum, size: 6, category: filterParam.current}),
     {
       onSuccess: ({ data }) => {
         setGroupList(data.data.content);
-        setTotalNum(data.data.totalElements);
+        totalNum.current = data.data.totalElements;
       },
     }
   );
@@ -147,12 +146,11 @@ const Main = () => {
         <Pagination
           activePage={pageNum}
           itemsCountPerPage={6}
-          totalItemsCount={totalNum}
+          totalItemsCount={totalNum.current}
           pageRangeDisplayed={5}
           onChange={(page) => {
             setPageNum(page);
-          }}
-        />
+          }}/>
       </PaginationBox>
     );
   };
@@ -162,7 +160,7 @@ const Main = () => {
       <PageContainer>
         <GroupHeaderWrapper>
           <NavBar
-            setState={setFilterParam}
+            setState={filterParam}
             activeState={activeState}
             setActiveState={setActiveState}
           />
@@ -179,8 +177,7 @@ const Main = () => {
           {isLoading === false ? (
           groupList?.length == 0
           ? <EmptyText></EmptyText>
-          :
-            groupList?.map((item) => {
+          : groupList?.map((item) => {
               return (
                 <GroupBoxComp
                   key={item.groupId}

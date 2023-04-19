@@ -1,28 +1,16 @@
-import { motion } from "framer-motion";
+
 import React, { useEffect, useState } from "react";
-import styled from "styled-components";
-import { flexCenter } from "../../utils/style/mixins";
-import { modalVariants } from "../../utils/variants/variants";
-import { useForm } from "react-hook-form";
-import { useMutation, useQuery } from "react-query";
-import { getSurveyForAdmin, postFeedback, postGroup, postGroupApply, PutGroup, putHomeWorkData } from "../../utils/api/api";
-import Input from "../../element/Input";
-import Button from "../../element/Button";
-import Test from "../../assets/d65d5952-d801-4225-ab16-8720733b499a.png";
-import { useNavigate, useParams } from "react-router";
-import { useRecoilState, useResetRecoilState } from "recoil";
-import { partyInfoState, partyRegistModalState } from "../../store/atom";
-import { InputStyle } from "../../utils/style/mixins";
-import { ShortCheck } from "../../element/DateCheck";
-import { toast } from "react-toastify";
+import { useQuery } from "react-query";
+import { getSurveyForAdmin, } from "../../utils/api/api";
 import { useSearchParams } from "react-router-dom";
+import styled from "styled-components";
+import { motion } from "framer-motion";
+import { flexCenter } from "../../utils/style/mixins";
 
 const ShowSurveyModal = (props) => {
   const [searchParams, setSearchParams] = useSearchParams();
   const groupId = searchParams.get("groupId");
   const detailId = searchParams.get("detailId");
-  const [inputValue, setInputValue] = useState('');
-  const [fileContainer, setFileContainer] = useState([])
 
   const getDetail = useQuery(
     ["adminsurveyget", { id: props.id , groupId, detailId}],
@@ -31,7 +19,10 @@ const ShowSurveyModal = (props) => {
 
   const ModalClose = (event) => {
     if (event.target === event.currentTarget) {
-      props.setShowModal(false)
+      props.setShowModal(prevState => ({
+        ...prevState,
+        isModalOpen: false // 변경할 속성
+      }));
     }
   };
   
@@ -42,16 +33,16 @@ const ShowSurveyModal = (props) => {
     return <></>;
   }
 
-  return (<RegistModalBackGround onClick={ModalClose}>
+  return (<SurveyModalRegistModalBackGround onClick={ModalClose}>
 
-    <SubmitFileModalWrapper>
-      <SubmitFileContainer>
+    <SurveyModalSubmitFileModalWrapper>
+      <SurveyModalSubmitFileContainer>
         <h1 className="buttontitle">작성자 : {props.names.name}</h1>
         
         {props.DTO.map((item, index) => {
           switch (item.type) {
             case 'CHECKBOX':
-              return (<SurveyAnswerBox key = {item + index}>
+              return (<SurveyModalSurveyAnswerBox key = {item + index}>
                 <h1 className="buttontitle">{index+1}번. {item.question}</h1>
                 {item.options.split(", ").map((iteminoption, indexdetail) => (
                   getDetail?.data?.data?.data[index]?.answers.split(", ").indexOf(iteminoption) !== -1
@@ -60,14 +51,14 @@ const ShowSurveyModal = (props) => {
                 :
                 <h1 key = {iteminoption + indexdetail} className="infocontent">{indexdetail + 1}. {iteminoption} </h1>
         ))}
-              </SurveyAnswerBox>)
+              </SurveyModalSurveyAnswerBox>)
             case 'DESCRIPTIVE':
-              return (<SurveyAnswerBox key = {item + index}>
+              return (<SurveyModalSurveyAnswerBox key = {item + index}>
                 <h1 className="buttontitle">{index+1}번. {item.question}</h1>
                 <h1 className="rejecttext">응답 : {getDetail?.data?.data?.data[index].answers}</h1>
-              </SurveyAnswerBox>)
+              </SurveyModalSurveyAnswerBox>)
             case "OBJECTIVE":
-              return (<SurveyAnswerBox key = {item + index}>
+              return (<SurveyModalSurveyAnswerBox key = {item + index}>
                 <h1 className="buttontitle">{index+1}번. {item.question}</h1>
                 {item.options.split(", ").map((iteminoption, indexdeatil0) => (
                   iteminoption == getDetail?.data?.data?.data[index].answers
@@ -76,20 +67,20 @@ const ShowSurveyModal = (props) => {
                 :
                 <h1 key = {iteminoption + indexdeatil0} className="infocontent">{indexdeatil0 + 1}. {iteminoption} </h1>
                 ))}
-              </SurveyAnswerBox>)
+              </SurveyModalSurveyAnswerBox>)
             default:
               return null
           }
 
         })}
-      </SubmitFileContainer>
-    </SubmitFileModalWrapper>
-  </RegistModalBackGround>)
+      </SurveyModalSubmitFileContainer>
+    </SurveyModalSubmitFileModalWrapper>
+  </SurveyModalRegistModalBackGround>)
 }
 
 export default ShowSurveyModal
 
-const SurveyAnswerBox = styled.div`
+const SurveyModalSurveyAnswerBox = styled.div`
 align-items: flex-start;
 flex-direction: column;
 display: flex;
@@ -103,53 +94,8 @@ border: 0.2rem solid #C0C0C0;
     text-overflow: ellipsis;
     word-break: break-all;
 `
-const FeedbackBox = styled.div`
-display: flex;
-align-items: flex-start;
-flex-direction: column;
-max-width: 40rem;
-  word-wrap: break-word; /* 또는 overflow-wrap: break-word; */
-  white-space: pre-line;
-  gap:1rem;
-`
 
-const FeedbackButton = styled.button`
-  cursor: pointer;
-  width: 13rem;
-  height: 5rem;
-  background-color: transparent;
-  border-radius: 2.4rem;
-  border: 0.1rem solid #5D5A88;
-`
-const FeedbackInputBox = styled.div`
-display: flex;
-align-items: center;
-flex-direction: row;
-justify-content: space-between;
-text-align: center;
-gap: 2rem;
-`
-
-const FeedbackInput = styled.textarea`
-width : 45rem;
-min-height: 10rem; /* 최소 높이 */
-border: 1px solid gray;
-border-radius: 5px;
-font-size: 16px;
-resize:none;
-  color: black;
-  height: auto; /* 높이 자동 조절 */
-  overflow-y: hidden; /* 자동 조절되는 높이가 넘칠 때 스크롤이 생기지 않도록 함 */
-`
-
-const FeedbackContainer = styled.div`
-  display:flex;
-align-items: center;
-flex-direction: column;
-gap:2rem
-`
-
-const RegistModalBackGround = styled.div`    
+const SurveyModalRegistModalBackGround = styled.div`    
   position: fixed;
   top: 0;
   left: 0;
@@ -190,16 +136,8 @@ const RegistModalBackGround = styled.div`
   color: #9795B5
 }
 `;
-const SubmitTitle = styled.div`
-display: flex;
-align-items: center;
-flex-direction: row;
-justify-content: space-between;
-text-align: center;
-gap: 2rem;
-`
 
-const SubmitFileContainer = styled.div`
+const SurveyModalSubmitFileContainer = styled.div`
 min-width: 100%;
 min-height: 90%;
 padding-bottom: 2rem;
@@ -210,11 +148,11 @@ padding-bottom: 2rem;
   gap: 2rem;
 `;
 
-const SubmitFileModalWrapper = styled(motion.section)`
+const SurveyModalSubmitFileModalWrapper = styled(motion.section)` 
   width: 40vw;
   min-height: 40vw;
-  overflow-y: auto;  /* 세로축 스크롤을 사용합니다. */
-  max-height: 90vh;  /* 최대 높이를 지정합니다. */
+  overflow-y: auto;  
+  max-height: 90vh;  
   display: flex;
 align-items: flex-start;
   flex-direction: column;
@@ -226,3 +164,4 @@ align-items: flex-start;
     display: none;
   }
 `;
+
