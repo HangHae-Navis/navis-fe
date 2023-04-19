@@ -13,7 +13,6 @@ import { a11yDark } from "react-syntax-highlighter/dist/esm/styles/prism";
 import MarkdownTitle from "../components/global/MarkdownTitle";
 import { getCookie } from "../utils/infos/cookie";
 import { toast } from "react-toastify";
-import { useForm } from "react-hook-form";
 import ShowSubmitFile from "../components/modal/ShowSubmitFile";
 import Survey from "../components/partydetail/Survey";
 import { useRecoilState } from "recoil";
@@ -28,7 +27,6 @@ function PartyDetail() {
   const [searchParams, setSearchParams] = useSearchParams();
   const navi = useNavigate();
   const [isOpen, setIsOpen] = useRecoilState(editReadyState);
-  const { register, formState: errors, handleSubmit } = useForm();
   const [commentList, setCommentList] = useState();
   const isAdmin = useRef();
   const submitAgain = useRef(false)

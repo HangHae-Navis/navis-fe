@@ -67,7 +67,6 @@ const Profile = () => {
 
   const PostProfile = async () => {
     const postRequest = new FormData();
-    console.log(watch().password);
     if (postImages.current != null) {
       postRequest.append("profileImage", postImages.current);
     }

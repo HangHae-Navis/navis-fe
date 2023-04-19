@@ -6,11 +6,7 @@ import { useForm } from "react-hook-form";
 import styled from "styled-components";
 
 export const HomeworkBox = (props) =>{
-
   const { register, formState: errors, handleSubmit } = useForm();
-
-  console.log(props)
-
   const addInput = (data) => {
     if (props.homeWorkInputFile.length < 5) {
         const lastVal = props.homeWorkInputFile.length > 0 ? props.homeWorkInputFile[props.homeWorkInputFile.length - 1].id : 0;

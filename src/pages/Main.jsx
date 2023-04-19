@@ -106,11 +106,11 @@ const GroupBoxComp = (props) => {
 };
 
 const Main = () => {
-  const [groupList, setGroupList] = useState([]);
   const totalNum = useRef(0)
-  const [pageNum, setPageNum] = useState(1);
   const filterParam = useRef("all")
   const navigate = useNavigate();
+  const [groupList, setGroupList] = useState([]);
+  const [pageNum, setPageNum] = useState(1);
   const [activeState, setActiveState] = useState("전체그룹");
   const { isLoading } = useQuery(
     ["getList", { page: pageNum, size: 6, category: filterParam.current}],
@@ -150,8 +150,7 @@ const Main = () => {
           pageRangeDisplayed={5}
           onChange={(page) => {
             setPageNum(page);
-          }}
-        />
+          }}/>
       </PaginationBox>
     );
   };
@@ -178,8 +177,7 @@ const Main = () => {
           {isLoading === false ? (
           groupList?.length == 0
           ? <EmptyText></EmptyText>
-          :
-            groupList?.map((item) => {
+          : groupList?.map((item) => {
               return (
                 <GroupBoxComp
                   key={item.groupId}

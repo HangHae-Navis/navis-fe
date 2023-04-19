@@ -89,6 +89,7 @@ export const GroupList = (props) => {
  align-items: center;
  justify-content: space-between;
  border-radius: 2rem;
+  background-color: aliceblue;
  width: 100%;
  @media (max-width: 1230px) {
    flex-direction: column;

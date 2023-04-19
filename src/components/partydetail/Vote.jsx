@@ -80,7 +80,6 @@ export const VoteBox = (props) =>{
       )
 }
 
-
 const DetailVoteButtonBox = styled.div`
 display: flex;
 flex-direction: row;
