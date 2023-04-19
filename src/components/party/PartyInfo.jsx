@@ -8,11 +8,13 @@ import write from "../../assets/ic24/write.svg";
 import remove from "../../assets/ic24/delete.svg";
 import { useSetRecoilState } from "recoil";
 import { editReadyState } from "../../store/atom";
-import { useMutation } from "react-query";
+import { useMutation, useQueryClient } from "react-query";
 import { deletePageMembers } from "../../utils/api/api";
 
 const PartyInfo = (props) => {
   const navi = useNavigate();
+  const queryClient = useQueryClient();
+
   const deletePartyMember = useMutation(deletePageMembers, {
     onSuccess: (data) => {
       toast.error("그룹을 탈퇴했습니다.", {
@@ -27,9 +29,17 @@ const PartyInfo = (props) => {
       deletePartyMember.mutateAsync(data);
     }
   };
+  const naviToRecent = (data) => {
+    queryClient.removeQueries("partyDetail");
+    navi(
+      `/party/detail?groupId=${props.groupId}&detailId=${data.id}&dtype=${data.dtype}&groupName=${props.groupName}&groupInfo=${props.groupInfo}&groupCode=${props.groupCode}`
+    );
+    window.location.reload();
+  };
 
   const setIsOpen = useSetRecoilState(editReadyState);
   return (
+    <>
     <PartyInfoWrapper>
       <CopyToClipboard
         text={props?.groupCode}
@@ -99,8 +109,66 @@ const PartyInfo = (props) => {
         )}
       </ButtonWrapper>
     </PartyInfoWrapper>
+    <FloatingButtonsContainer>
+      <FloatingButtonsList>
+        <h1 className="title">최근 열람한 게시글</h1>
+        {props?.props?.map((item) => (
+          <h1
+            onClick={() => naviToRecent(item)}
+            key={item.id}
+            className="subtitle"
+          >
+            {item.title}
+          </h1>
+        ))}
+      </FloatingButtonsList>
+    </FloatingButtonsContainer>
+    </>
   );
 };
+
+const FloatingButtonsContainer = styled.div`
+  width: 100%;
+  max-width: 22.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.3rem;
+  position: fixed;
+  top: 48rem;
+  left: 6vw;
+  gap: 0.4rem;
+
+  .title {
+    margin-bottom: 0.8rem;
+    font-weight: 600;
+    font-size: 1.6rem;
+    color: rgb(88, 85, 133);
+  }
+  .subtitle {
+    width: 100%;
+    cursor: pointer;
+    font-weight: 400;
+    font-size: 1.15rem;
+    color: #9795b5;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+`;
+
+const FloatingButtonsList = styled.ul`
+  display: inline-block;
+  list-style: none;
+  position: fixed;
+  top: 50rem;
+  width: 20vw;
+  max-width: 15rem;
+  left: 4vw;
+  gap: 1rem;
+  padding: 1rem;
+  min-height: 5rem;
+  border-radius: 2rem;
+`;
 
 const PartyInfoWrapper = styled.section`
   width: 16vw;

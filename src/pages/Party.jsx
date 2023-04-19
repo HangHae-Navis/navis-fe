@@ -14,7 +14,6 @@ import RadioButtons from "../components/party/RadioButtons";
 import Carousel from "../components/party/Carousel";
 import { settings } from "../constants/carousel";
 import Chat from "../components/global/Chat";
-import FloatingMenu from "../components/party/FloatingMenu";
 import EditReady from "../components/edit/EditReady";
 import { editReadyState } from "../store/atom";
 import { useRecoilState } from "recoil";
@@ -123,14 +122,8 @@ const Party = () => {
             groupCode={partyRes.data.data.data.groupCode}
             groupId={pam.id}
             isAdmin={partyRes.data.data.data.admin}
-          />
-          <FloatingMenu
             props={partyRes.data.data.data.recentlyViewed}
-            groupId={pam.id}
-            groupName={partyRes.data.data.data.groupName}
-            groupInfo={partyRes.data.data.data.groupInfo}
-            groupCode={partyRes.data.data.data.groupCode}
-          ></FloatingMenu>
+          />
         </PartyLeftContainer>
         <div>
           <CarouselContainer>

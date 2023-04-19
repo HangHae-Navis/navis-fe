@@ -15,7 +15,6 @@ import { getCookie } from "../utils/infos/cookie";
 import { toast } from "react-toastify";
 import { useForm } from "react-hook-form";
 import ShowSubmitFile from "../components/modal/ShowSubmitFile";
-import FloatingMenu from "../components/party/FloatingMenu";
 import Survey from "../components/partydetail/Survey";
 import { useRecoilState } from "recoil";
 import { editReadyState } from "../store/atom";
@@ -260,13 +259,7 @@ function PartyDetail() {
           vote
           groupId={groupId}
           isAdmin={isAdmin}
-        />
-        <FloatingMenu
           props={res?.data?.data?.data?.recentlyViewed}
-          groupId={groupId}
-          groupName={groupName}
-          groupInfo={groupInfo}
-          groupCode={groupCode}
         />
       <DetailPageContainer>
         <DetailContentsWrapper>
