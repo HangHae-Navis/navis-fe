@@ -1,5 +1,5 @@
-import { useMutation, useQuery, useQueryClient } from "react-query";
 import styled from "styled-components";
+import React from "react";
 
 import "react-loading-skeleton/dist/skeleton.css";
  const SlideChart = (props) => {
@@ -15,6 +15,7 @@ import "react-loading-skeleton/dist/skeleton.css";
     );
   };
   
+  export default SlideChart;
   const ChartContainer = styled.div`
     position: relative;
     display: flex;
@@ -59,5 +60,3 @@ import "react-loading-skeleton/dist/skeleton.css";
     background-color: #d4d2e3;
     ${(props) => props.width == "0" &&`background-color: rgba(212, 210, 227, 0);`}
   `;
-
-  export default SlideChart

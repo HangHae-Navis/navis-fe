@@ -62,6 +62,7 @@ const BottomInfoWrapper = styled.section`
 `;
 
 const CarouselItem = styled.div`
+  cursor: pointer;
   width: 100%;
   height: 15rem;
   border-radius: 1rem;

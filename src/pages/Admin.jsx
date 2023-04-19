@@ -1,27 +1,20 @@
-import { useMutation, useQuery, useQueryClient } from "react-query";
+import { useMutation, useQuery } from "react-query";
 import styled from "styled-components";
-import PartyRegist from "../components/modal/PartyRegist";
 import Button from "../element/Button";
 import {
   deletePage,
   deletePageMembers,
-  getBoardDetailPage,
   getDetailPageForAdmin,
-  getPartyBoard,
-  getPartyPage,
   PutMemberRole,
   undoDeletePagemembers,
 } from "../utils/api/api";
 import { partyRegistModalState, partyInfoState } from "../store/atom";
-import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 import Test from "./../assets/Image Placeholder.svg";
-import Pagination from "react-js-pagination";
-import { useNavigate, useParams, useSearchParams } from "react-router-dom";
-import { useEffect, useState } from "react";
-import { FullDateCheck, DayCheck } from "../element/DateCheck";
+import { useNavigate, useParams } from "react-router-dom";
+import { useState } from "react";
+import { DayCheck } from "../element/DateCheck";
 import { useSetRecoilState } from "recoil";
-import PartyInfo from "../components/party/PartyInfo";
 import { pageMargin } from "../utils/style/mixins";
 
 function Board(props) {
@@ -68,49 +61,32 @@ function Board(props) {
       <BoardBox>
         <BoardBoxTitleBox>
           <h1 className="name">{props.nickName} ( {props.username} )</h1>
-          {props.joinedAt != null ? (
-            <span className="date">{DayCheck(props.joinedAt)} 가입</span>
-          ) : (
-            <span className="date">{DayCheck(props.bannedAt)} 추방</span>
-          )}
+          {props.joinedAt != null
+          ? (<span className="date">{DayCheck(props.joinedAt)} 가입</span>)
+          : (<span className="date">{DayCheck(props.bannedAt)} 추방</span>)
+          }
         </BoardBoxTitleBox>
         <div>
-          {props.groupMemberRoleEnum === "ADMIN" || props.bannedAt != null ? (
-            props.bannedAt != null ? (
-              <Button
-                onClick={() =>
-                  undoDeleteMember({ pam: props.pam, bannedMemberId: props.id })
-                }
-              >
-                재가입허용
-              </Button>
-            ) : null
-          ) : (
-            <Button
-              onClick={() =>
-                doDeleteMember({ pam: props.pam, memberid: props.id })
-              }
-            >
+          {props.groupMemberRoleEnum === "ADMIN" || props.bannedAt != null
+            ? (props.bannedAt != null
+              ? (<Button onClick={() => undoDeleteMember({ pam: props.pam, bannedMemberId: props.id })}>
+                  재가입허용
+                </Button>)
+              : null) 
+            : (<Button onClick={() => doDeleteMember({ pam: props.pam, memberid: props.id })}>
               추방하기
             </Button>
           )}
-          {props.groupMemberRoleEnum === "USER" ? (
-            <Button
-              onClick={() =>
-                ChangeRoleMember({ pam: props.pam, memberId: props.id })
-              }
-            >
+
+          {props.groupMemberRoleEnum === "USER"
+          ? (<Button onClick={() => ChangeRoleMember({ pam: props.pam, memberId: props.id })}>
               서포터로 변경
-            </Button>
-          ) : props.groupMemberRoleEnum === "SUPPORT" ? (
-            <Button
-              onClick={() =>
-                ChangeRoleMember({ pam: props.pam, memberId: props.id })
-              }
-            >
+            </Button>)
+          : props.groupMemberRoleEnum === "SUPPORT"
+          ? (<Button onClick={() => ChangeRoleMember({ pam: props.pam, memberId: props.id })}>
               회원으로 변경
-            </Button>
-          ) : null}
+            </Button>)
+          : null}
         </div>
       </BoardBox>
     </>
@@ -124,7 +100,7 @@ const BoardBox = styled.div`
   justify-content: space-between;
   background-color: aliceblue;
   border-radius: 2rem;
-  width: 80rem;
+  width: 100%;
 `;
 const BoardBoxTitleBox = styled.div`
   padding: 2rem;
@@ -145,37 +121,24 @@ const BoardBoxTitleBox = styled.div`
 `;
 
 const Admin = () => {
-  const queryClient = useQueryClient();
   const pam = useParams();
   const navi = useNavigate();
-  const [userList, setUserList] = useState([]);
-  const [admin, setAdmin] = useState([]);
   const [Support, setSupport] = useState();
   const [Member, setMember] = useState();
   const [bannedList, setBannedList] = useState([]);
-
   const setPartyInfo = useSetRecoilState(partyInfoState);
-
   const setIsOpen = useSetRecoilState(partyRegistModalState);
   const getDetailPage = useQuery(
     ["adminget", { id: pam.id }],
     () => getDetailPageForAdmin({ id: pam.id }),
     {
       onSuccess: ({ data }) => {
-        console.log(data.data)
-        setUserList(data.data.groupMembers);
         setBannedList(data.data.bannedMembers);
         setPartyInfo({
           groupName: data.data.groupName,
           groupId: pam.id,
           groupInfo: data.data.groupInfo,
         });
-
-        setAdmin(
-          data.data.groupMembers.filter(
-            (item) => item.groupMemberRoleEnum === "ADMIN"
-          )
-        );
         setSupport(
           data.data.groupMembers.filter(
             (item) => item.groupMemberRoleEnum === "SUPPORT"
