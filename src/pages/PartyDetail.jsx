@@ -7,25 +7,23 @@ import EditReady from "../components/edit/EditReady";
 import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import PartyInfo from "../components/party/PartyInfo";
-import SlideChart from "../components/party/SlideChart";
 import SyntaxHighlighter from "react-syntax-highlighter/dist/esm/default-highlight";
 import remarkGfm from "remark-gfm";
 import { a11yDark } from "react-syntax-highlighter/dist/esm/styles/prism";
 import MarkdownTitle from "../components/global/MarkdownTitle";
 import { getCookie } from "../utils/infos/cookie";
 import { toast } from "react-toastify";
-import Button from "../element/Button";
-import { FullDateCheck, ShortCheck } from "../element/DateCheck";
 import { useForm } from "react-hook-form";
 import ShowSubmitFile from "../components/modal/ShowSubmitFile";
 import FloatingMenu from "../components/party/FloatingMenu";
-import Survey from "../components/party/Survey";
+import Survey from "../components/partydetail/Survey";
 import { useRecoilState } from "recoil";
 import { editReadyState } from "../store/atom";
 import { useRef } from "react";
 import styled from "styled-components";
 import { CommentBox } from "../components/partydetail/CommentBox";
 import { HomeworkBox } from "../components/partydetail/Homework";
+import { VoteBox } from "../components/partydetail/Vote";
 
 function PartyDetail() {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -52,7 +50,6 @@ function PartyDetail() {
       toast.error("로그인 정보가 만료되었습니다.", {toastId: "postDetailLoginErr",});
     }
   }, []);
-  const now = new Date().getTime();
   const pam = useParams();
   const groupId = searchParams.get("groupId");
   const detailId = searchParams.get("detailId");
@@ -83,7 +80,6 @@ function PartyDetail() {
           case "survey":
             setDatabase(data.data);
             break;
-
           default:
             break;
         }
@@ -241,16 +237,10 @@ function PartyDetail() {
     setShowModal(!showModal);
   };
 
-  if (
-    res.isLoading ||
-    res.isError ||
-    getComment.isLoading ||
-    getComment.isError
+  if (res.isLoading || res.isError || getComment.isLoading || getComment.isError
   ) {
     return <>
-    <DetailPageContainer>
-      
-    </DetailPageContainer>
+    <DetailPageContainer></DetailPageContainer>
     </>;
   }
   return (
@@ -313,76 +303,18 @@ function PartyDetail() {
             }}
           />
           {/*투표 여부를 판단, 투표지가 있을 경우 투표 관련 컴포넌트 랜더링*/}
-          {dtype == "vote" ? (
-            database == -1 && now < new Date(res?.data.data.data.expirationTime).getTime() ? (
-              <DetailVoteContentContainer>
-                <h1 className="smallname">마감시간 : {FullDateCheck(res?.data.data.data.expirationTime)}</h1>
-                {res?.data.data.data.optionList?.map((item) => (
-                  <label key={item.optionId}>
-                    <DetailVoteContainer>
-                      <input
-                        type="radio"
-                        value={item.optionId}
-                        checked={voteSelectedOption == item.optionId}
-                        onChange={(event) =>
-                          setVoteSelectedOption(event.target.value)
-                        }
-                      />
-                      <h1 className="name">{item.option}</h1>
-                    </DetailVoteContainer>
-                  </label>
-                ))}
-                <DetailVoteButtonBox>
-                  <Button onClick={OnVotePost}>투표하기</Button>
-                  <Button
-                    transparent={true}
-                    onClick={() => setDatabase(-2)}
-                    color="rgb(88, 85, 133)"
-                  >
-                    결과보기
-                  </Button>
-                </DetailVoteButtonBox>
-              </DetailVoteContentContainer>
-            ) : (
-              <DetailVoteContentContainer>
-                <h1 className="smallname">마감시간 : {FullDateCheck(res?.data.data.data.expirationTime)}</h1>
-                {res?.data.data.data.optionList?.map((item) => (
-                  <SlideChart
-                    key={item.optionId}
-                    option={item.option}
-                    voteMax={voteMax}
-                    count={item.count}
-                  />
-                ))}
-                <DetailVoteButtonBox>
-                  {database == -2 ? (
-                    <Button
-                      transparent={true}
-                      onClick={() => setDatabase(-1)}
-                      color="rgb(88, 85, 133)"
-                    >
-                      투표하기
-                    </Button>
-                  ) : now < new Date(res?.data.data.data.expirationTime).getTime() ? (
-                    <Button
-                      transparent={true}
-                      onClick={() =>
-                        doDeleteVote({
-                          groupId,
-                          voteId: res?.data?.data?.data?.id,
-                        })
-                      }
-                      color="rgb(88, 85, 133)"
-                    >
-                      다시하기
-                    </Button>
-                  ) : null}
-
-                  <h1 className="smallname"> {voteMax}명 투표함</h1>
-                </DetailVoteButtonBox>
-              </DetailVoteContentContainer>
-            )
-          ) : null}
+          {dtype == "vote"
+              ?(<VoteBox 
+                database = {database}
+                setDatabase = {setDatabase}
+                res = {res}
+                voteSelectedOption = {voteSelectedOption}
+                setVoteSelectedOption = {setVoteSelectedOption}
+                OnVotePost = {OnVotePost}
+                voteMax = {voteMax}
+                doDeleteVote = {doDeleteVote}
+                groupId = {groupId}/>)
+              : null}
           {/*과제 여부를 판단, 제출한 과제가 없을 경우 과제 관련 컴포넌트 랜더링*/}
           {dtype == "homework"
               ?(<HomeworkBox
@@ -410,7 +342,6 @@ function PartyDetail() {
               list={res?.data.data.data.questionResponseDto}/>)
             : null}
         </DetailContentsWrapper>
-
         <CommentBox getComment = {getComment} detailId = {detailId} groupId = {groupId} isAdmin = {isAdmin} commentList = {commentList} onPost = {onPost}/>
       </DetailPageContainer>
         {isOpen === true && <EditReady role = {res?.data?.data?.data?.role}/>}
@@ -418,50 +349,6 @@ function PartyDetail() {
   );
 }
 export default PartyDetail;
-
-
-
- const DetailVoteButtonBox = styled.div`
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  gap: 1.5rem;
-`;
- const DetailVoteContainer = styled.div`
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  gap: 2rem;
-  text-align: center;
-`;
-
- const DetailVoteContentContainer = styled.div`
-  width: fit-content;
-  max-width: 50%;
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  border-radius: 4rem;
-  border: 0.1rem solid #d4d2e3;
-  padding: 5rem;
-  gap: 2rem;
-  .name {
-    font-weight: 400;
-    font-size: 2.2rem;
-    color: #5d5a88;
-  }
-  .smallname {
-    font-weight: 400;
-    font-size: 1.8rem;
-    color: #9795b5;
-  }
-  .date {
-    font-weight: 400;
-    font-size: 2rem;
-    color: #9795b5;
-  }
-`;
-
 
  const DetailPageContainer = styled.div`
   width: 100vw;
@@ -474,7 +361,6 @@ export default PartyDetail;
   margin: 0 auto;
   margin-top: 14rem;
 `;
-
  const ReactMarkdownWrapper = styled(ReactMarkdown)`
   * {
     font-size: 1.4rem;
@@ -524,18 +410,15 @@ export default PartyDetail;
       border-bottom: 1px solid hsla(0, 0%, 50%, 0.33);
     }
   }
-
   h4 {
     font-size: 1.5rem;
     line-height: 1.45;
   }
-
   img {
     width: 100%;
     object-fit: cover;
     object-position: center;
   }
-
   blockquote {
     width: 100%;
     padding-left: 1.25rem;
@@ -544,7 +427,6 @@ export default PartyDetail;
       line-height: 1.4;
     }
   }
-
   ul {
     display: flex;
     flex-direction: column;
@@ -557,7 +439,6 @@ export default PartyDetail;
     }
   }
 `;
-
  const DetailContentsWrapper = styled.section`
   display: flex;
   flex-direction: column;
