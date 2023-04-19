@@ -1,7 +1,7 @@
 import React from "react";
 import { useState } from "react";
 import { useEffect } from "react";
-import { StyledCheckbox } from "../../utils/style/componentLayout";
+import styled from "styled-components";
 
 export const Checkbox = (props) => {
     const [checkedItems, setCheckedItems] = useState(
@@ -40,3 +40,17 @@ export const Checkbox = (props) => {
       </div>
     ));
   };
+
+
+   const StyledCheckbox = styled.input.attrs({ type: "checkbox" })`
+    border-radius: 3px;
+    border: 1px solid #ccc;
+    background-color: #fff;
+    width: 16px;
+    height: 16px;
+    margin-right: 8px;
+    cursor: pointer;
+  
+    &:checked {
+    }
+  `;

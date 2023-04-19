@@ -11,10 +11,9 @@ import { toast } from "react-toastify";
 import Input from "../element/Input";
 import {nicknameRules, passwordRules,} from "../constants/validate";
 import { getCookie } from "../utils/infos/cookie";
-import { ProfileBottomContentContainer, ProfileGroupInfoBox, ProfileGroupInfoText, ProfileGroupInfoTextBox, ProfileGroupTitleBox, ProfileImageTextBox, ProfilePageContainer, ProfileRightTotalContainer, ProfileTopContentContainer } from "../utils/style/pageLayout";
-import { ProfileGroupInfoImage } from "../utils/style/componentLayout";
 import { useRef } from "react";
 import { GroupList } from "../components/profile/GroupBox";
+import styled from "styled-components";
 
 const Profile = () => {
   const postImages = useRef(null)
@@ -211,3 +210,129 @@ const Profile = () => {
 
 export default Profile;
 
+ const ProfileGroupInfoImage = styled.img`
+  border-radius: 2rem;
+  width: 100%;
+  height: 100%;
+  max-width: 18rem;
+  max-height: 18rem;
+  object-fit: cover;
+`;
+
+const ProfileImageTextBox = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-start;
+`;
+
+const ProfileGroupTitleBox = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 2rem;
+`;
+
+const ProfileTopContentContainer = styled.div`
+  width: 60vw;
+  height: 100%;
+  border-radius: 4rem;
+  border: 0.1rem solid #d4d2e3;
+  padding: 5rem;
+`;
+
+const ProfileBottomContentContainer = styled.div`
+  width: 100%;
+  height: 100%;
+  display: flex;
+  text-align: center;
+  flex-direction: column;
+  border-radius: 4rem;
+  border: 0.1rem solid #d4d2e3;
+  padding: 5rem;
+  gap: 2rem;
+  h1 {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    font-size: 3rem;
+    font-weight: 600;
+    color: rgb(88, 85, 133, 0.5);
+  }
+`;
+const ProfileGroupInfoBox = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 11rem;
+  @media (max-width: 960px) {
+    gap: 4rem;
+  }
+`;
+
+const ProfileRightTotalContainer = styled.div`
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  width: 60vw;
+  > * {
+    margin-bottom: 2rem;
+  }
+`;
+
+const ProfileGroupInfoTextBox = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  width: 20vw;
+  gap: 3rem;
+`;
+
+const ProfileGroupInfoText = styled.div`
+  display: flex;
+  width: 30vw;
+  flex-direction: row;
+  align-items: center;
+  gap: 2rem;
+`;
+
+const ProfilePageContainer = styled.div`
+  margin-top: 14rem;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 100vw;
+  padding-bottom: 3rem;
+
+  .title {
+    font-weight: 700;
+    font-size: 3.2rem;
+    color: #5d5a88;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .infotitle {
+    font-weight: 700;
+    font-size: 2.4rem;
+    color: #5d5a88;
+  }
+  .infocontent {
+    font-weight: 400;
+    font-size: 2.4rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    color: #9795b5;
+  }
+  .inputcontent {
+    font-weight: 400;
+    font-size: 2rem;
+    color: #9795b5;
+  }
+`;

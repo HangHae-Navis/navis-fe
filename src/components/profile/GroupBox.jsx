@@ -1,11 +1,11 @@
-import { useMutation, useQuery } from "react-query";
+import { useMutation, } from "react-query";
 import "react-loading-skeleton/dist/skeleton.css";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import Button from "../../element/Button";
 import { deletePage } from "../../utils/api/api";
 import { DayCheck } from "../../element/DateCheck";
-import { ProfileGroupButtonBox, ProfileGroupListBox, ProfileGroupListTitleBox, ProfileGroupListTitleBoxRight } from "../../utils/style/componentLayout";
+import styled from "styled-components";
 
 export const GroupList = (props) => {
     const navi = useNavigate();
@@ -49,3 +49,58 @@ export const GroupList = (props) => {
       </>
     );
   };
+  
+  const ProfileGroupListTitleBox = styled.div`
+ width: 100%;
+ padding: 2rem;
+ display: flex;
+ flex-direction: row;
+ justify-content: space-between;
+ align-items: center;
+ gap: 0.5rem;
+ .name {
+   width: 35%;
+   font-weight: 400;
+   font-size: 2.2rem;
+   color: #5d5a88;
+ }
+ .date {
+   text-align: left;
+   font-weight: 400;
+   font-size: 1.8rem;
+   white-space: nowrap;
+   overflow: hidden;
+   text-overflow: ellipsis;
+   color: #9795b5;
+ }
+ `;
+ 
+  const ProfileGroupButtonBox = styled.div`
+ display: flex;
+ flex-direction: row;
+ align-items: center;
+ gap: 0.5rem;
+ `;
+ 
+  const ProfileGroupListBox = styled.div`
+ display: flex;
+ padding-right: 2rem;
+ flex-direction: row;
+ align-items: center;
+ justify-content: space-between;
+ border-radius: 2rem;
+ width: 100%;
+ @media (max-width: 1230px) {
+   flex-direction: column;
+ align-items: flex-start;
+ }
+ `;
+ 
+  const ProfileGroupListTitleBoxRight = styled.div`
+ width: 100%;
+ display: flex;
+ flex-direction: row;
+ justify-content: flex-end;
+ align-items: center;
+ gap: 0.5rem;
+ `

@@ -19,7 +19,7 @@ import EditReady from "../components/edit/EditReady";
 import { editReadyState } from "../store/atom";
 import { useRecoilState } from "recoil";
 import { EmptyText } from "../components/party/EmptyText";
-import { PartyPageContainer, PartyLeftContainer, CarouselContainer, CarouselTitle, PartyRadioBox, PartyRightContainer } from "../utils/style/pageLayout";
+import styled from "styled-components";
 
 const Party = () => {
   const queryClient = useQueryClient();
@@ -241,3 +241,84 @@ const Party = () => {
 };
 
 export default Party;
+
+ const PartyRadioBox = styled.div`
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  justify-content: space-between;
+
+  @media (max-width: 600px) {
+    display: flex;
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .check {
+    font-size: 1.75rem;
+    background-color: transparent;
+    color: ${({ selected }) => (selected ? "#585585" : "#585585")};
+  }
+`;
+
+const CarouselContainer = styled.div`
+  width: 70vw;
+  height: 30.2rem;
+  overflow-x: hidden;
+  margin-bottom: 5.6rem;
+  gap: 3rem;
+  padding: 3.2rem;
+  display: flex;
+  flex-direction: column;
+  background-color: ${(props) => props.theme.color.zeroThree};
+  border-radius: 3.2rem;
+
+  .title {
+    font-weight: 500;
+    font-size: 2.2rem;
+    color: #ffffff;
+  }
+`;
+const CarouselTitle = styled.div`
+  display: flex;
+  gap: 1rem;
+  .title {
+    font-weight: 500;
+    font-size: 2.2rem;
+    color: #ffffff;
+  }
+`;
+
+const PartyPageContainer = styled.div`
+  display: flex;
+  position: relative;
+  flex-direction: row;
+  align-items: flex-start;
+  width: 100vw;
+  max-width: 128rem;
+  margin: 0 auto;
+  padding: 2rem 0 3rem 0;
+  margin-top: 14rem;
+  min-height: 100vh;
+  gap: 6rem;
+`;
+
+const PartyLeftContainer = styled.div`
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 30rem;
+  gap: 1rem;
+  font-size: 1.45rem;
+`;
+
+const PartyRightContainer = styled.div`
+  margin: 3rem 0;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+
+  @media (max-width: 800px) {
+    grid-template-columns: repeat(1, 1fr);
+  }
+  gap: 1rem;
+`;
