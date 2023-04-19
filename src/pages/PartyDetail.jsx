@@ -1,24 +1,19 @@
 import { useMutation, useQuery, useQueryClient } from "react-query";
-import styled from "styled-components";
-import {deleteHomeWorkData,deletePageMembers,DeleteVoteDetail,getBoardDetailPage,getCommentPage,postComment,postFeedback,postHomeWorkData,postHomeworkDetail,PostVoteDetail,putHomeWorkData,
+import {deleteHomeWorkData,deletePageMembers,DeleteVoteDetail,getBoardDetailPage,getCommentPage,postComment,postHomeWorkData,PostVoteDetail,putHomeWorkData,
 } from "../utils/api/api";
+import { ReactMarkdown } from "react-markdown/lib/react-markdown";
 import "react-loading-skeleton/dist/skeleton.css";
 import EditReady from "../components/edit/EditReady";
 import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import PartyInfo from "../components/party/PartyInfo";
 import SlideChart from "../components/party/SlideChart";
-import { ReactMarkdown } from "react-markdown/lib/react-markdown";
 import SyntaxHighlighter from "react-syntax-highlighter/dist/esm/default-highlight";
 import remarkGfm from "remark-gfm";
 import { a11yDark } from "react-syntax-highlighter/dist/esm/styles/prism";
 import MarkdownTitle from "../components/global/MarkdownTitle";
 import { getCookie } from "../utils/infos/cookie";
 import { toast } from "react-toastify";
-import conver from "../assets/ic24/conversation.svg";
-import profile from "../assets/ic54/profile.svg";
-import { getLocalStorage } from "../utils/infos/localStorage";
-import Comment from "../element/Comment";
 import Button from "../element/Button";
 import { FullDateCheck, ShortCheck } from "../element/DateCheck";
 import { useForm } from "react-hook-form";
@@ -28,19 +23,18 @@ import Survey from "../components/party/Survey";
 import { useRecoilState } from "recoil";
 import { editReadyState } from "../store/atom";
 import { useRef } from "react";
-import { ReactMarkdownWrapper, DetailCommentInputWrapper, DetailCommentMapWrapper, DetailCommentTopWrapper, DetailCommentcontainer, DetailCommentsWrapper, DetailContentsWrapper, DetailHomeWorkSubmitButtonBox, DetailHomeWorkSubmitContainer, DetailHomeworkContentContainer, DetailInputContainer, DetailPageContainer, DetailPostedHomeWorkFileBox, DetailSubmitterBox, DetailSubmitterContainer, DetailVoteButtonBox, DetailVoteContainer, DetailVoteContentContainer } from "../utils/style/pageLayout";
-import { StyledInput, SubmiterButton } from "../utils/style/componentLayout";
+import styled from "styled-components";
+import { CommentBox } from "../components/partydetail/CommentBox";
+import { HomeworkBox } from "../components/partydetail/Homework";
 
 function PartyDetail() {
   const [searchParams, setSearchParams] = useSearchParams();
   const navi = useNavigate();
-  const myUserName = JSON.parse(getLocalStorage("userInfo")).nickname;
   const [isOpen, setIsOpen] = useRecoilState(editReadyState);
   const { register, formState: errors, handleSubmit } = useForm();
   const [commentList, setCommentList] = useState();
   const isAdmin = useRef();
   const submitAgain = useRef(false)
-  const [comment, setComment] = useState("");
   const [postInfo, setPostInfo] = useState({});
   const [voteMax, setVoteMax] = useState("");
   const [database, setDatabase] = useState();
@@ -50,13 +44,6 @@ function PartyDetail() {
   const [voteSelectedOption, setVoteSelectedOption] = useState();
   const [showModal, setShowModal] = useState(false);
   const [courrentModalContent, setCourrentModalContent] = useState();
-
-  const token = getCookie("token");
-  const storedData = JSON.parse(localStorage.getItem("userInfo"));
-  const profileImage =
-    token != null
-      ? storedData.profileImage == null ? profile : storedData.profileImage
-      : profile;
 
   useEffect(() => {
     const isUserCookie = getCookie("token");
@@ -173,7 +160,6 @@ function PartyDetail() {
   const onPost = async (data) => {
     const payload = {groupId, detailId, comment: data,};
     const res = await post.mutateAsync(payload);
-    setComment("");
   };
 
   const OnVotePost = async () => {
@@ -190,6 +176,7 @@ function PartyDetail() {
   };
 
   const doDeleteHomework = (data) => {
+    console.log(data)
     const res = deleteHomework.mutateAsync(data);
   };
 
@@ -207,16 +194,13 @@ function PartyDetail() {
     else toast.success("최대 업로드 가능 갯수는 5개 입니다");
   };
 
-  const FileHandler = (event) => {
-    const file = event.target.files[0];
-    homeWorkInputFileList.current.push(file)
-  };
 
   const deleteInput = (data) => {
     setHomeWorkInputFile(homeWorkInputFile.filter((item) => item.id != data));
   };
 
   const postOrPutHomeWork = async (data) => {
+    console.log(data)
     const postData = new FormData();
     const CurrentFile = [];
     const CurrentFileList = [];
@@ -400,128 +384,185 @@ function PartyDetail() {
             )
           ) : null}
           {/*과제 여부를 판단, 제출한 과제가 없을 경우 과제 관련 컴포넌트 랜더링*/}
-          {dtype == "homework" ? (
-            (res?.data?.data?.data?.role == "USER" && res?.data?.data?.data?.submitResponseDto == null) || submitAgain.current === true
-              ? (<form onSubmit={(e) => {e.preventDefault(); handleSubmit(postOrPutHomeWork);}}>
-                <DetailHomeWorkSubmitContainer>
-                  <DetailHomeWorkSubmitButtonBox>
-                    <Button onClick={() => addInput("file")}>파일 추가하기</Button>
-                    <Button onClick={handleSubmit(postOrPutHomeWork)} transparent={true} color="rgb(88, 85, 133)">과제 제출하기</Button>
-                  </DetailHomeWorkSubmitButtonBox>
-                  <DetailHomeWorkSubmitButtonBox>
-                    <DetailHomeworkContentContainer>
-                      <h1 className="name">제출할 파일</h1>
-                      {homeWorkInputFile.map((item) => (
-                        <DetailInputContainer key={item.id}>
-                          <StyledInput type="file" onChange={FileHandler} />
-                          <section style={{ cursor: 'pointer' }} className="name" onClick={() => deleteInput(item.id)}>X</section>
-                        </DetailInputContainer>
-                      ))}
-                    </DetailHomeworkContentContainer>
-                  </DetailHomeWorkSubmitButtonBox>
-                </DetailHomeWorkSubmitContainer>
-              </form>)
-              : res?.data?.data?.data?.role == "USER" && res?.data?.data?.data?.submitResponseDto != null
-              ? (<>{/*과제 여부를 판단, 제출한 과제가 있을 경우 과제 관련 컴포넌트 랜더링*/}
-                <DetailHomeWorkSubmitContainer>
-                  <DetailHomeWorkSubmitButtonBox>
-                    {res?.data?.data?.data?.submitResponseDto.submitCheck == false
-                      ? (res?.data?.data?.data?.submitResponseDto.feedbackList
-                        ?.length == 0 ? (
-                        <Button transparent={true} color="rgb(88, 85, 133)" onClick={() => doDeleteHomework({ groupId, detailId })}>제출 취소하기</Button>)
-                        : (<Button transparent={true} onClick={() => submitAgain.current = true} color="rgb(88, 85, 133)">다시 제출하기</Button>))
-                      : null}
-                  </DetailHomeWorkSubmitButtonBox>
-                  <DetailHomeWorkSubmitButtonBox>
-                    <DetailHomeworkContentContainer>
-                      <DetailPostedHomeWorkFileBox>
-                        <h1 className="name">제출한 파일</h1>
-                        <h1 className="smallname">
-                          {FullDateCheck(res?.data?.data?.data?.submitResponseDto.createdAt)}{" "}{res?.data?.data?.data?.submitResponseDto.late == true ? "제출(지각)" : "제출"}{" "}
-                        </h1>
-                      </DetailPostedHomeWorkFileBox>
-                      {res?.data.data.data.submitResponseDto.fileList.map((item) => (
-                        <a key={item.fileUrl} href={`${item.fileUrl}?download=true`} className="filename"> {" "} {item.fileName}</a>
-                      ))}
-                    </DetailHomeworkContentContainer>
-                    {<DetailHomeworkContentContainer>
-                        {res?.data?.data?.data?.submitResponseDto.feedbackList
-                            ?.length != 0 ? (res?.data?.data?.data?.submitResponseDto.submitCheck == true
-                                ? (<><h1 className="name">확정됨</h1>
-                                  {res?.data?.data?.data?.submitResponseDto.feedbackList.map(
-                                    (item, index) => (<h1 key={item} className="name">{index + 1}번째 피드백 : {item}</h1>)
-                                  )}</>)
-                                : (<><h1 className="name">반려됨</h1>
-                                  {res?.data?.data?.data?.submitResponseDto.feedbackList.map(
-                                    (item, index) => (
-                                      <h1 key={item} className="name">{index + 1}번째 사유 : {item}</h1>)
-                                  )}</>))
-                            : (<h1 className="name">피드백 대기 중</h1>)}
-                      </DetailHomeworkContentContainer>}
-                  </DetailHomeWorkSubmitButtonBox>
-                </DetailHomeWorkSubmitContainer>
-              </>)
-              : (<><DetailPostedHomeWorkFileBox>
-                  <DetailHomeworkContentContainer width="80vw">
-                    <h1 className="name">제출완료</h1>
-                    {res?.data.data.data.submitMember.map((item) => (
-                      <DetailSubmitterContainer key={item.id}>
-                        <h1 className="smallname">{item.nickname}</h1>
-                        <DetailSubmitterBox>
-                          <h1 className="smallname">{ShortCheck(item.createdAt)} 제출</h1>
-                          <SubmiterButton onClick={() => CheckUpModal(item)} className="buttontext">제출 과제</SubmiterButton>
-                        </DetailSubmitterBox>
-                      </DetailSubmitterContainer>))}
-                  </DetailHomeworkContentContainer>
-                  <DetailHomeworkContentContainer borderColor="#CF5C4C">
-                    <h1 className="name">미제출자</h1>
-                    {res?.data.data.data.notSubmitMember.map((item) => (
-                      <DetailSubmitterContainer key={item.id}>
-                        <h1 className="smallname">{item.nickname}</h1>
-                      </DetailSubmitterContainer>))}
-                  </DetailHomeworkContentContainer>
-                </DetailPostedHomeWorkFileBox></>))
+          {dtype == "homework"
+              ?(<HomeworkBox
+                res = {res}
+                submitAgain = {submitAgain}
+                postOrPutHomeWork = {postOrPutHomeWork}
+                addInput = {addInput}
+                deleteInput = {deleteInput}
+                doDeleteHomework = {doDeleteHomework}
+                groupId = {groupId}
+                detailId = {detailId}
+                CheckUpModal = {CheckUpModal}
+                homeWorkInputFile = {homeWorkInputFile}
+                setHomeWorkInputFile = {setHomeWorkInputFile}
+                homeWorkInputFileList = {homeWorkInputFileList}/>)
               : null}
           {/*설문 여부를 판단, 어드민(서포터)일 경우 별도 랜더링*/}
           {dtype == "survey"
-            ? (<Survey role={res?.data.data.data.role} submit={res?.data.data.data.submit} res={res} groupId={groupId} detailId={detailId} list={res?.data.data.data.questionResponseDto} />)
+            ? (<Survey
+              role={res?.data.data.data.role}
+              submit={res?.data.data.data.submit}
+              res={res}
+              groupId={groupId}
+              detailId={detailId}
+              list={res?.data.data.data.questionResponseDto}/>)
             : null}
         </DetailContentsWrapper>
-        <DetailCommentcontainer>
-          <DetailCommentTopWrapper>
-            <span>댓글 {getComment?.data?.data?.data?.content.length}</span>
-            <img src={conver} alt="댓글" />
-          </DetailCommentTopWrapper>
-          <DetailCommentsWrapper />
-          <DetailCommentMapWrapper>
-            {commentList?.map((comment) => (
-              <Comment key={comment.id}
-                id={comment.id}
-                profileImage={comment.profileImage}
-                groupId={groupId}
-                detailId={detailId}
-                content={comment.content}
-                nickname={comment.nickname}
-                createAt={comment.createAt}
-                isAdmin={isAdmin}
-                owned={comment.owned}/>))}
-          </DetailCommentMapWrapper>
-          <DetailCommentInputWrapper>
-            <img src={profileImage} alt="프로필" />
-            <form className="form" onSubmit={(e) => {e.preventDefault(); onPost(comment);}}>
-              <section className="center">
-                <span>{myUserName}</span>
-                <div className="inputLayout">
-                  <textarea cols="49" rows="2" maxLength="98" placeholder="댓글을 입력해주세요." value={comment} onChange={(e) => setComment(e.target.value)}/>
-                  <button>등록</button>
-                </div>
-              </section>
-            </form>
-          </DetailCommentInputWrapper>
-        </DetailCommentcontainer>
+
+        <CommentBox getComment = {getComment} detailId = {detailId} groupId = {groupId} isAdmin = {isAdmin} commentList = {commentList} onPost = {onPost}/>
       </DetailPageContainer>
         {isOpen === true && <EditReady role = {res?.data?.data?.data?.role}/>}
     </>
   );
 }
 export default PartyDetail;
+
+
+
+ const DetailVoteButtonBox = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 1.5rem;
+`;
+ const DetailVoteContainer = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 2rem;
+  text-align: center;
+`;
+
+ const DetailVoteContentContainer = styled.div`
+  width: fit-content;
+  max-width: 50%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  border-radius: 4rem;
+  border: 0.1rem solid #d4d2e3;
+  padding: 5rem;
+  gap: 2rem;
+  .name {
+    font-weight: 400;
+    font-size: 2.2rem;
+    color: #5d5a88;
+  }
+  .smallname {
+    font-weight: 400;
+    font-size: 1.8rem;
+    color: #9795b5;
+  }
+  .date {
+    font-weight: 400;
+    font-size: 2rem;
+    color: #9795b5;
+  }
+`;
+
+
+ const DetailPageContainer = styled.div`
+  width: 100vw;
+  min-height: 100vh;
+  max-width: 128rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  margin: 0 auto;
+  margin-top: 14rem;
+`;
+
+ const ReactMarkdownWrapper = styled(ReactMarkdown)`
+  * {
+    font-size: 1.4rem;
+    font-family: "Roboto Mono", monospace;
+  }
+  padding: 2.5rem 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  p {
+    word-wrap: break-word;
+  }
+  h1 {
+    padding: 2rem 0;
+    font-size: 2.1rem;
+    line-height: 1.45;
+    &::after {
+      content: "";
+      display: block;
+      position: relative;
+      top: 0.33em;
+      border-bottom: 1px solid hsla(0, 0%, 50%, 0.33);
+    }
+  }
+
+  h2 {
+    padding: 2rem 0;
+    font-size: 1.9rem;
+    line-height: 1.45;
+    &::after {
+      content: "";
+      display: block;
+      position: relative;
+      top: 0.33em;
+      border-bottom: 1px solid hsla(0, 0%, 50%, 0.33);
+    }
+  }
+  h3 {
+    padding: 2rem 0;
+    font-size: 1.7rem;
+    line-height: 1.45;
+    &::after {
+      content: "";
+      display: block;
+      position: relative;
+      top: 0.33em;
+      border-bottom: 1px solid hsla(0, 0%, 50%, 0.33);
+    }
+  }
+
+  h4 {
+    font-size: 1.5rem;
+    line-height: 1.45;
+  }
+
+  img {
+    width: 100%;
+    object-fit: cover;
+    object-position: center;
+  }
+
+  blockquote {
+    width: 100%;
+    padding-left: 1.25rem;
+    border-left: 5px solid rgba(0, 0, 0, 0.1);
+    p {
+      line-height: 1.4;
+    }
+  }
+
+  ul {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    li {
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+      line-height: 1.2;
+    }
+  }
+`;
+
+ const DetailContentsWrapper = styled.section`
+  display: flex;
+  flex-direction: column;
+  width: 60vw;
+  margin-left: 6rem;
+  margin-bottom: 2rem;
+  gap: 1rem;
+`;
