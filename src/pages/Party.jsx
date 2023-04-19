@@ -1,5 +1,4 @@
 import { useQuery, useQueryClient } from "react-query";
-import styled from "styled-components";
 import { getDetailPage } from "../utils/api/api";
 import "react-loading-skeleton/dist/skeleton.css";
 import { useNavigate, useParams } from "react-router-dom";
@@ -20,7 +19,6 @@ import EditReady from "../components/edit/EditReady";
 import { editReadyState } from "../store/atom";
 import { useRecoilState } from "recoil";
 import { EmptyText } from "../components/party/EmptyText";
-import { useRef } from "react";
 import { PartyPageContainer, PartyLeftContainer, CarouselContainer, CarouselTitle, PartyRadioBox, PartyRightContainer } from "../utils/style/pageLayout";
 
 const Party = () => {
@@ -31,14 +29,9 @@ const Party = () => {
   const [selectedSecond, setSelectedSecond] = useState(0);
   const [categoryValue, setCategoryValue] = useState("all");
   const [categoryValueSecond, setCategoryValueSecond] = useState("id");
+  const [groupList, setGroupList] = useState([]);
   const options = ["전체", "공지", "투표", "과제", "게시글", "설문"];
   const optionsSecond = ["최신순", "중요도순"];
-  const [groupList, setGroupList] = useState([]);
-  const [groupName, setGroupName] = useState();
-  const [groupInfo, setGroupInfo] = useState();
-  const [groupCode, setGroupCode] = useState();
-  const [groupId, setGroupId] = useState(pam.id);
-  const [isAdmin, setIsAdmin] = useState(false);
   const [isOpen, setIsOpen] = useRecoilState(editReadyState);
 
   const partyRes = useQuery(
@@ -52,7 +45,7 @@ const Party = () => {
       }),
     {
       onSuccess: ({ data }) => {
-        console.log(data.data)
+        setGroupList(data.data.basicBoards.content)
         //파티디테일의 dtype에 따라 렌더링 실패 이슈를 방지하기 위해, 모든 파티디테일 쿼리를 삭제한다.
         queryClient.removeQueries("partyDetail", { inactive: true });
       },
@@ -60,11 +53,9 @@ const Party = () => {
   );
 
   useEffect(() => {
-    console.log(partyRes?.data?.data?.data?.basicBoards?.content)
-    console.log(partyRes?.data?.data?.data)
-    let sortedGroupList = partyRes?.data?.data?.data?.basicBoards?.content;
+    let sortedGroupList =[...groupList];
     if (categoryValueSecond !== "createdAt") {
-      partyRes?.data?.data?.data?.basicBoards?.content.sort((a, b) => {
+      sortedGroupList.sort((a, b) => {
         if (categoryValueSecond === "id") {
           return b.id - a.id;
         } else if (categoryValueSecond === "important") {
@@ -73,7 +64,7 @@ const Party = () => {
       });
     }
 
-    setGroupList(partyRes?.data?.data?.data?.basicBoards?.content);
+    setGroupList(sortedGroupList);
   }, [categoryValueSecond]);
 
   useEffect(() => {
@@ -136,9 +127,9 @@ const Party = () => {
           <FloatingMenu
             props={partyRes.data.data.data.recentlyViewed}
             groupId={pam.id}
-            groupName={groupName}
-            groupInfo={groupInfo}
-            groupCode={groupCode}
+            groupName={partyRes.data.data.data.groupName}
+            groupInfo={partyRes.data.data.data.groupInfo}
+            groupCode={partyRes.data.data.data.groupCode}
           ></FloatingMenu>
         </PartyLeftContainer>
         <div>

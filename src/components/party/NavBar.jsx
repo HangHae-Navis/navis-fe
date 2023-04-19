@@ -6,13 +6,13 @@ const NavBar = ({ activeState, setActiveState, setState }) => {
     setActiveState(e.target.innerText);
     switch(e.target.innerText){
       case '전체그룹':
-        setState('all')
+        setState.current = 'all'
       break;
       case '나의그룹':
-        setState('myOwn')
+        setState.current = 'myOwn'
       break;
       case '참여그룹':
-        setState('joined')
+        setState.current = 'joined'
       break;
       default:;
     }
