@@ -8,9 +8,9 @@ import { useMutation } from "react-query";
 import { postSurveyData, putSurveyData } from "../../utils/api/api";
 import { FullDateCheck } from "../../element/DateCheck";
 import ShowSurveyModal from "../modal/ShowSurveyModal";
-import SlideChart from "./SlideChart";
-import { Checkbox } from "../survey/CheckBox";
-import { SurveyRadioButton } from "../survey/SurveyRadioButton";
+import SlideChart from "../party/SlideChart";
+import { Checkbox } from "./CheckBox";
+import { SurveyRadioButton } from "./SurveyRadioButton";
 
 const Survey = (props) => {
   const [values, setValues] = useState(
