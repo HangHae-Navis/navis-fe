@@ -16,6 +16,7 @@ import {
   userNameRules,
 } from "../constants/validate";
 import { getCookie } from "../utils/infos/cookie";
+import { ProfileBottomContentContainer, ProfileGroupInfoBox, ProfileGroupInfoText, ProfileGroupInfoTextBox, ProfileGroupTitleBox, ProfileImageTextBox, ProfilePageContainer, ProfileRightTotalContainer, ProfileTopContentContainer } from "../utils/style/pageLayout";
 
 const GroupList = (props) => {
   const navi = useNavigate();
@@ -191,9 +192,9 @@ const Profile = () => {
   }
   return (
     <>
-      <PageContainer>
-        <RightTotalContainer>
-          <GroupTitleBox>
+      <ProfilePageContainer>
+        <ProfileRightTotalContainer>
+          <ProfileGroupTitleBox>
             <h1 className="title">내 정보</h1>
             {!isPut ? (
               <Button onClick={() => setIsPut(!isPut)}>
@@ -205,39 +206,39 @@ const Profile = () => {
                 <Button onClick={() => setIsPut(!isPut)}>수정취소</Button>
               </>
             )}
-          </GroupTitleBox>
-          <TopContentContainer>
-            <GroupInfoBox>
+          </ProfileGroupTitleBox>
+          <ProfileTopContentContainer>
+            <ProfileGroupInfoBox>
               {/*프로필 이미지 노출할 부위, 없으면 기본 이미지로*/}
               {!isPut ? (
                 <>
-                  <ImageTextBox>
+                  <ProfileImageTextBox>
                     <GroupInfoImage
                       src={
                         getInfo.data.data.data.profileImage != null
                           ? getInfo.data.data.data.profileImage
                           : Test
                       }
-                    ></GroupInfoImage>
-                  </ImageTextBox>
-                  <GroupInfoTextBox>
-                    <GroupInfoText>
+                    />
+                  </ProfileImageTextBox>
+                  <ProfileGroupInfoTextBox>
+                    <ProfileGroupInfoTextBox>
                       <h1 className="infotitle">계정명</h1>
                       <p className="infocontent">{userName}</p>
-                    </GroupInfoText>
-                    <GroupInfoText>
+                    </ProfileGroupInfoTextBox>
+                    <ProfileGroupInfoText>
                       <h1 className="infotitle">닉네임</h1>
                       <p className="infocontent">{userNick}</p>
-                    </GroupInfoText>
-                    <GroupInfoText>
+                    </ProfileGroupInfoText>
+                    <ProfileGroupInfoText>
                       <h1 className="infotitle">가입일자</h1>
                       <p className="infocontent">{userDate}</p>
-                    </GroupInfoText>
-                  </GroupInfoTextBox>
+                    </ProfileGroupInfoText>
+                  </ProfileGroupInfoTextBox>
                 </>
               ) : (
                 <>
-                  <ImageTextBox>
+                  <ProfileImageTextBox>
                     <label htmlFor="file-upload">
                       <GroupInfoImage src={userImg != null ? userImg : Test} />
                     </label>
@@ -245,9 +246,9 @@ const Profile = () => {
                       이미지를 클릭하여 <br />
                       프로필 이미지를 바꾸세요
                     </h1>
-                  </ImageTextBox>
+                  </ProfileImageTextBox>
                     <form onSubmit={PostProfile}>
-                  <GroupInfoTextBox>
+                  <ProfileGroupInfoTextBox>
                       <input
                         id="file-upload"
                         type="file"
@@ -255,11 +256,11 @@ const Profile = () => {
                         style={{ display: "none" }}
                         onChange={ImageHandler}
                       ></input>
-                      <GroupInfoText>
+                      <ProfileGroupInfoText>
                         <h1 className="infotitle">계정명</h1>
                         <p className="infocontent">{userName}</p>
-                      </GroupInfoText>
-                      <GroupInfoText>
+                      </ProfileGroupInfoText>
+                      <ProfileGroupInfoText>
                         <h1 className="infotitle">
                           닉네임&nbsp;&nbsp;&nbsp;&nbsp;
                         </h1>
@@ -273,8 +274,8 @@ const Profile = () => {
                           width={"18vw"}
                           rule={nicknameRules}
                         />
-                      </GroupInfoText>
-                      <GroupInfoText>
+                      </ProfileGroupInfoText>
+                      <ProfileGroupInfoText>
                         <h1 className="infotitle">비밀번호</h1>
                         <Input
                           placeholder="변경할 비밀번호를 입력하세요."
@@ -285,17 +286,17 @@ const Profile = () => {
                           width={"18vw"}
                           rule={passwordRules}
                         />
-                      </GroupInfoText>
-                  </GroupInfoTextBox>
+                      </ProfileGroupInfoText>
+                  </ProfileGroupInfoTextBox>
                     </form>
                 </>
               )}
-            </GroupInfoBox>
-          </TopContentContainer>
-          <GroupTitleBox>
+            </ProfileGroupInfoBox>
+          </ProfileTopContentContainer>
+          <ProfileGroupTitleBox>
             <h1 className="title">보유 중인 그룹</h1>
-          </GroupTitleBox>
-          <BottomContentContainer>
+          </ProfileGroupTitleBox>
+          <ProfileBottomContentContainer>
             {userGroup?.length !== 0 ? (
               userGroup?.map((item) => {
                 return (
@@ -305,137 +306,12 @@ const Profile = () => {
             ) : (
               <h1>보유 중인 그룹이 없습니다</h1>
             )}
-          </BottomContentContainer>
-        </RightTotalContainer>
-      </PageContainer>
+          </ProfileBottomContentContainer>
+        </ProfileRightTotalContainer>
+      </ProfilePageContainer>
     </>
   );
 };
 
 export default Profile;
 
-const ImageTextBox = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  justify-content: flex-start;
-`;
-
-const GroupTitleBox = styled.div`
-  display: flex;
-  flex-direction: row;
-  justify-content: flex-start;
-  align-items: center;
-  gap: 2rem;
-`;
-
-const TopContentContainer = styled.div`
-  width: 60vw;
-  height: 100%;
-  border-radius: 4rem;
-  border: 0.1rem solid #d4d2e3;
-  padding: 5rem;
-`;
-
-const BottomContentContainer = styled.div`
-  width: 100%;
-  height: 100%;
-  display: flex;
-  text-align: center;
-  flex-direction: column;
-  border-radius: 4rem;
-  border: 0.1rem solid #d4d2e3;
-  padding: 5rem;
-  gap: 2rem;
-  h1 {
-    overflow: hidden;
-    text-overflow: ellipsis;
-    display: -webkit-box;
-    -webkit-line-clamp: 1;
-    -webkit-box-orient: vertical;
-    font-size: 3rem;
-    font-weight: 600;
-    color: rgb(88, 85, 133, 0.5);
-  }
-`;
-const GroupInfoBox = styled.div`
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  gap: 11rem;
-  @media (max-width: 960px) {
-    gap: 4rem;
-  }
-`;
-const GroupInfoImage = styled.img`
-  border-radius: 2rem;
-  width: 100%;
-  height: 100%;
-  max-width: 18rem;
-  max-height: 18rem;
-  object-fit: cover;
-`;
-
-const RightTotalContainer = styled.div`
-  flex-direction: column;
-  justify-content: flex-start;
-  align-items: center;
-  width: 60vw;
-  > * {
-    margin-bottom: 2rem;
-  }
-`;
-
-const GroupInfoTextBox = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  width: 20vw;
-  gap: 3rem;
-`;
-
-const GroupInfoText = styled.div`
-  display: flex;
-  width: 30vw;
-  flex-direction: row;
-  align-items: center;
-  gap: 2rem;
-`;
-
-const PageContainer = styled.div`
-  margin-top: 14rem;
-
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  width: 100vw;
-  padding-bottom: 3rem;
-
-  .title {
-    font-weight: 700;
-    font-size: 3.2rem;
-    color: #5d5a88;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-  .infotitle {
-    font-weight: 700;
-    font-size: 2.4rem;
-    color: #5d5a88;
-  }
-  .infocontent {
-    font-weight: 400;
-    font-size: 2.4rem;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    color: #9795b5;
-  }
-  .inputcontent {
-    font-weight: 400;
-    font-size: 2rem;
-    color: #9795b5;
-  }
-`;

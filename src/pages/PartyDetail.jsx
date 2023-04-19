@@ -27,6 +27,9 @@ import FloatingMenu from "../components/party/FloatingMenu";
 import Survey from "../components/party/Survey";
 import { useRecoilState } from "recoil";
 import { editReadyState } from "../store/atom";
+import { useRef } from "react";
+import { ReactMarkdownWrapper, DetailCommentInputWrapper, DetailCommentMapWrapper, DetailCommentTopWrapper, DetailCommentcontainer, DetailCommentsWrapper, DetailContentsWrapper, DetailHomeWorkSubmitButtonBox, DetailHomeWorkSubmitContainer, DetailHomeworkContentContainer, DetailInputContainer, DetailPageContainer, DetailPostedHomeWorkFileBox, DetailSubmitterBox, DetailSubmitterContainer, DetailVoteButtonBox, DetailVoteContainer, DetailVoteContentContainer } from "../utils/style/pageLayout";
+import { StyledInput, SubmiterButton } from "../utils/style/componentLayout";
 
 function PartyDetail() {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -35,13 +38,15 @@ function PartyDetail() {
   const [isOpen, setIsOpen] = useRecoilState(editReadyState);
   const { register, formState: errors, handleSubmit } = useForm();
   const [commentList, setCommentList] = useState();
+  const isAdmin = useRef();
+  const submitAgain = useRef(false)
   const [comment, setComment] = useState("");
-  const [isAdmin, setIsAdmin] = useState();
   const [postInfo, setPostInfo] = useState({});
   const [voteMax, setVoteMax] = useState("");
   const [database, setDatabase] = useState();
-  const [submitAgain, setSubmitAgain] = useState(false);
+  const queryClient = useQueryClient();
   const [homeWorkInputFile, setHomeWorkInputFile] = useState([]);
+  //이거 유스레프로
   const [homeWorkInputFileList, setHomeWorkInputFileList] = useState([]);
   const [voteSelectedOption, setVoteSelectedOption] = useState();
   const [submitSurvey, setSubmitSurvey] = useState(false);
@@ -59,9 +64,7 @@ function PartyDetail() {
     const isUserCookie = getCookie("token");
     if (isUserCookie === undefined) {
       navi("/");
-      toast.error("로그인 정보가 만료되었습니다.", {
-        toastId: "postDetailLoginErr",
-      });
+      toast.error("로그인 정보가 만료되었습니다.", {toastId: "postDetailLoginErr",});
     }
   }, []);
   const now = new Date().getTime();
@@ -69,7 +72,6 @@ function PartyDetail() {
   const groupId = searchParams.get("groupId");
   const detailId = searchParams.get("detailId");
   const dtype = searchParams.get("dtype");
-  const queryClient = useQueryClient();
   const groupName = searchParams.get("groupName");
   const groupInfo = searchParams.get("groupInfo");
   const groupCode = searchParams.get("groupCode");
@@ -80,7 +82,7 @@ function PartyDetail() {
       onSuccess: ({ data }) => {
         setPostInfo(data.data);
         if (data.data.role === "ADMIN") {
-          setIsAdmin(true);
+          isAdmin.current(true)
         }
         switch (dtype) {
           case "vote":
@@ -128,7 +130,7 @@ function PartyDetail() {
     onSuccess: ({ data }) => {
       queryClient.invalidateQueries("comment");
       toast.success("과제물이 수정되었습니다.");
-      setSubmitAgain(false);
+      submitAgain.current(false)
       queryClient.invalidateQueries();
     },
   });
@@ -142,7 +144,7 @@ function PartyDetail() {
   const posthomework = useMutation(postHomeWorkData, {
     onSuccess: ({ data }) => {
       toast.success("제출 성공.");
-      setSubmitAgain(false);
+      submitAgain.current(false)
       queryClient.invalidateQueries();
     },
     onError: (error) => {
@@ -241,7 +243,7 @@ function PartyDetail() {
       data: postData,
     };
     if (postData.length != 0) {
-      if (submitAgain == false) {
+      if (submitAgain === false) {
         const res = posthomework.mutateAsync(payload);
       } else {
         const res = putSubjects.mutateAsync(payload);
@@ -267,9 +269,9 @@ function PartyDetail() {
     getComment.isError
   ) {
     return <>
-    <PageContainer>
+    <DetailPageContainer>
       
-    </PageContainer>
+    </DetailPageContainer>
     </>;
   }
   return (
@@ -279,7 +281,7 @@ function PartyDetail() {
           setShowModal={setShowModal}
           courrentModalContent={courrentModalContent}
           res={res}
-        ></ShowSubmitFile>
+        />
       ) : null}
       
       <PartyInfo
@@ -296,9 +298,9 @@ function PartyDetail() {
           groupName={groupName}
           groupInfo={groupInfo}
           groupCode={groupCode}
-        ></FloatingMenu>
-      <PageContainer>
-        <ContentsWrapper>
+        />
+      <DetailPageContainer>
+        <DetailContentsWrapper>
           <MarkdownTitle
           postInfo={postInfo}
           dtype={dtype}
@@ -334,11 +336,11 @@ function PartyDetail() {
           {/*투표 여부를 판단, 투표지가 있을 경우 투표 관련 컴포넌트 랜더링*/}
           {dtype == "vote" ? (
             database == -1 && now < new Date(res?.data.data.data.expirationTime).getTime() ? (
-              <VoteContentContainer>
+              <DetailVoteContentContainer>
                 <h1 className="smallname">마감시간 : {FullDateCheck(res?.data.data.data.expirationTime)}</h1>
                 {res?.data.data.data.optionList?.map((item) => (
                   <label key={item.optionId}>
-                    <VoteContainer>
+                    <DetailVoteContainer>
                       <input
                         type="radio"
                         value={item.optionId}
@@ -348,10 +350,10 @@ function PartyDetail() {
                         }
                       />
                       <h1 className="name">{item.option}</h1>
-                    </VoteContainer>
+                    </DetailVoteContainer>
                   </label>
                 ))}
-                <VoteButtonBox>
+                <DetailVoteButtonBox>
                   <Button onClick={OnVotePost}>투표하기</Button>
                   <Button
                     transparent={true}
@@ -360,10 +362,10 @@ function PartyDetail() {
                   >
                     결과보기
                   </Button>
-                </VoteButtonBox>
-              </VoteContentContainer>
+                </DetailVoteButtonBox>
+              </DetailVoteContentContainer>
             ) : (
-              <VoteContentContainer>
+              <DetailVoteContentContainer>
                 <h1 className="smallname">마감시간 : {FullDateCheck(res?.data.data.data.expirationTime)}</h1>
                 {res?.data.data.data.optionList?.map((item) => (
                   <SlideChart
@@ -371,9 +373,9 @@ function PartyDetail() {
                     option={item.option}
                     voteMax={voteMax}
                     count={item.count}
-                  ></SlideChart>
+                  />
                 ))}
-                <VoteButtonBox>
+                <DetailVoteButtonBox>
                   {database == -2 ? (
                     <Button
                       transparent={true}
@@ -398,56 +400,56 @@ function PartyDetail() {
                   ) : null}
 
                   <h1 className="smallname"> {voteMax}명 투표함</h1>
-                </VoteButtonBox>
-              </VoteContentContainer>
+                </DetailVoteButtonBox>
+              </DetailVoteContentContainer>
             )
           ) : null}
           {/*과제 여부를 판단, 제출한 과제가 없을 경우 과제 관련 컴포넌트 랜더링*/}
           {dtype == "homework" ? (
-            (res?.data?.data?.data?.role == "USER" && res?.data?.data?.data?.submitResponseDto == null) || submitAgain == true
+            (res?.data?.data?.data?.role == "USER" && res?.data?.data?.data?.submitResponseDto == null) || submitAgain === true
               ? (<form onSubmit={(e) => {e.preventDefault(); handleSubmit(postOrPutHomeWork);}}>
-                <HomeWorkSubmitContainer>
-                  <HomeWorkSubmitButtonBox>
+                <DetailHomeWorkSubmitContainer>
+                  <DetailHomeWorkSubmitButtonBox>
                     <Button onClick={() => addInput("file")}>파일 추가하기</Button>
                     <Button onClick={handleSubmit(postOrPutHomeWork)} transparent={true} color="rgb(88, 85, 133)">과제 제출하기</Button>
-                  </HomeWorkSubmitButtonBox>
-                  <HomeWorkSubmitButtonBox>
-                    <HomeworkContentContainer>
+                  </DetailHomeWorkSubmitButtonBox>
+                  <DetailHomeWorkSubmitButtonBox>
+                    <DetailHomeworkContentContainer>
                       <h1 className="name">제출할 파일</h1>
                       {homeWorkInputFile.map((item) => (
-                        <InputContainer key={item.id}>
+                        <DetailInputContainer key={item.id}>
                           <StyledInput type="file" onChange={FileHandler} />
-                          <section className="name" onClick={() => deleteInput(item.id)}>X</section>
-                        </InputContainer>
+                          <section style={{ cursor: 'pointer' }} className="name" onClick={() => deleteInput(item.id)}>X</section>
+                        </DetailInputContainer>
                       ))}
-                    </HomeworkContentContainer>
-                  </HomeWorkSubmitButtonBox>
-                </HomeWorkSubmitContainer>
+                    </DetailHomeworkContentContainer>
+                  </DetailHomeWorkSubmitButtonBox>
+                </DetailHomeWorkSubmitContainer>
               </form>)
               : res?.data?.data?.data?.role == "USER" && res?.data?.data?.data?.submitResponseDto != null
               ? (<>{/*과제 여부를 판단, 제출한 과제가 있을 경우 과제 관련 컴포넌트 랜더링*/}
-                <HomeWorkSubmitContainer>
-                  <HomeWorkSubmitButtonBox>
+                <DetailHomeWorkSubmitContainer>
+                  <DetailHomeWorkSubmitButtonBox>
                     {res?.data?.data?.data?.submitResponseDto.submitCheck == false
                       ? (res?.data?.data?.data?.submitResponseDto.feedbackList
                         ?.length == 0 ? (
                         <Button transparent={true} color="rgb(88, 85, 133)" onClick={() => doDeleteHomework({ groupId, detailId })}>제출 취소하기</Button>)
-                        : (<Button transparent={true} onClick={() => setSubmitAgain(true)} color="rgb(88, 85, 133)">다시 제출하기</Button>))
+                        : (<Button transparent={true} onClick={() => submitAgain.current(true)} color="rgb(88, 85, 133)">다시 제출하기</Button>))
                       : null}
-                  </HomeWorkSubmitButtonBox>
-                  <HomeWorkSubmitButtonBox>
-                    <HomeworkContentContainer>
-                      <PostedHomeWorkFileBox>
+                  </DetailHomeWorkSubmitButtonBox>
+                  <DetailHomeWorkSubmitButtonBox>
+                    <DetailHomeworkContentContainer>
+                      <DetailPostedHomeWorkFileBox>
                         <h1 className="name">제출한 파일</h1>
                         <h1 className="smallname">
                           {FullDateCheck(res?.data?.data?.data?.submitResponseDto.createdAt)}{" "}{res?.data?.data?.data?.submitResponseDto.late == true ? "제출(지각)" : "제출"}{" "}
                         </h1>
-                      </PostedHomeWorkFileBox>
+                      </DetailPostedHomeWorkFileBox>
                       {res?.data.data.data.submitResponseDto.fileList.map((item) => (
                         <a key={item} href={`${item.fileUrl}?download=true`} className="filename"> {" "} {item.fileName}</a>
                       ))}
-                    </HomeworkContentContainer>
-                    {<HomeworkContentContainer>
+                    </DetailHomeworkContentContainer>
+                    {<DetailHomeworkContentContainer>
                         {res?.data?.data?.data?.submitResponseDto.feedbackList
                             ?.length != 0 ? (res?.data?.data?.data?.submitResponseDto.submitCheck == true
                                 ? (<><h1 className="name">확정됨</h1>
@@ -460,43 +462,43 @@ function PartyDetail() {
                                       <h1 key={item} className="name">{index + 1}번째 사유 : {item}</h1>)
                                   )}</>))
                             : (<h1 className="name">피드백 대기 중</h1>)}
-                      </HomeworkContentContainer>}
-                  </HomeWorkSubmitButtonBox>
-                </HomeWorkSubmitContainer>
+                      </DetailHomeworkContentContainer>}
+                  </DetailHomeWorkSubmitButtonBox>
+                </DetailHomeWorkSubmitContainer>
               </>)
-              : (<><PostedHomeWorkFileBox>
-                  <HomeworkContentContainer width="80vw">
+              : (<><DetailPostedHomeWorkFileBox>
+                  <DetailHomeworkContentContainer width="80vw">
                     <h1 className="name">제출완료</h1>
                     {res?.data.data.data.submitMember.map((item) => (
-                      <SubmitterContainer key={item.id}>
+                      <DetailSubmitterContainer key={item.id}>
                         <h1 className="smallname">{item.nickname}</h1>
-                        <SubmitterBox>
+                        <DetailSubmitterBox>
                           <h1 className="smallname">{ShortCheck(item.createdAt)} 제출</h1>
                           <SubmiterButton onClick={() => CheckUpModal(item)} className="buttontext">제출 과제</SubmiterButton>
-                        </SubmitterBox>
-                      </SubmitterContainer>))}
-                  </HomeworkContentContainer>
-                  <HomeworkContentContainer borderColor="#CF5C4C">
+                        </DetailSubmitterBox>
+                      </DetailSubmitterContainer>))}
+                  </DetailHomeworkContentContainer>
+                  <DetailHomeworkContentContainer borderColor="#CF5C4C">
                     <h1 className="name">미제출자</h1>
                     {res?.data.data.data.notSubmitMember.map((item) => (
-                      <SubmitterContainer key={item.id}>
+                      <DetailSubmitterContainer key={item.id}>
                         <h1 className="smallname">{item.nickname}</h1>
-                      </SubmitterContainer>))}
-                  </HomeworkContentContainer>
-                </PostedHomeWorkFileBox></>))
+                      </DetailSubmitterContainer>))}
+                  </DetailHomeworkContentContainer>
+                </DetailPostedHomeWorkFileBox></>))
               : null}
           {/*설문 여부를 판단, 어드민(서포터)일 경우 별도 랜더링*/}
           {dtype == "survey"
             ? (<Survey role={res?.data?.data?.data?.role} submit={submitSurvey} res={res} res0={database} groupId={groupId} detailId={detailId} list={res?.data.data.data.questionResponseDto} />)
             : null}
-        </ContentsWrapper>
-        <Commentcontainer>
-          <CommentTopWrapper>
+        </DetailContentsWrapper>
+        <DetailCommentcontainer>
+          <DetailCommentTopWrapper>
             <span>댓글 {getComment?.data?.data?.data?.content.length}</span>
             <img src={conver} alt="댓글" />
-          </CommentTopWrapper>
-          <CommentsWrapper />
-          <CommentMapWrapper>
+          </DetailCommentTopWrapper>
+          <DetailCommentsWrapper />
+          <DetailCommentMapWrapper>
             {commentList?.map((comment) => (
               <Comment key={comment.id}
                 id={comment.id}
@@ -508,8 +510,8 @@ function PartyDetail() {
                 createAt={comment.createAt}
                 isAdmin={isAdmin}
                 owned={comment.owned}/>))}
-          </CommentMapWrapper>
-          <CommentInputWrapper>
+          </DetailCommentMapWrapper>
+          <DetailCommentInputWrapper>
             <img src={profileImage} alt="프로필" />
             <form className="form" onSubmit={(e) => {e.preventDefault(); onPost(comment);}}>
               <section className="center">
@@ -520,364 +522,11 @@ function PartyDetail() {
                 </div>
               </section>
             </form>
-          </CommentInputWrapper>
-        </Commentcontainer>
-      </PageContainer>
+          </DetailCommentInputWrapper>
+        </DetailCommentcontainer>
+      </DetailPageContainer>
         {isOpen === true && <EditReady role = {res?.data?.data?.data?.role}/>}
     </>
   );
 }
-
-const StyledInput = styled.input`
-  border: none;
-  padding: 10px;
-  background-color: transparent;
-  color: #333;
-  font-size: 16px;
-  border-radius: 4px;
-  cursor: pointer;
-  &:hover {
-    background-color: #d4d2e3;
-  }
-`;
-
-const InputContainer = styled.div`
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: space-between;
-`;
-
-const SubmiterButton = styled.button`
-  width: 8rem;
-  height: 3rem;
-  background-color: transparent;
-  border-radius: 2.4rem;
-  border: 0.1rem solid #5d5a88;
-`;
-
-const SubmitterBox = styled.div`
-  gap: 1rem;
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: flex-end;
-`;
-
-const SubmitterContainer = styled.div`
-  width: 100%;
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: space-between;
-`;
-
-const PostedHomeWorkFileBox = styled.div`
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  gap: 2rem;
-  text-align: center;
-`;
-const HomeworkContentContainer = styled.div`
-  width: ${({ width }) => width || "50vw"};
-  max-width: 100%;
-  height: 100%;
-  align-items: flex-start;
-  display: flex;
-  flex-direction: column;
-  border-radius: 4rem;
-  border: 0.2rem solid ${({ borderColor }) => borderColor || "#D4D2E3"};
-  text-overflow: ellipsis;
-  overflow: hidden;
-  white-space: normal;
-  padding: 5rem;
-  gap: 2rem;
-  .buttontext {
-    font-weight: 400;
-    font-size: 1.4rem;
-    color: #5d5a88;
-  }
-  .filename {
-    font-weight: 400;
-    font-size: 1.6rem;
-    color: #9795b5;
-    text-overflow: ellipsis;
-    overflow: hidden;
-    white-space: nowrap;
-  }
-  .name {
-    font-weight: 400;
-    font-size: 2.2rem;
-    color: #5d5a88;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
-  .smallname {
-    font-weight: 400;
-    font-size: 1.8rem;
-    color: #9795b5;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
-  .date {
-    font-weight: 400;
-    font-size: 2rem;
-    color: #9795b5;
-    text-overflow: ellipsis;
-    overflow: hidden;
-    white-space: nowrap;
-  }
-`;
-const HomeWorkSubmitContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 1.5rem;
-`;
-
-const HomeWorkSubmitButtonBox = styled.div`
-  display: flex;
-  max-width: 100%;
-  flex-direction: row;
-  align-items: flex-start;
-  gap: 1.5rem;
-`;
-
-const VoteButtonBox = styled.div`
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  gap: 1.5rem;
-`;
-const VoteContainer = styled.div`
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  gap: 2rem;
-  text-align: center;
-`;
-
-const VoteContentContainer = styled.div`
-  width: fit-content;
-  max-width: 50%;
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  border-radius: 4rem;
-  border: 0.1rem solid #d4d2e3;
-  padding: 5rem;
-  gap: 2rem;
-  .name {
-    font-weight: 400;
-    font-size: 2.2rem;
-    color: #5d5a88;
-  }
-  .smallname {
-    font-weight: 400;
-    font-size: 1.8rem;
-    color: #9795b5;
-  }
-  .date {
-    font-weight: 400;
-    font-size: 2rem;
-    color: #9795b5;
-  }
-`;
-
-const Commentcontainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-  max-width: 128rem;
-  width: 60vw;
-  background-color: ${(props) => props.theme.color.zeroOne};
-  padding: 3.2rem;
-  margin-left: 5rem;
-  border-radius: 0.8rem;
-`;
-
-const PageContainer = styled.div`
-  width: 100vw;
-  min-height: 100vh;
-  max-width: 128rem;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: flex-start;
-  margin: 0 auto;
-  margin-top: 14rem;
-`;
-
-const ReactMarkdownWrapper = styled(ReactMarkdown)`
-  * {
-    font-size: 1.4rem;
-    font-family: "Roboto Mono", monospace;
-  }
-  padding: 2.5rem 0;
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-  p {
-    word-wrap: break-word;
-  }
-  h1 {
-    padding: 2rem 0;
-    font-size: 2.1rem;
-    line-height: 1.45;
-    &::after {
-      content: "";
-      display: block;
-      position: relative;
-      top: 0.33em;
-      border-bottom: 1px solid hsla(0, 0%, 50%, 0.33);
-    }
-  }
-
-  h2 {
-    padding: 2rem 0;
-    font-size: 1.9rem;
-    line-height: 1.45;
-    &::after {
-      content: "";
-      display: block;
-      position: relative;
-      top: 0.33em;
-      border-bottom: 1px solid hsla(0, 0%, 50%, 0.33);
-    }
-  }
-  h3 {
-    padding: 2rem 0;
-    font-size: 1.7rem;
-    line-height: 1.45;
-    &::after {
-      content: "";
-      display: block;
-      position: relative;
-      top: 0.33em;
-      border-bottom: 1px solid hsla(0, 0%, 50%, 0.33);
-    }
-  }
-
-  h4 {
-    font-size: 1.5rem;
-    line-height: 1.45;
-  }
-
-  img {
-    width: 100%;
-    object-fit: cover;
-    object-position: center;
-  }
-
-  blockquote {
-    width: 100%;
-    padding-left: 1.25rem;
-    border-left: 5px solid rgba(0, 0, 0, 0.1);
-    p {
-      line-height: 1.4;
-    }
-  }
-
-  ul {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-    li {
-      display: flex;
-      align-items: center;
-      gap: 0.8rem;
-      line-height: 1.2;
-    }
-  }
-`;
-
-const ContentsWrapper = styled.section`
-  display: flex;
-  flex-direction: column;
-  width: 60vw;
-  margin-left: 6rem;
-  margin-bottom: 2rem;
-  gap: 1rem;
-`;
-
-const CommentsWrapper = styled.section`
-  display: flex;
-  flex-direction: column;
-  gap: 0.2rem;
-  justify-content: center;
-
-  img {
-    width: 3.2rem;
-    height: 3.2rem;
-    border-radius: 50%;
-  }
-`;
-
-const CommentMapWrapper = styled.ul`
-  display: flex;
-  flex-direction: column;
-  gap: 0.8rem;
-`;
-
-const CommentInputWrapper = styled.section`
-  display: flex;
-  gap: 1rem;
-
-  .center {
-    display: flex;
-    flex-direction: column;
-    gap: 0.8rem;
-  }
-
-  .form {
-    width: 100%;
-    button {
-      cursor: pointer;
-      width: 5rem;
-      height: 5rem;
-      border-radius: 1.6rem;
-      border: none;
-      color: ${(props) => props.theme.color.zeroOne};
-      background-color: ${(props) => props.theme.color.zeroThree};
-      margin-left: 0.8rem;
-      font-size: 1.2rem;
-    }
-    .inputLayout {
-      display: flex;
-      align-items: center;
-      textarea {
-        width: 80%;
-        border-radius: 0.4rem;
-        border: none;
-        font-size: 1.1rem;
-        padding: 0.8rem;
-        resize: none;
-        &:focus {
-          outline: none;
-        }
-      }
-    }
-  }
-
-  img {
-    width: 3.2rem;
-    height: 3.2rem;
-    border-radius: 50%;
-  }
-`;
-
-const CommentTopWrapper = styled.section`
-  display: flex;
-  gap: 0.5rem;
-  align-items: center;
-  color: ${(props) => props.theme.color.zeroFour};
-  span {
-    font-size: 1.3rem;
-  }
-  img {
-    width: 1.8rem;
-  }
-`;
-
 export default PartyDetail;
