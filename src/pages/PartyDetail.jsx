@@ -46,10 +46,8 @@ function PartyDetail() {
   const [database, setDatabase] = useState();
   const queryClient = useQueryClient();
   const [homeWorkInputFile, setHomeWorkInputFile] = useState([]);
-  //이거 유스레프로
-  const [homeWorkInputFileList, setHomeWorkInputFileList] = useState([]);
+  const homeWorkInputFileList = useRef([])
   const [voteSelectedOption, setVoteSelectedOption] = useState();
-  const [submitSurvey, setSubmitSurvey] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [courrentModalContent, setCourrentModalContent] = useState();
 
@@ -82,7 +80,7 @@ function PartyDetail() {
       onSuccess: ({ data }) => {
         setPostInfo(data.data);
         if (data.data.role === "ADMIN") {
-          isAdmin.current(true)
+          isAdmin.current = true
         }
         switch (dtype) {
           case "vote":
@@ -96,7 +94,6 @@ function PartyDetail() {
           case "homework":
             break;
           case "survey":
-            setSubmitSurvey(data.data.submit);
             setDatabase(data.data);
             break;
 
@@ -130,7 +127,7 @@ function PartyDetail() {
     onSuccess: ({ data }) => {
       queryClient.invalidateQueries("comment");
       toast.success("과제물이 수정되었습니다.");
-      submitAgain.current(false)
+      submitAgain.current = false 
       queryClient.invalidateQueries();
     },
   });
@@ -144,7 +141,7 @@ function PartyDetail() {
   const posthomework = useMutation(postHomeWorkData, {
     onSuccess: ({ data }) => {
       toast.success("제출 성공.");
-      submitAgain.current(false)
+      submitAgain.current = false
       queryClient.invalidateQueries();
     },
     onError: (error) => {
@@ -156,6 +153,7 @@ function PartyDetail() {
     onSuccess: ({ data }) => {
       toast.success("제출을 취소했습니다.");
       queryClient.invalidateQueries();
+      homeWorkInputFileList.current = ([])
     },
   });
 
@@ -211,10 +209,7 @@ function PartyDetail() {
 
   const FileHandler = (event) => {
     const file = event.target.files[0];
-    setHomeWorkInputFileList((homeWorkInputFileList) => [
-      ...homeWorkInputFileList,
-      file,
-    ]);
+    homeWorkInputFileList.current.push(file)
   };
 
   const deleteInput = (data) => {
@@ -229,8 +224,8 @@ function PartyDetail() {
       CurrentFile.push(homeWorkInputFile[i].id - 1);
     }
     for (let i = 0; i < CurrentFile.length; i++) {
-      if (homeWorkInputFileList[CurrentFile[i]] != null) {
-        CurrentFileList.push(homeWorkInputFileList[CurrentFile[i]]);
+      if (homeWorkInputFileList.current[CurrentFile[i]] != null) {
+        CurrentFileList.push(homeWorkInputFileList.current[CurrentFile[i]]);
       }
     }
     for (let i = 0; i < CurrentFileList.length; i++) {
@@ -243,7 +238,7 @@ function PartyDetail() {
       data: postData,
     };
     if (postData.length != 0) {
-      if (submitAgain === false) {
+      if (submitAgain.current === false) {
         const res = posthomework.mutateAsync(payload);
       } else {
         const res = putSubjects.mutateAsync(payload);
@@ -406,7 +401,7 @@ function PartyDetail() {
           ) : null}
           {/*과제 여부를 판단, 제출한 과제가 없을 경우 과제 관련 컴포넌트 랜더링*/}
           {dtype == "homework" ? (
-            (res?.data?.data?.data?.role == "USER" && res?.data?.data?.data?.submitResponseDto == null) || submitAgain === true
+            (res?.data?.data?.data?.role == "USER" && res?.data?.data?.data?.submitResponseDto == null) || submitAgain.current === true
               ? (<form onSubmit={(e) => {e.preventDefault(); handleSubmit(postOrPutHomeWork);}}>
                 <DetailHomeWorkSubmitContainer>
                   <DetailHomeWorkSubmitButtonBox>
@@ -434,7 +429,7 @@ function PartyDetail() {
                       ? (res?.data?.data?.data?.submitResponseDto.feedbackList
                         ?.length == 0 ? (
                         <Button transparent={true} color="rgb(88, 85, 133)" onClick={() => doDeleteHomework({ groupId, detailId })}>제출 취소하기</Button>)
-                        : (<Button transparent={true} onClick={() => submitAgain.current(true)} color="rgb(88, 85, 133)">다시 제출하기</Button>))
+                        : (<Button transparent={true} onClick={() => submitAgain.current = true} color="rgb(88, 85, 133)">다시 제출하기</Button>))
                       : null}
                   </DetailHomeWorkSubmitButtonBox>
                   <DetailHomeWorkSubmitButtonBox>
@@ -446,7 +441,7 @@ function PartyDetail() {
                         </h1>
                       </DetailPostedHomeWorkFileBox>
                       {res?.data.data.data.submitResponseDto.fileList.map((item) => (
-                        <a key={item} href={`${item.fileUrl}?download=true`} className="filename"> {" "} {item.fileName}</a>
+                        <a key={item.fileUrl} href={`${item.fileUrl}?download=true`} className="filename"> {" "} {item.fileName}</a>
                       ))}
                     </DetailHomeworkContentContainer>
                     {<DetailHomeworkContentContainer>
@@ -489,7 +484,7 @@ function PartyDetail() {
               : null}
           {/*설문 여부를 판단, 어드민(서포터)일 경우 별도 랜더링*/}
           {dtype == "survey"
-            ? (<Survey role={res?.data?.data?.data?.role} submit={submitSurvey} res={res} res0={database} groupId={groupId} detailId={detailId} list={res?.data.data.data.questionResponseDto} />)
+            ? (<Survey role={res?.data.data.data.role} submit={res?.data.data.data.submit} res={res} groupId={groupId} detailId={detailId} list={res?.data.data.data.questionResponseDto} />)
             : null}
         </DetailContentsWrapper>
         <DetailCommentcontainer>

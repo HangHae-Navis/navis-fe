@@ -19,50 +19,9 @@ import FloatingMenu from "../components/party/FloatingMenu";
 import EditReady from "../components/edit/EditReady";
 import { editReadyState } from "../store/atom";
 import { useRecoilState } from "recoil";
-
-const EmptyText = (props) => {
-  return (
-    <>
-      {props.type === "board" ? (
-        <EmptyTextBox>
-          <h1>게시글이 없습니다.</h1>
-        </EmptyTextBox>
-      ) : (
-        <EmptyTextBox style={{ width: "57vw", backgroundColor: "transparent" }}>
-          <h2>마감이 임박한 과제가 없습니다.</h2>
-        </EmptyTextBox>
-      )}
-    </>
-  );
-};
-
-const EmptyTextBox = styled.div`
-  width: 65vw;
-  height: 40rem;
-  align-items: center;
-  justify-content: center;
-  background-color: ${(props) => props.theme.color.zeroOne};
-  border-radius: 0.8rem;
-  margin-left: 1rem;
-  display: flex;
-  flex-direction: column;
-  gap: 2rem;
-  h1 {
-    font-size: 3.5rem;
-    color: rgb(88, 85, 133, 0.5);
-  }
-  h2 {
-    padding-bottom: 2rem;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    display: -webkit-box;
-    -webkit-line-clamp: 1;
-    -webkit-box-orient: vertical;
-    font-size: 3rem;
-    font-weight: 600;
-    color: white;
-  }
-`;
+import { EmptyText } from "../components/party/EmptyText";
+import { useRef } from "react";
+import { PartyPageContainer, PartyLeftContainer, CarouselContainer, CarouselTitle, PartyRadioBox, PartyRightContainer } from "../utils/style/pageLayout";
 
 const Party = () => {
   const queryClient = useQueryClient();
@@ -74,9 +33,7 @@ const Party = () => {
   const [categoryValueSecond, setCategoryValueSecond] = useState("id");
   const options = ["전체", "공지", "투표", "과제", "게시글", "설문"];
   const optionsSecond = ["최신순", "중요도순"];
-  const [carouselList, setCarouselList] = useState([]);
   const [groupList, setGroupList] = useState([]);
-  const [pageNum, setPageNum] = useState(1);
   const [groupName, setGroupName] = useState();
   const [groupInfo, setGroupInfo] = useState();
   const [groupCode, setGroupCode] = useState();
@@ -85,24 +42,17 @@ const Party = () => {
   const [isOpen, setIsOpen] = useRecoilState(editReadyState);
 
   const partyRes = useQuery(
-    ["party", { id: pam.id, page: pageNum, size: 99, category: categoryValue }],
+    ["party", { id: pam.id, page: 1, size: 999, category: categoryValue }],
     () =>
       getDetailPage({
         id: pam.id,
-        page: pageNum,
-        size: 99,
+        page: 1,
+        size: 999,
         category: categoryValue,
       }),
     {
       onSuccess: ({ data }) => {
-        setGroupList(data.data.basicBoards.content);
-        setGroupName(data.data.groupName);
-        setGroupInfo(data.data.groupInfo);
-        setGroupCode(data.data.groupCode);
-        setGroupId(pam.id);
-        setIsAdmin(data.data.admin);
-        setCarouselList(data.data.deadlines);
-
+        console.log(data.data)
         //파티디테일의 dtype에 따라 렌더링 실패 이슈를 방지하기 위해, 모든 파티디테일 쿼리를 삭제한다.
         queryClient.removeQueries("partyDetail", { inactive: true });
       },
@@ -110,9 +60,11 @@ const Party = () => {
   );
 
   useEffect(() => {
-    let sortedGroupList = [...groupList];
+    console.log(partyRes?.data?.data?.data?.basicBoards?.content)
+    console.log(partyRes?.data?.data?.data)
+    let sortedGroupList = partyRes?.data?.data?.data?.basicBoards?.content;
     if (categoryValueSecond !== "createdAt") {
-      sortedGroupList.sort((a, b) => {
+      partyRes?.data?.data?.data?.basicBoards?.content.sort((a, b) => {
         if (categoryValueSecond === "id") {
           return b.id - a.id;
         } else if (categoryValueSecond === "important") {
@@ -121,7 +73,7 @@ const Party = () => {
       });
     }
 
-    setGroupList(sortedGroupList);
+    setGroupList(partyRes?.data?.data?.data?.basicBoards?.content);
   }, [categoryValueSecond]);
 
   useEffect(() => {
@@ -138,17 +90,12 @@ const Party = () => {
   if (partyRes.isLoading || partyRes.isError) {
     return (
       <>
-        <PageContainer>
-          <LeftContainer>
+        <PartyPageContainer>
+          <PartyLeftContainer>
             <PartyInfo
-              groupName={groupName}
-              groupInfo={groupInfo}
-              groupCode={groupCode}
-              groupId={groupId}
-              isAdmin={isAdmin}
             />
-          </LeftContainer>
-          <RightTotalContainer>
+          </PartyLeftContainer>
+          <div>
             <CarouselContainer>
               <CarouselTitle>
                 <svg
@@ -169,16 +116,16 @@ const Party = () => {
                 <h1 className="title">24시간 내 마감</h1>
               </CarouselTitle>
             </CarouselContainer>
-          </RightTotalContainer>
-        </PageContainer>
+          </div>
+        </PartyPageContainer>
       </>
     );
   }
 
   return (
     <>
-      <PageContainer>
-        <LeftContainer>
+      <PartyPageContainer>
+        <PartyLeftContainer>
           <PartyInfo
             groupName={partyRes.data.data.data.groupName}
             groupInfo={partyRes.data.data.data.groupInfo}
@@ -188,13 +135,13 @@ const Party = () => {
           />
           <FloatingMenu
             props={partyRes.data.data.data.recentlyViewed}
-            groupId={groupId}
+            groupId={pam.id}
             groupName={groupName}
             groupInfo={groupInfo}
             groupCode={groupCode}
           ></FloatingMenu>
-        </LeftContainer>
-        <RightTotalContainer>
+        </PartyLeftContainer>
+        <div>
           <CarouselContainer>
             <CarouselTitle>
               <svg
@@ -214,9 +161,9 @@ const Party = () => {
               </svg>
               <h1 className="title">24시간 내 마감</h1>
             </CarouselTitle>
-            {carouselList?.length != 0 ? (
+            {partyRes?.data.data.data.deadlines.length != 0 ? (
               <Slider {...settings}>
-                {carouselList.map((item) => {
+                {partyRes?.data.data.data.deadlines.map((item) => {
                   return (
                     <Carousel
                       key={item.id}
@@ -240,10 +187,10 @@ const Party = () => {
                 })}
               </Slider>
             ) : (
-              <EmptyText></EmptyText>
+              <EmptyText/>
             )}
           </CarouselContainer>
-          <RadioBox>
+          <PartyRadioBox>
             <RadioButtons
               options={options}
               categoryValue={setCategoryValue}
@@ -252,7 +199,7 @@ const Party = () => {
               setSelected={setSelected}
               type={"first"}
             />
-            <RadioBox>
+            <PartyRadioBox>
               <RadioButtons
                 options={optionsSecond}
                 categoryValue={setCategoryValueSecond}
@@ -262,9 +209,9 @@ const Party = () => {
                 type={"second"}
               />
               {/* <h1 className="check">만료 제외</h1> */}
-            </RadioBox>
-          </RadioBox>
-          <RightContainer>
+            </PartyRadioBox>
+          </PartyRadioBox>
+          <PartyRightContainer>
             {groupList?.length != 0 ? (
               groupList?.map((item) => {
                 return (
@@ -291,99 +238,15 @@ const Party = () => {
             ) : (
               <EmptyText type={"board"} />
             )}
-          </RightContainer>
-        </RightTotalContainer>
+          </PartyRightContainer>
+        </div>
         <Chat />
         {isOpen === true && (
           <EditReady role={partyRes?.data?.data?.data?.groupRole} />
         )}
-      </PageContainer>
+      </PartyPageContainer>
     </>
   );
 };
-
-const RadioBox = styled.div`
-  display: flex;
-  gap: 1rem;
-  align-items: center;
-  justify-content: space-between;
-
-  @media (max-width: 600px) {
-    display: flex;
-    align-items: flex-start;
-    flex-direction: column;
-  }
-
-  .check {
-    font-size: 1.75rem;
-    background-color: transparent;
-    color: ${({ selected }) => (selected ? "#585585" : "#585585")};
-  }
-`;
-
-const CarouselContainer = styled.div`
-  width: 70vw;
-  height: 30.2rem;
-  overflow-x: hidden;
-  margin-bottom: 5.6rem;
-  gap: 3rem;
-  padding: 3.2rem;
-  display: flex;
-  flex-direction: column;
-  background-color: ${(props) => props.theme.color.zeroThree};
-  border-radius: 3.2rem;
-
-  .title {
-    font-weight: 500;
-    font-size: 2.2rem;
-    color: #ffffff;
-  }
-`;
-
-const CarouselTitle = styled.div`
-  display: flex;
-  gap: 1rem;
-  .title {
-    font-weight: 500;
-    font-size: 2.2rem;
-    color: #ffffff;
-  }
-`;
-
-const PageContainer = styled.div`
-  display: flex;
-  position: relative;
-  flex-direction: row;
-  align-items: flex-start;
-  width: 100vw;
-  max-width: 128rem;
-  margin: 0 auto;
-  padding: 2rem 0 3rem 0;
-  margin-top: 14rem;
-  min-height: 100vh;
-  gap: 6rem;
-`;
-
-const LeftContainer = styled.div`
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  width: 30rem;
-  gap: 1rem;
-  font-size: 1.45rem;
-`;
-
-const RightTotalContainer = styled.div``;
-
-const RightContainer = styled.div`
-  margin: 3rem 0;
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-
-  @media (max-width: 800px) {
-    grid-template-columns: repeat(1, 1fr);
-  }
-  gap: 1rem;
-`;
 
 export default Party;

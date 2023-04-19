@@ -1,126 +1,25 @@
 import { useMutation, useQuery } from "react-query";
-import styled from "styled-components";
 import Button from "../element/Button";
-import { deletePage, GetProfile, PutProfile } from "../utils/api/api";
+import {GetProfile, PutProfile } from "../utils/api/api";
 import "react-loading-skeleton/dist/skeleton.css";
 import Test from "./../assets/Image Placeholder.svg";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { FullDateCheck, DayCheck } from "../element/DateCheck";
+import { FullDateCheck, } from "../element/DateCheck";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 import Input from "../element/Input";
-import {
-  nicknameRules,
-  passwordRules,
-  userNameRules,
-} from "../constants/validate";
+import {nicknameRules, passwordRules,} from "../constants/validate";
 import { getCookie } from "../utils/infos/cookie";
 import { ProfileBottomContentContainer, ProfileGroupInfoBox, ProfileGroupInfoText, ProfileGroupInfoTextBox, ProfileGroupTitleBox, ProfileImageTextBox, ProfilePageContainer, ProfileRightTotalContainer, ProfileTopContentContainer } from "../utils/style/pageLayout";
-
-const GroupList = (props) => {
-  const navi = useNavigate();
-  const deleteGroup = useMutation(deletePage, {
-    onSuccess: ({ data }) => {
-      toast.success("그룹을 삭제했습니다.");
-      props.res.refetch();
-    },
-  });
-
-  const doDeletePage = (data) => {
-    const res = deleteGroup.mutateAsync(data);
-  };
-
-  return (
-    <>
-      <GroupListBox>
-        <GroupListTitleBox>
-          <h1 className="name">{props.item.groupName} </h1>
-          <GroupListTitleBoxRight>
-          <span className="date">{DayCheck(props.item.createdAt)} 생성</span>
-          <span className="date">|</span>
-          <span className="date">그룹 코드 : {props.item.groupCode}</span>
-          <span className="date">|</span>
-          <span className="date">멤버 수 : {props.item.groupMemberCount}</span>
-          </GroupListTitleBoxRight>
-        </GroupListTitleBox>
-        <GroupButtonBox>
-          <Button width={"110px"} onClick={() => navi(`/party/${props.item.groupId}`)}>
-            관리하기
-          </Button>
-          <Button width={"110px"}
-            transparent={true}
-            color="rgb(88, 85, 133)"
-            onClick={() => doDeletePage(props.item.groupId)}
-          >
-            삭제하기
-          </Button>
-        </GroupButtonBox>
-      </GroupListBox>
-    </>
-  );
-};
-const GroupButtonBox = styled.div`
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  gap: 0.5rem;
-`;
-
-const GroupListBox = styled.div`
-  display: flex;
-  padding-right: 2rem;
-  flex-direction: row;
-  align-items: center;
-  justify-content: space-between;
-  border-radius: 2rem;
-  width: 100%;
-  @media (max-width: 1230px) {
-    flex-direction: column;
-  align-items: flex-start;
-  }
-`;
-
-const GroupListTitleBoxRight = styled.div`
-width: 100%;
-display: flex;
-flex-direction: row;
-justify-content: flex-end;
-align-items: center;
-gap: 0.5rem;
-`
-const GroupListTitleBox = styled.div`
-  width: 100%;
-  padding: 2rem;
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  align-items: center;
-  gap: 0.5rem;
-  .name {
-    width: 35%;
-    font-weight: 400;
-    font-size: 2.2rem;
-    color: #5d5a88;
-  }
-  .date {
-    text-align: left;
-    font-weight: 400;
-    font-size: 1.8rem;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    color: #9795b5;
-  }
-`;
+import { ProfileGroupInfoImage } from "../utils/style/componentLayout";
+import { useRef } from "react";
+import { GroupList } from "../components/profile/GroupBox";
 
 const Profile = () => {
+  const postImages = useRef(null)
   const [isPut, setIsPut] = useState(false);
-  const [userName, setUserName] = useState();
-  const [userNick, setUserNick] = useState();
   const [userImg, setUserImg] = useState();
-  const [postImages, setPostImages] = useState(null);
-  const [userDate, setUserDate] = useState();
   const [userGroup, setUserGroup] = useState();
   const {
     register,
@@ -152,19 +51,16 @@ const Profile = () => {
     reader.onloadend = () => {
       setUserImg(reader.result);
     };
-    setPostImages(file);
+    postImages.current = file;
     if (file != null) {
       reader.readAsDataURL(file);
     } else {
       setUserImg(Test);
-      setPostImages(null);
+      postImages.current = null;
     }
   };
   const getInfo = useQuery(["userInfo"], () => GetProfile(), {
     onSuccess: (data) => {
-      setUserName(data.data.data.username);
-      setUserNick(data.data.data.nickname);
-      setUserDate(FullDateCheck(data.data.data.createdAt));
       setUserGroup(data.data.data.groupInfo);
       setUserImg(data.data.data.profileImage);
     },
@@ -173,13 +69,13 @@ const Profile = () => {
   const PostProfile = async () => {
     const postRequest = new FormData();
     console.log(watch().password);
-    if (postImages != null) {
-      postRequest.append("profileImage", postImages);
+    if (postImages.current != null) {
+      postRequest.append("profileImage", postImages.current);
     }
-    if (watch().nick !== userNick) {
+    if (watch().nick !== getInfo?.data.data.data.nickname) {
       postRequest.append("nickname", watch().nick);
     } else {
-      postRequest.append("nickname", userNick);
+      postRequest.append("nickname", getInfo?.data.data.data.nickname);
     }
     if (watch().password !== null) {
       postRequest.append("password", watch().password);
@@ -213,7 +109,7 @@ const Profile = () => {
               {!isPut ? (
                 <>
                   <ProfileImageTextBox>
-                    <GroupInfoImage
+                    <ProfileGroupInfoImage
                       src={
                         getInfo.data.data.data.profileImage != null
                           ? getInfo.data.data.data.profileImage
@@ -224,15 +120,15 @@ const Profile = () => {
                   <ProfileGroupInfoTextBox>
                     <ProfileGroupInfoTextBox>
                       <h1 className="infotitle">계정명</h1>
-                      <p className="infocontent">{userName}</p>
+                      <p className="infocontent">{getInfo?.data.data.data.username}</p>
                     </ProfileGroupInfoTextBox>
                     <ProfileGroupInfoText>
                       <h1 className="infotitle">닉네임</h1>
-                      <p className="infocontent">{userNick}</p>
+                      <p className="infocontent">{getInfo?.data.data.data.nickname}</p>
                     </ProfileGroupInfoText>
                     <ProfileGroupInfoText>
                       <h1 className="infotitle">가입일자</h1>
-                      <p className="infocontent">{userDate}</p>
+                      <p className="infocontent">{FullDateCheck(getInfo?.data.data.data.createdAt)}</p>
                     </ProfileGroupInfoText>
                   </ProfileGroupInfoTextBox>
                 </>
@@ -240,7 +136,7 @@ const Profile = () => {
                 <>
                   <ProfileImageTextBox>
                     <label htmlFor="file-upload">
-                      <GroupInfoImage src={userImg != null ? userImg : Test} />
+                      <ProfileGroupInfoImage src={userImg != null ? userImg : Test} />
                     </label>
                     <h1 className="inputcontent">
                       이미지를 클릭하여 <br />
@@ -258,7 +154,7 @@ const Profile = () => {
                       ></input>
                       <ProfileGroupInfoText>
                         <h1 className="infotitle">계정명</h1>
-                        <p className="infocontent">{userName}</p>
+                        <p className="infocontent">{getInfo?.data.data.data.username}</p>
                       </ProfileGroupInfoText>
                       <ProfileGroupInfoText>
                         <h1 className="infotitle">
@@ -270,7 +166,7 @@ const Profile = () => {
                           name="nick"
                           type="text"
                           isput={isPut}
-                          defaultValue={userNick}
+                          defaultValue={getInfo?.data.data.data.nickname}
                           width={"18vw"}
                           rule={nicknameRules}
                         />

@@ -1,134 +1,33 @@
 import React from "react";
-import CopyToClipboard from "react-copy-to-clipboard";
-import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import styled from "styled-components";
-import copy from "../../assets/ic14/copy.svg";
-import write from "../../assets/ic24/write.svg";
-import remove from "../../assets/ic24/delete.svg";
 import { useState } from "react";
 import Button from "../../element/Button";
 import { useEffect } from "react";
 import { useMutation } from "react-query";
 import { postSurveyData, putSurveyData } from "../../utils/api/api";
-import axios from "axios";
 import { FullDateCheck } from "../../element/DateCheck";
 import ShowSurveyModal from "../modal/ShowSurveyModal";
 import SlideChart from "./SlideChart";
+import { Checkbox } from "../survey/CheckBox";
+import { SurveyRadioButton } from "../survey/SurveyRadioButton";
 
-const Checkbox = (props) => {
-  const [checkedItems, setCheckedItems] = useState(
-    Array(props.props.length).fill(false)
-  );
-  const handleChange = (event) => {
-    const target = event.target;
-    const value = target.checked;
-    const index = parseInt(target.name.replace("checkbox", ""), 10);
-    setCheckedItems([
-      ...checkedItems.slice(0, index),
-      value,
-      ...checkedItems.slice(index + 1),
-    ]);
-  };
-  useEffect(() => {
-    const res = [];
-
-    checkedItems.map((item, index) => {
-      if (item === true) {
-        res.push(props.props[index]);
-      }
-    });
-    props.changefunc({ value: res, id: props.id, isList: true });
-  }, [checkedItems]);
-
-  return props.props.map((item, index) => (
-    <div key={index}>
-      <label>
-        <StyledCheckbox
-          name={`checkbox${index}`}
-          checked={checkedItems[index]}
-          onChange={handleChange}
-        />
-        <span className="smallname">{item}</span>
-      </label>
-    </div>
-  ));
-};
-const RadioButton = (props) => {
-  const [selectedOption, setSelectedOption] = useState("");
-
-  const handleOptionChange = (event) => {
-    setSelectedOption(props.props[event.target.value - 1]);
-  };
-
-  useEffect(() => {
-    const res = [];
-    res.push(selectedOption);
-    props.changefunc({ value: res, id: props.id, isList: true });
-  }, [selectedOption]);
-
-  return (
-    <>
-      {props.props.map((item, index) => (
-        <label key={props.survId + index}>
-          <input
-            type="radio"
-            name={item + props.survId}
-            value={index + 1}
-            checked={selectedOption === props.props[index]}
-            onChange={handleOptionChange}
-          />
-          <span className="smallname"> {item}</span>
-        </label>
-      ))}
-    </>
-  );
-};
-const StyledCheckbox = styled.input.attrs({ type: "checkbox" })`
-  border-radius: 3px;
-  border: 1px solid #ccc;
-  background-color: #fff;
-  width: 16px;
-  height: 16px;
-  margin-right: 8px;
-  cursor: pointer;
-
-  &:checked {
-  }
-`;
-//props.res?.data?.data?.data?.questionResponseDto?.
 const Survey = (props) => {
-  //console.log(props.res)
-  //console.log(props.res0)
-  //console.log(props.list)
   const [values, setValues] = useState(
     props?.res?.data?.data?.data?.questionResponseDto?.map((item) => ({
       questionId: item.id,
       answerList: [""],
     }))
   );
-  const [isSubmit, setIsSubmit] = useState(
-    props?.res?.data?.data?.data?.submit
-  );
+  const [isSubmit, setIsSubmit] = useState(props?.res?.data?.data?.data?.submit);
   const [adminSwitch, setAdminSwitch] = useState(false);
-  const [IndividualModal, setIndividual] = useState(false);
-  const [IndividualModalID, setIndividualModalID] = useState({
-    id: "",
-    name: "",
+  const [individualState, setIndividualState] = useState({
+    isModalOpen: false,
+    modalID: {
+      id: "",
+      name: "",
+    },
   });
-  const [id, setid] = useState("");
-  const [name, setname] = useState("");
-  //console.log(props.res)
-  //console.log(props.submit)
-  //console.log(props.res?.data?.data?.data?.submit)
-  //console.log(isSubmit)
-  //console.log(values)
-  /*
-  useEffect(() => {
-      setValues(props?.list?.map((item) => ({ questionId: item.id, answerList: [''] })));
-  }, []);
-  */
-
   useEffect(() => {
     setIsSubmit(props.res?.data?.data?.data?.submit);
   }, [props.res?.data?.data?.data?.submit]);
@@ -147,29 +46,29 @@ const Survey = (props) => {
   });
   const changeInputList = ({ value, id, survId, isList }) => {
     let val = [...values];
-    //이 에러 또
     isList == true
       ? (val[id].answerList = value)
       : (val[id].answerList = [value]);
     setValues(val);
   };
-  //console.log(props)
 
   const IndividualModalOn = (props) => {
-    setIndividualModalID({ id: props.id, name: props.name });
-    setIndividual(true);
+    setIndividualState({
+      ...individualState,
+      isModalOpen: true,
+      modalID: {
+        id: props.id,
+        name: props.name,
+      },
+    });
   };
 
   const onPost = () => {
-    //여기서
-    let a = values.length;
-    let b = 0;
     const payload = {
       groupId: props.groupId,
       detailId: props.detailId,
       data: { answerRequestDto: values },
     };
-
     if (props.submit == true) {
       const res = putsurvey.mutateAsync(payload);
       setIsSubmit(true);
@@ -177,16 +76,15 @@ const Survey = (props) => {
       const res = postsurvey.mutateAsync(payload);
       setIsSubmit(true);
     }
-    //console.log(values)
   };
 
   return (
     <>
-      {IndividualModal == true ? (
+      {individualState.isModalOpen == true ? (
         <ShowSurveyModal
-          setShowModal={setIndividual}
-          questions={props?.res?.data?.data?.data?.submitResponseDto}
-          names={IndividualModalID}
+        setShowModal={setIndividualState}
+        questions={props?.res?.data?.data?.data?.submitResponseDto}
+        names={individualState.modalID}
           DTO={props?.res?.data?.data?.data?.answerList}
         />
       ) : null}
@@ -254,7 +152,7 @@ const Survey = (props) => {
                           <h1 className="name">
                             {index + 1}. {item.question}
                           </h1>
-                          <RadioButton
+                          <SurveyRadioButton
                             id={index}
                             props={item.optionList}
                             survId={item.id}
