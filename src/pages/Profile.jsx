@@ -20,11 +20,7 @@ const Profile = () => {
   const [isPut, setIsPut] = useState(false);
   const [userImg, setUserImg] = useState();
   const [userGroup, setUserGroup] = useState();
-  const {
-    register,
-    formState: { errors },
-    watch,
-  } = useForm();
+  const {register, formState: { errors }, watch,} = useForm();
   const putProfile = useMutation(PutProfile, {
     onSuccess: ({ data }) => {
       toast.success("변경에 성공했습니다!");

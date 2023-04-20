@@ -254,9 +254,8 @@ function PartyDetail() {
           groupName={groupName}
           groupInfo={groupInfo}
           groupCode={groupCode}
-          vote
           groupId={groupId}
-          isAdmin={isAdmin}
+          isAdmin={isAdmin.current}
           props={res?.data?.data?.data?.recentlyViewed}
         />
       <DetailPageContainer>
