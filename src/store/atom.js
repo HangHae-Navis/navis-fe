@@ -24,6 +24,11 @@ export const partyInfoState = atom({
   },
 });
 
+export const alarmState = atom({
+  key: `state${v4()}`,
+  default: false,
+});
+
 export const userInfoState = atom({
   key: `state${v4()}`,
   default: "",
