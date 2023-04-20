@@ -5,16 +5,27 @@ import { modalVariants } from "../../utils/variants/variants";
 import { InputStyle } from "../../utils/style/mixins";
 import { useRecoilState } from "recoil";
 import { editorState } from "../../store/atom";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { toast } from "react-toastify";
+import { useEffect } from "react";
 
 const EditSpecial = ({ setPage }) => {
-  const { id } = useParams();
+  const pam = useParams();
+  const [searchParams, setSearchParams] = useSearchParams();
+  console.log(pam)
+  console.log(searchParams.get("groupId"))
+
   const [editInfo, setEditInfo] = useRecoilState(editorState);
   const navigate = useNavigate();
   const onNext = () => {
-    if (editInfo.category !== "survey") navigate(`/party/${id}/edit`);
-    else setPage(3);
+    if(searchParams.get("groupId") == null){
+      if (editInfo.category !== "survey") navigate(`/party/${pam.id}/edit`);
+      else setPage(3);
+    }
+    else{
+      if (editInfo.category !== "survey") navigate(`/party/${searchParams.get("groupId")}/edit`);
+      else setPage(3);
+    }
   };
   return (
     <SpecialInfoWrapper
