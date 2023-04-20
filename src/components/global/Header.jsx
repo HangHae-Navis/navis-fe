@@ -1,9 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { useQuery } from "react-query";
 import { useNavigate } from "react-router";
-import { useSetRecoilState } from "recoil";
+import { useRecoilState, useSetRecoilState } from "recoil";
 import styled, { css } from "styled-components";
-import { loginModalState, signinModalState } from "../../store/atom";
+import {
+  alarmState,
+  loginModalState,
+  signinModalState,
+} from "../../store/atom";
 import { getKaKaoLogin } from "../../utils/api/api";
 import { getCookie, removeCookie, setCookie } from "../../utils/infos/cookie";
 import { path } from "../../constants/path";
@@ -17,7 +21,6 @@ import { EventSourcePolyfill, NativeEventSource } from "event-source-polyfill";
 import Alarm from "../alarm/Alarm";
 import { useLocation } from "react-router-dom";
 import White from "../../assets/whiteLogo.svg";
-import { ButtonStyle } from "../../utils/style/mixins";
 
 const Header = () => {
   const { pathname } = useLocation();
@@ -25,14 +28,19 @@ const Header = () => {
   const setLoginModal = useSetRecoilState(loginModalState);
   const setSigninModal = useSetRecoilState(signinModalState);
   const [headerModal, setHeaderModal] = useState(false);
-  const [alarmModal, setAlarmModal] = useState(false);
+  const [alarmModal, setAlarmModal] = useRecoilState(alarmState);
   const navi = useNavigate();
   const code = window.location.search;
   const [currentPam, setCurrentPam] = useState(code);
   const [isCallBool, setIsCallBool] = useState(false);
   const token = getCookie("token");
-  const storedData = JSON.parse(localStorage.getItem('userInfo'));
-  const profileImage = token != null ?storedData?.profileImage == null ?profile : storedData?.profileImage : profile;
+  const storedData = JSON.parse(localStorage.getItem("userInfo"));
+  const profileImage =
+    token != null
+      ? storedData?.profileImage == null
+        ? profile
+        : storedData?.profileImage
+      : profile;
 
   const getCode = useQuery(
     ["getCode", currentPam],
@@ -53,10 +61,10 @@ const Header = () => {
     }
   );
 
-  const openModal =( props) =>{
-    setLoginModal(true)
-    setSigninModal(props)
-  }
+  const openModal = (props) => {
+    setLoginModal(true);
+    setSigninModal(props);
+  };
 
   useEffect(() => {
     let eventSource;
@@ -64,6 +72,9 @@ const Header = () => {
       setCurrentPam(code);
       setIsCallBool(true);
     }
+
+    setAlarmModal(false);
+
     if (token !== undefined) {
       try {
         eventSource = new EventSource(
@@ -90,7 +101,7 @@ const Header = () => {
         eventSource.close();
       };
     }
-  }, [token]);
+  }, [token, pathname]);
 
   const onLogout = () => {
     removeCookie("token");
@@ -160,8 +171,8 @@ const Header = () => {
 };
 
 const Profileimg = styled.img`
-border-radius: 50%;
-`
+  border-radius: 50%;
+`;
 
 const HeaderMenu = styled.ul`
   position: absolute;
