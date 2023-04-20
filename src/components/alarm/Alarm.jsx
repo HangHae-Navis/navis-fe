@@ -3,10 +3,13 @@ import styled from "styled-components";
 import { deleteNotification, getNotification } from "../../utils/api/api";
 import { useState } from "react";
 import Button from "../../element/Button";
-import { toast } from "react-toastify";
+import { useSetRecoilState } from "recoil";
+import { alarmState, chatModalState } from "../../store/atom";
 
 const Alarm = () => {
   const [alarm, setAlarm] = useState(null);
+  const setChatModal = useSetRecoilState(chatModalState);
+  const setAlarmModal = useSetRecoilState(alarmState);
 
   const alarmQuery = useQuery("notification", getNotification, {
     onSuccess: ({ data }) => {
@@ -36,11 +39,30 @@ const Alarm = () => {
         알림삭제
       </Button>
       {alarm !== null &&
-        alarm.map((element, i) => (
-          <AlarmList key={i} read={element.read.toString()}>
-            {element.content}
-          </AlarmList>
-        ))}
+        alarm.map((element, i) =>
+          element.type === "chat" ? (
+            <AlarmList
+              onClick={(e) => {
+                e.preventDefault();
+                setChatModal(true);
+                setAlarmModal(false);
+              }}
+              href="#"
+              key={i}
+              read={element.read.toString()}
+            >
+              {element.content}
+            </AlarmList>
+          ) : (
+            <AlarmList
+              href={element.url}
+              key={i}
+              read={element.read.toString()}
+            >
+              {element.content}
+            </AlarmList>
+          )
+        )}
     </AlarmWrapper>
   ) : (
     <AlarmWrapper>
@@ -51,7 +73,7 @@ const Alarm = () => {
   );
 };
 
-const AlarmWrapper = styled.ul`
+const AlarmWrapper = styled.div`
   position: absolute;
   display: flex;
   flex-direction: column;
@@ -73,7 +95,20 @@ const AlarmWrapper = styled.ul`
   }
 `;
 
-const AlarmList = styled.li`
+const AlarmList = styled.a`
+  width: 100%;
+  text-align: flex-start;
+  font-size: 1.3rem;
+  border-bottom: 0.05rem black;
+  padding-bottom: 0.8rem;
+  border-bottom: 0.05rem solid black;
+  color: ${({ read }) => (read === "true" ? "gray" : "black")};
+  &:last-child {
+    border-bottom: none;
+  }
+`;
+
+const AlarmListChat = styled.div`
   width: 100%;
   text-align: flex-start;
   font-size: 1.3rem;
